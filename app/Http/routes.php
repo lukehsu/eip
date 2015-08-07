@@ -14,13 +14,14 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+Route::get('/', 'MainController@login');
 Route::get('/first', 'MainController@first');
 Route::get('/second', 'MainController@second');
 Route::get('/third', 'MainController@third');
 Route::get('/fourth', 'MainController@fourth');
 Route::get('/fifth', 'MainController@fifth');
 Route::post('/reportdate', 'datechangController@reportdate');
-Route::get('/', function()
+Route::get('/test', function()
 {
     // pages 為網站進入點
     return View('home');

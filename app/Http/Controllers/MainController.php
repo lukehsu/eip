@@ -41,6 +41,13 @@ class MainController extends Controller {
 	 * @return Response
 	 */    
 
+    public function login()
+    {
+        
+        return view('index');
+    }
+
+
     public function first()
     {
         
