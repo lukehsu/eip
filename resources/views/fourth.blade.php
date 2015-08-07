@@ -542,7 +542,8 @@
         $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
-//我懶得縮排了      //console.log(len);
+//我懶得縮排了      
+                    //console.log(data.monthstart);
                     $("#chart").css("display","none");
                     $("#chart").fadeIn(2000);
                     $("#tablezone").css("display","none");

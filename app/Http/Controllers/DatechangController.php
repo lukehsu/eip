@@ -59,7 +59,7 @@ class datechangController extends Controller {
                           'Others' => 0,
                     );
         $total = 0;
-        $monthstart = substr($getdate, 8).'01';//依照選擇的日期轉換每月月初
+        $monthstart = substr($getdate, 0,8).'01';//依照選擇的日期轉換每月月初
         $dailyreportstable = dailyreport::where('InvDate','=',$getdate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
@@ -202,7 +202,7 @@ class datechangController extends Controller {
                 case '67HWLCBC'://胃爾康 100ml  
                     $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break; 
-                case '67HWLCBJ'://胃爾康 60ml   67HWLCBC
+                case '67HWLCBJ'://胃爾康 60ml
                     $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break; 
                 case '67QCTCBQ'://氯四環素
@@ -333,7 +333,8 @@ class datechangController extends Controller {
                 'MC'=>$MC, 
                 'totalma'=>$totalma,
                 'totalmb'=>$totalmb,
-                'totalmc'=>$totalmc
+                'totalmc'=>$totalmc,
+                'monthstart'=>$monthstart
             ));
         } 
         else 
