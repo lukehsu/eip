@@ -504,14 +504,14 @@
         $.each(data.qtys, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(2).html(data);
+              $('tr').eq(i).find('td').eq(2).html(Number(data).toLocaleString('en'));
             };
           };
         });
         $.each(data.medicine, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(3).html(data);
+              $('tr').eq(i).find('td').eq(3).html(Number(data).toLocaleString('en'));
             };
           };
         });
@@ -519,29 +519,29 @@
         $.each(data.MA, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(4).html(data);
+              $('tr').eq(i).find('td').eq(4).html(Number(data).toLocaleString('en'));
             };
           };
         });
         $.each(data.MB, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(5).html(data);
+              $('tr').eq(i).find('td').eq(5).html(Number(data).toLocaleString('en'));
             };
           };
         });
         $.each(data.MC, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(6).html(data);
+              $('tr').eq(i).find('td').eq(6).html(Number(data).toLocaleString('en') + ' %');
             };
           };
         });
-        $('tr').eq(14).find('td').eq(2).html(data.allqty);
-        $('tr').eq(14).find('td').eq(3).html(data.totalsell);
-        $('tr').eq(14).find('td').eq(4).html(data.totalma);
-        $('tr').eq(14).find('td').eq(5).html(data.totalmb);
-        $('tr').eq(14).find('td').eq(6).html(data.totalmc);
+        $('tr').eq(14).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
+        $('tr').eq(14).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
+        $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
+        $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
+        $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
 //我懶得縮排了      //console.log(len);
                     $("#chart").css("display","none");
                     $("#chart").fadeIn(2000);
