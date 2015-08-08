@@ -12,11 +12,11 @@
 		<div class="col-md-1">
 
 		</div>
-		<div class="col-md-7">
-		<h1>您好</h1>
+		<div class="col-md-7" style="font-size:200px;">
+		午安，
 		</div>
 		<div class="col-md-3">
-		登入
+		今天是西元2015-08-08
 		</div>
 		<div class="col-md-1">
 

@@ -10,6 +10,7 @@ use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel5;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\IOFactory;
 use App\Http\Requests;
 use Response;
+use Auth;
 //use Redirect, Auth, Log;
 
 
@@ -32,8 +33,9 @@ class MainController extends Controller {
 	 * @return void
 	 */
 	public function __construct()
-	{
-		$this->middleware('guest');
+	{    // guest 是原來的
+		//$this->middleware('guest');
+        $this->middleware('auth', ['except' => ['login','show']]);
 	}
 	/**
 	 * Show the application welcome screen to the user.
@@ -636,6 +638,16 @@ class MainController extends Controller {
                               'MT'=>$MT, 
                               'Totalmt'=>$Totalmt
                               ]);
+    }
+
+
+    public function test()
+    {
+
+        if(Auth::guest()){
+            return redirect('/');
+        }
+        return view('third');
     }
     
 }
