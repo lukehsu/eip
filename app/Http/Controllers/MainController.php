@@ -355,7 +355,7 @@ class MainController extends Controller {
                 case '67HWLCBC'://胃爾康 100ml  
                     $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break; 
-                case '67HWLCBJ'://胃爾康 60ml   67HWLCBC
+                case '67HWLCBJ'://胃爾康 60ml 
                     $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break; 
                 case '67QCTCBQ'://氯四環素
@@ -454,6 +454,14 @@ class MainController extends Controller {
                     $MB['Wilcon'] = $MonthTotal ; 
                     $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
                     break; 
+                case '67HWLCBC'://胃爾康 100ml  
+                    $MB['Wilcon'] = $MonthTotal ; 
+                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
+                    break; 
+                case '67HWLCBJ'://胃爾康 60ml 
+                    $MB['Wilcon'] = $MonthTotal ; 
+                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
+                    break; 
                 case '67QCTCBQ'://氯四環素
                     $MB['Kso'] = $MonthTotal ;
                     $MC['Kso'] = round(($MA['Kso'] / $MonthTotal) * 100) ; 
@@ -461,7 +469,11 @@ class MainController extends Controller {
                 case '57ABPNPA'://帕金寧
                     $MB['Bpn'] = $MonthTotal ;
                     $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
-                    break;            
+                    break;    
+                case '57ABPNBA'://帕金寧
+                    $MB['Bpn'] = $MonthTotal ;
+                    $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
+                    break;           
                 default:
                     $MB['Others'] = $MonthTotal ;
                     $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
@@ -498,6 +510,29 @@ class MainController extends Controller {
                               'totalmc'=>$totalmc,
                               ]);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function fifth()
     {
@@ -603,19 +638,4 @@ class MainController extends Controller {
                               ]);
     }
     
-    public function reportdate(Request $request) 
-    {
-        $getdate = Input::get('date');
-        
-        if (Request::ajax()) {
-            return response()->json(array(
-                'status' => 1,
-                'msg' => $getdate
-            ));
-        } 
-        else 
-        {
-            return Redirect::back()->withInput()->withErrors('保存失败！');
-        }
-    }
 }

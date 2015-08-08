@@ -301,6 +301,14 @@ class datechangController extends Controller {
                     $MB['Wilcon'] = $MonthTotal ; 
                     $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
                     break; 
+                case '67HWLCBC'://胃爾康 100ml  
+                    $MB['Wilcon'] = $MonthTotal ; 
+                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
+                    break; 
+                case '67HWLCBJ'://胃爾康 60ml 
+                    $MB['Wilcon'] = $MonthTotal ; 
+                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
+                    break; 
                 case '67QCTCBQ'://氯四環素
                     $MB['Kso'] = $MonthTotal ;
                     $MC['Kso'] = round(($MA['Kso'] / $MonthTotal) * 100) ; 
@@ -308,7 +316,11 @@ class datechangController extends Controller {
                 case '57ABPNPA'://帕金寧
                     $MB['Bpn'] = $MonthTotal ;
                     $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
-                    break;            
+                    break;    
+                case '57ABPNBA'://帕金寧
+                    $MB['Bpn'] = $MonthTotal ;
+                    $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
+                    break;           
                 default:
                     $MB['Others'] = $MonthTotal ;
                     $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
