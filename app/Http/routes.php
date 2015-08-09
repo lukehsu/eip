@@ -14,14 +14,15 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
-Route::get('/login', 'MainController@login');
+Route::get('login', 'MainController@login');
 Route::get('/first', 'MainController@first');
 Route::get('/second', 'MainController@second');
 Route::get('/third', 'MainController@third');
 Route::get('/fourth', 'MainController@fourth');
 Route::get('/fifth', 'MainController@fifth');
 Route::post('/reportdate', 'datechangController@reportdate');
-Route::get('/ts', 'MainController@test');
+Route::post('login', 'MainController@test');
+//Route::get('/ts', 'MainController@test');
 
 Route::get('/test', function()
 {

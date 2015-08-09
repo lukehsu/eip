@@ -35,10 +35,11 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          <form class="navbar-form navbar-left" role="search">
+          <form class="navbar-form navbar-left" method="POST" action="login">
             <div class="form-group">
-              <input type="text" class="form-control" />
-              <input type="text" class="form-control" />
+              <input type="text" id="email" name="email" class="form-control" />
+              <input type="text" id="password" name="password"  class="form-control" />
+              <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
             </div> 
             <button type="submit" class="btn btn-default">
               登入

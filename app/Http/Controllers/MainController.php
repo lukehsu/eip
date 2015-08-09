@@ -35,7 +35,7 @@ class MainController extends Controller {
 	public function __construct()
 	{    // guest 是原來的
 		//$this->middleware('guest');
-        $this->middleware('auth', ['except' => ['login','show']]);
+        //$this->middleware('auth', ['except' => ['login','show']]);
 	}
 	/**
 	 * Show the application welcome screen to the user.
@@ -643,11 +643,15 @@ class MainController extends Controller {
 
     public function test()
     {
+        $userdata  = array('email' =>Input::get('email') ,'password'=>Input::get('password') );
 
-        if(Auth::guest()){
-            return redirect('/');
+        if(Auth::attempt($userdata)){
+        echo '1';
         }
-        return view('third');
+        else
+        {    
+        echo '2';
+        }
     }
     
 }
