@@ -22,6 +22,8 @@ Route::get('/fourth', 'MainController@fourth');
 Route::get('/fifth', 'MainController@fifth');
 Route::post('/reportdate', 'datechangController@reportdate');
 Route::post('login', 'MainController@test');
+Route::get('sign', 'MainController@sign');
+Route::post('sign', 'MainController@signc');
 //Route::get('/ts', 'MainController@test');
 
 Route::get('/test', function()
