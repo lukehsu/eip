@@ -6,7 +6,7 @@ use App\dailyreport;
 use App\boramonthbudget;
 use App\Http\Requests;
 use Response;
-use auth;
+use Auth;
 
 class datechangController extends Controller {
 

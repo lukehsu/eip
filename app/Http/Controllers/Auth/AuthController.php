@@ -47,6 +47,12 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:6',
         ]);
     }
+    //認證錯誤時
+    protected $loginPath = '';
+    //預設導向
+    protected $redirectPath = '/dashboard';
+    //登入時登入頁面帳號擷取欄位
+    protected $username  = 'name';
 
     /**
      * Create a new user instance after a valid registration.

@@ -37,19 +37,13 @@ class MainController extends Controller {
 	public function __construct()
 	{   //guest 是原來的
 		//$this->middleware('guest');
-        $this->middleware('auth',['except' => 'login']);
+        $this->middleware('demo', ['except' => ['login','show']]);
 	}
 	/**
 	 * Show the application welcome screen to the user.
 	 *
 	 * @return Response
 	 */    
-
-    public function login()
-    {
-        
-        return view('index');
-    }
 
 
     public function first()
@@ -821,31 +815,11 @@ class MainController extends Controller {
                               ]);
     }
 
-
-    public function test()
+    public function login()
     {
-
-        $userdata = array('name' => Input::get('name') , 'password' => Input::get('password') );
-        /*
-                $user = new User ;
-                $user->name = Input::get('name');
-                $user->email = Input::get('name');
-                $user->password = Hash::Make(Input::get('password'));
-                $user->save();;
-        */
-    echo $userdata['name'];
-    echo $userdata['password'];
-        if(Auth::attempt(['name' => $userdata['name'],'password' => $userdata['password']]))
-        {
-            echo 'good';
-        }
-        else
-        {    
-            echo 'bad';
-        }
+        
+        return view('index');
     }
-
-
 
     public function sign()
     {
@@ -861,10 +835,7 @@ class MainController extends Controller {
                 $user->name = Input::get('name');
                 $user->email = Input::get('name');
                 $user->password = Hash::Make(Input::get('password'));
-                $user->save();;
+                $user->save();
     }
 
-
-
-    
 }

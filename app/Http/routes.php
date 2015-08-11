@@ -14,17 +14,19 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+
 Route::get('login', 'MainController@login');
+Route::post('login', 'LoginController@login');
+Route::get('logout', 'LoginController@logout');
 Route::get('/first', 'MainController@first');
 Route::get('/second', 'MainController@second');
 Route::get('/third', 'MainController@third');
 Route::get('/fourth', 'MainController@fourth');
 Route::get('/fifth', 'MainController@fifth');
 Route::post('/reportdate', 'datechangController@reportdate');
-Route::post('login', 'MainController@test');
 Route::get('sign', 'MainController@sign');
 Route::post('sign', 'MainController@signc');
-//Route::get('/ts', 'MainController@test');
+
 
 Route::get('/test', function()
 {
