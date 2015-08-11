@@ -82,7 +82,6 @@ class LoginController extends Controller {
       {
         $password = $userpassword->password;
       }    
-      echo $password;
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$password]))
       {
         return redirect()->intended('fourth');
