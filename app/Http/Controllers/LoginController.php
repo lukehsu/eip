@@ -51,14 +51,19 @@ class LoginController extends Controller {
           }   
           else
           {                      
-            //取出帳號的所有資訊             
+            //取出帳號的所有資訊    
             $entries = ldap_get_entries($ldapconn, $result);
             $data = ldap_get_entries( $ldapconn, $result );
-            $user = new User ;
-            $user->name = Input::get('name');
-            $user->email = Input::get('name');
-            $user->password = Hash::Make(Input::get('password'));
-            $user->save();
+            $user = User::where('name','=',$userdata['name'] )->count();   
+            if ($user==0)
+            {
+              $user = new User ;
+              $user->name = Input::get('name');
+              $user->email = Input::get('name');
+              $user->password = Hash::Make(Input::get('password'));
+              $user->save();
+
+            }
             //for($i = 0; $i <= $data ["count"]; $i ++)
             //{
               //for($j = 0; $j <= $data [$i] ["count"]; $j ++) 
@@ -74,15 +79,11 @@ class LoginController extends Controller {
         echo "認證失敗";     
       } 
       //撈姓名出來
-      //echo $data[0]['name'][0];
+      echo $data[0]['mail'][0];
       //關閉LDAP連結
       ldap_close($ldapconn);
-      $userpasswords = user::where('name','=',Input::get('name'))->get();
-      foreach ($userpasswords as $userpassword) 
-      {
-        $password = $userpassword->password;
-      }    
-      if(Auth::attempt(['name'=>$userdata['name'],'password'=>$password]))
+ 
+      if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
         return redirect()->intended('fourth');
       }
