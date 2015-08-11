@@ -77,9 +77,13 @@ class LoginController extends Controller {
       //echo $data[0]['name'][0];
       //關閉LDAP連結
       ldap_close($ldapconn);
-
-
-      if(Auth::attempt(['name' => $userdata['name'],'password' => $userdata['password']]))
+      $userpasswords = user::where('name','=',Input::get('name'))->get();
+      foreach ($userpasswords as $userpassword) 
+      {
+        $password = $userpassword->password;
+      }    
+      echo $password;
+      if(Auth::attempt(['name'=>$userdata['name'],'password'=>$password]))
       {
         return redirect()->intended('fourth');
       }
