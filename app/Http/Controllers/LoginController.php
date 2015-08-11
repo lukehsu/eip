@@ -7,9 +7,10 @@ use Response;
 use Auth;
 use App\user;
 use Hash;
+use Closure;
 class LoginController extends Controller {
 
-    public function login()
+    public function login(Request $request)
     {
 
       $userdata = array('name' => Input::get('name') , 'password' => Input::get('password') );
@@ -79,13 +80,13 @@ class LoginController extends Controller {
         echo "認證失敗";     
       } 
       //撈姓名出來
-      echo $data[0]['mail'][0];
+      //echo $data[0]['mail'][0];
       //關閉LDAP連結
       ldap_close($ldapconn);
  
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
-        return redirect()->intended('fourth');
+        echo $request;
       }
       else
       {    
