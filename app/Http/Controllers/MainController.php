@@ -161,7 +161,7 @@ class MainController extends Controller {
         return view('third');
     }
     
-    public function diary()
+    public function boradiary()
     {
         $medicine = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -481,7 +481,7 @@ class MainController extends Controller {
         $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
         $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
-        return view('diary',['Pitavol'=>$medicine['Pitavol'],
+        return view('boradiary',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
                               'Lepax10'=>$medicine['Lepax10'],
                               'Lepax5'=>$medicine['Lepax5'],

@@ -20,7 +20,7 @@ Route::post('login', 'LoginController@login');
 //登出
 Route::post('logout', 'LoginController@logout');
 //報表
-Route::get('diary', 'MainController@diary');
+Route::get('boradiary', 'MainController@boradiary');
 Route::get('month', 'MainController@month');
 //匯入excel
 Route::get('diaryexcel', 'MainController@diaryexcel');

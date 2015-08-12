@@ -7,21 +7,18 @@
 </head>
 <body>
 <div class="container-fluid">
-	@include('includes.n')
 	<div class="row">
-		<div class="col-md-1">
-
-		</div>
-		<div class="col-md-7" style="font-size:200px;">
-		午安，
-		</div>
-		<div class="col-md-3">
-		今天是西元2015-08-08
-		</div>
-		<div class="col-md-1">
-
+		<div class="col-lg-6 col-lg-offset-3 text-center">
+         	<form class="navbar-form navbar-left" method="POST" action="login">
+              	<input type="text" id="name" name="name" class="form-control" />
+              	<input type="text" id="password" name="password"  class="form-control" />
+              	<input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
+            	<button type="submit" class="btn btn-default">
+              		登入
+            	</button>
+          	</form>
 		</div>
 	</div>
-<div>  
+</div> 
 </body>
 </html>
