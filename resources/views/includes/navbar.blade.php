@@ -1,14 +1,14 @@
 <?php
 //選單權限資料庫
 use App\mainmenudisplay;
-$mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->get(array('mainitem'));
+$mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem'));
 $menuitem = null;
 foreach ($mainitems as $mainitem) 
 {
   $menuitem .= '<ul class="nav navbar-nav"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' ;
   $menuitem .= $mainitem['mainitem'] ;
   $menuitem .= '<strong class="caret"></strong></a><ul class="dropdown-menu">';
-  $subitems = mainmenudisplay::where('user','=',Auth::user()->name)->where('mainitem','=',$mainitem['mainitem'])->get();
+  $subitems = mainmenudisplay::where('user','=',Auth::user()->name)->where('mainitem','=',$mainitem['mainitem'])->orderBy('subitemid', 'ASC')->get();
   foreach ($subitems as $subitem) 
   {
     $menuitem .=  '<li><a href="'.$subitem['url'].'">'.$subitem['subitem'].'</a></li>';
