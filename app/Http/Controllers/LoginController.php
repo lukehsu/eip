@@ -10,7 +10,7 @@ use Hash;
 use Closure;
 class LoginController extends Controller {
 
-    public function login(Request $request)
+    public function login()
     {
 
       $userdata = array('name' => Input::get('name') , 'password' => Input::get('password') );
@@ -63,7 +63,6 @@ class LoginController extends Controller {
               $user->email = Input::get('name');
               $user->password = Hash::Make(Input::get('password'));
               $user->save();
-
             }
             //for($i = 0; $i <= $data ["count"]; $i ++)
             //{
@@ -86,15 +85,15 @@ class LoginController extends Controller {
  
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
-        echo $request;
+        $test = '123';
+        return redirect()->intended('diary');
+        //echo  Auth::user()->name;
       }
       else
       {    
         echo 'bad';
       }
     }
-
-
     public function logout()
     {
 

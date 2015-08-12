@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use Illuminate\Contracts\Auth\Guard;
-use Redirect;
 
-class demo
+
+class logincheck
 {
     /**
      * Handle an incoming request.
@@ -17,8 +17,15 @@ class demo
      */
     public function handle($request, Closure $next)
     {
-
-        //$a = '123';
-
+        // If the user is not logged in
+        if (Auth::guest()) {
+            if ($request->ajax()) {
+                return response('Unauthorized!', 401);
+            } else {
+                return redirect('login');
+            }
+        }
+        
+        return $next($request);
     }
 }

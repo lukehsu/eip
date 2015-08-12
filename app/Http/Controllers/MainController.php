@@ -13,9 +13,8 @@ use App\Http\Requests;
 use Response;
 use Auth;
 use Hash;
+use App\mainmenudisplay;
 //use Redirect, Auth, Log;
-
-
 class MainController extends Controller {
 
 	/*
@@ -37,7 +36,7 @@ class MainController extends Controller {
 	public function __construct()
 	{   //guest 是原來的
 		//$this->middleware('guest');
-        $this->middleware('demo', ['except' => ['login','show']]);
+        $this->middleware('logincheck', ['except' => ['login','show']]);
 	}
 	/**
 	 * Show the application welcome screen to the user.
@@ -55,7 +54,7 @@ class MainController extends Controller {
     }
 
 
-    public function second()
+    public function diaryexcel()
     {
         $objPHPExcel = new \PHPExcel();
         /*
@@ -162,7 +161,7 @@ class MainController extends Controller {
         return view('third');
     }
     
-    public function fourth()
+    public function diary()
     {
         $medicine = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -482,7 +481,7 @@ class MainController extends Controller {
         $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
         $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
-        return view('fourth',['Pitavol'=>$medicine['Pitavol'],
+        return view('diary',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
                               'Lepax10'=>$medicine['Lepax10'],
                               'Lepax5'=>$medicine['Lepax5'],
@@ -510,7 +509,7 @@ class MainController extends Controller {
     }
 
 
-    public function fifth()
+    public function month()
     {
         $medicine = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -794,7 +793,7 @@ class MainController extends Controller {
         $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
         $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
-        return view('fourth',['Pitavol'=>$medicine['Pitavol'],
+        return view('month',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
                               'Brexa' =>$medicine['Lepax10'],
                               'Wilcon'=>$medicine['Wilcon'],
@@ -813,6 +812,7 @@ class MainController extends Controller {
                               'totalmb'=>$totalmb,
                               'totalmc'=>$totalmc,
                               ]);
+
     }
 
     public function login()
@@ -836,6 +836,15 @@ class MainController extends Controller {
                 $user->email = Input::get('name');
                 $user->password = Hash::Make(Input::get('password'));
                 $user->save();
+    }
+
+    public function gg()
+    {
+        $test = mainmenudisplay::all();
+        foreach ($test as  $value) {
+            echo $value ;
+        }
+        echo '123';
     }
 
 }

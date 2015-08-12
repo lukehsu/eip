@@ -14,18 +14,28 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
-
+//登入
 Route::get('login', 'MainController@login');
 Route::post('login', 'LoginController@login');
-Route::get('logout', 'LoginController@logout');
+//登出
+Route::post('logout', 'LoginController@logout');
+//報表
+Route::get('diary', 'MainController@diary');
+Route::get('month', 'MainController@month');
+//匯入excel
+Route::get('diaryexcel', 'MainController@diaryexcel');
+
+
+
+
 Route::get('/first', 'MainController@first');
-Route::get('/second', 'MainController@second');
 Route::get('/third', 'MainController@third');
-Route::get('/fourth', 'MainController@fourth');
-Route::get('/fifth', 'MainController@fifth');
 Route::post('/reportdate', 'datechangController@reportdate');
 Route::get('sign', 'MainController@sign');
 Route::post('sign', 'MainController@signc');
+Route::get('gg', 'MainController@gg');
+
+
 
 
 Route::get('/test', function()

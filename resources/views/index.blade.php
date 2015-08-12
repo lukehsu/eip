@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container-fluid">
-	@include('includes.navbar')
+	@include('includes.n')
 	<div class="row">
 		<div class="col-md-1">
 

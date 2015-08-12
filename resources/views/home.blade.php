@@ -4,5 +4,6 @@
 
 @section('content')
     i am the home page
-    $a = 123;
+    <?php $a  = Auth::user()->name ;
+    echo $a ; ?>;
 @stop
