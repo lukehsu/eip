@@ -67,7 +67,7 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名
-        $file = glob(dirname(__FILE__).'\diaryexcel\*.xls');
+        $file = glob(dirname(__FILE__).'/diaryexcel/*.xls');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $inputFileName = $file[0];
