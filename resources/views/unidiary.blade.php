@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="_token" content="{{ csrf_token() }}"/>
-  <title>保瑞日報表</title>
+  <title>聯邦日報表</title>
   @include('head.bootstrapcss')
   <link rel="stylesheet"  href="../public/bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <script src="../public/bootstrap331/dist/js/highcharts.js"></script>
@@ -53,32 +53,14 @@
             name: "Brands",
             colorByPoint: true,
             data: [{
-                name: "Pitavol",
+                name: "Pitavol （經銷商）",
                 y: {!!$MC['Pitavol']!!},
             }, {
-                name: "Denset",
+                name: "Denset （經銷商)",
                 y: {!!$MC['Denset']!!},
             }, {
-                name: "Lepax 10mg",
+                name: "Brexa (經銷商）",
                 y: {!!$MC['Lepax10']!!},
-            }, {
-                name: "Lepax 5mg",
-                y: {!!$MC['Lepax5']!!},
-            }, {
-                name: "Lexapro",
-                y: {!!$MC['Lexapro']!!},
-            }, {
-                name: "Ebixa",
-                y: {!!$MC['Ebixa']!!},
-            }, {
-                name: "Denset",
-                y: {!!$MC['Denset']!!},
-            }, {
-                name: "Lendormin (Bora)",
-                y: {!!$MC['LendorminBora']!!},
-            },{
-                name: "Lendormin (和安)",
-                y: {!!$MC['Lendorminann']!!},
             },{
                 name: "胃爾康",
                 y: {!!$MC['Wilcon']!!},
@@ -87,6 +69,9 @@
                 y: {!!$MC['Kso']!!},
             }, {
                 name: "帕金寧",
+                y: {!!$MC['Bpn']!!},
+            }, { 
+                name: "優福",
                 y: {!!$MC['Bpn']!!},
             }, { 
                 name: "Others",
@@ -147,9 +132,9 @@
               Pitavol
             </td>
             <td>
-              Pitavol
+              Pitavol （經銷商）
             </td>
-            <td class='text-right'>
+            <td class='text-right' id="q1">
               {!!number_format($qtys['Pitavol'])!!}
             </td>
             <td class='text-right'>
@@ -170,7 +155,7 @@
               Denset
             </td>
             <td>
-              Denset
+              Denset （經銷商）
             </td>
             <td class='text-right'>
               {!!number_format($qtys['Denset'])!!}
@@ -193,7 +178,7 @@
               Lepax10
             </td>
             <td>
-              Lepax 10mg
+              Brexa (經銷商）
             </td>
             <td class='text-right'>
               {!!number_format($qtys['Lepax10'])!!}
@@ -209,144 +194,6 @@
             </td>
             <td class='text-right'>
               {!!$MC['Lepax10']!!} %
-            </td>
-          </tr>
-          <tr class="active">
-            <td style="display:none">
-              Lepax5
-            </td>
-            <td>
-              Lepax5
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lepax5)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lepax5']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Lexapro
-            </td>
-            <td>
-              Lexapro
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lexapro)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lexapro']!!} %
-            </td>
-          </tr>
-          <tr class="active">
-            <td style="display:none">
-              Ebixa
-            </td>
-            <td>
-              Ebixa
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Ebixa'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Ebixa)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Ebixa'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Ebixa'])!!}
-            </td>
-              <td class='text-right'>
-              {!!$MC['Ebixa']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Deanxit
-            </td>
-            <td>
-              Deanxit
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Deanxit'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Deanxit)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Deanxit'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Deanxit'])!!}
-            </td>
-              <td class='text-right'>
-              {!!$MC['Deanxit']!!} %
-            </td>
-          </tr>
-          <tr  class="active">
-            <td style="display:none">
-              LendorminBora
-            </td>
-            <td>
-              Lendormin (Bora)
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($LendorminBora)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['LendorminBora']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Lendorminann
-            </td>
-            <td>
-              Lendormin (和安)
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lendorminann)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lendorminann']!!} %
             </td>
           </tr>
           <tr  class="active">
@@ -416,6 +263,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Bpn']!!} %
+            </td>
+          </tr>
+          <tr>
+            <td style="display:none">
+              優福
+            </td>
+            <td>
+              優福
+            </td>
+            <td class='text-right'>
+              {!!number_format($qtys['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Others)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Others']!!} %
             </td>
           </tr>
           <tr>
@@ -494,7 +364,7 @@
     $("#datetimepicker").change(function(){
       $.ajax({
         type: 'POST',
-        url: '/eip/public/borareportdate',
+        url: '/eip/public/reportdate',
         data: { date : $("#datetimepicker").val()},
         dataType: 'json',
         headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},

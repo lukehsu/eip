@@ -21,19 +21,15 @@ Route::post('login', 'LoginController@login');
 Route::post('logout', 'LoginController@logout');
 //報表
 Route::get('boradiary', 'MainController@boradiary');
-Route::get('month', 'MainController@month');
+Route::get('unidiary' , 'MainController@unidiary');
+Route::get('accountdiary' , 'MainController@accountdiary');
 //匯入excel
-Route::get('diaryexcel', 'MainController@diaryexcel');
+Route::get('diaryexcel', 'ExcelController@diaryexcel');
 
 
-
-
-Route::get('/first', 'MainController@first');
-Route::get('/third', 'MainController@third');
-Route::post('/reportdate', 'datechangController@reportdate');
-Route::get('sign', 'MainController@sign');
-Route::post('sign', 'MainController@signc');
-Route::get('gg', 'MainController@gg');
+//ajax日曆呼叫
+Route::post('borareportdate', 'datechangController@borareportdate');
+Route::post('unireportdate', 'datechangController@unireportdate');
 
 
 

@@ -11,7 +11,7 @@ use Auth;
 class datechangController extends Controller {
 
 
-    public function reportdate(Request $request) 
+    public function borareportdate(Request $request) 
     {
         //選擇的日期
         $getdate = Input::get('date');
