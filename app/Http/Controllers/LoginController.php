@@ -60,7 +60,9 @@ class LoginController extends Controller {
             {
               $user = new User ;
               $user->name = Input::get('name');
-              $user->email = Input::get('name');
+              //這邊是AD資訊別搞錯
+              $user->cname = $data[0]['name'][0];
+              $user->email = $data[0]['mail'][0];
               $user->password = Hash::Make(Input::get('password'));
               $user->save();
             }
@@ -85,7 +87,6 @@ class LoginController extends Controller {
  
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
-        $test = '123';
         return redirect()->intended('boradiary');
         //echo  Auth::user()->name;
       }
@@ -94,9 +95,11 @@ class LoginController extends Controller {
         echo 'bad';
       }
     }
+
     public function logout()
     {
 
         Auth::logout();
+        return redirect('login');       
     }
 }

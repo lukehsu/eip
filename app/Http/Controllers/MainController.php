@@ -1,20 +1,15 @@
 <?php 
 namespace App\Http\Controllers;
-use Request;
-use Input;
 use App\dailyreport;
 use App\user;
 use App\boramonthbudget;
+use App\mainmenudisplay;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel5;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\IOFactory;
 use App\Http\Requests;
-use Response;
-use Auth;
-use Hash;
-use App\mainmenudisplay;
-//use Redirect, Auth, Log;
+use Hash,Input,Request,Response,Auth,Redirect,Log;
 class MainController extends Controller {
 
 	/*

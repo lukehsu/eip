@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 use Illuminate\Contracts\Auth\Guard;
-
-
+use App\mainmenudisplay;
+use Request;
 class logincheck
 {
     /**
@@ -25,7 +25,14 @@ class logincheck
                 return redirect('login');
             }
         }
-        
+        //取得網址
+        $uri = Request::path();
+        //檢查是否有權限進入該區
+        $accesschecks = mainmenudisplay::where('user','=',Auth::user()->name)->where('url','=',$uri)->count();
+        if ($accesschecks == 0)
+        {
+            return redirect('login');              
+        }
         return $next($request);
     }
 }
