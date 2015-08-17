@@ -23,13 +23,14 @@ Route::post('logout', 'LoginController@logout');
 Route::get('boradiary', 'MainController@boradiary');
 Route::get('unidiary' , 'MainController@unidiary');
 Route::get('accountdiary' , 'MainController@accountdiary');
+Route::get('personaldiary' , 'MainController@personaldiary');
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 
 
 //ajax日曆呼叫
-Route::post('borareportdate', 'datechangController@borareportdate');
-Route::post('unireportdate', 'datechangController@unireportdate');
+Route::post('borareportdate', 'DatechangController@borareportdate');
+Route::post('unireportdate', 'DatechangController@unireportdate');
 
 
 

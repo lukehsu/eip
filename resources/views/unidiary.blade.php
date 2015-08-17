@@ -54,13 +54,13 @@
             colorByPoint: true,
             data: [{
                 name: "Pitavol （經銷商）",
-                y: {!!$MC['Pitavol']!!},
+                y: 0,
             }, {
                 name: "Denset （經銷商)",
-                y: {!!$MC['Denset']!!},
+                y: 0,
             }, {
                 name: "Brexa (經銷商）",
-                y: {!!$MC['Lepax10']!!},
+                y: 0,
             },{
                 name: "胃爾康",
                 y: {!!$MC['Wilcon']!!},
@@ -135,10 +135,10 @@
               Pitavol （經銷商）
             </td>
             <td class='text-right' id="q1">
-              {!!number_format($qtys['Pitavol'])!!}
+              0
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              0
             </td>
             <td class='text-right'>
               {!!number_format($MA['Pitavol'])!!}
@@ -158,10 +158,10 @@
               Denset （經銷商）
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Denset'])!!}
+              0
             </td>
             <td class='text-right'>
-              {!!number_format($Denset)!!}
+              0
             </td>
             <td class='text-right'>
               {!!number_format($MA['Denset'])!!}
@@ -175,16 +175,16 @@
           </tr>
           <tr>
             <td style="display:none">
-              Lepax10
+              Brexa (經銷商）
             </td>
             <td>
               Brexa (經銷商）
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Lepax10'])!!}
+              0
             </td>
             <td class='text-right'>
-              {!!number_format($Lepax10)!!}
+              0
             </td>
             <td class='text-right'>
               {!!number_format($MA['Lepax10'])!!}
@@ -244,10 +244,10 @@
           </tr>
           <tr  class="active">
             <td style="display:none">
-              Bpn
+              優達平
             </td>
             <td>
-              帕金寧
+              優達平
             </td>
             <td class='text-right'>
               {!!number_format($qtys['Bpn'])!!}
@@ -364,7 +364,7 @@
     $("#datetimepicker").change(function(){
       $.ajax({
         type: 'POST',
-        url: '/eip/public/reportdate',
+        url: '/eip/public/unireportdate',
         data: { date : $("#datetimepicker").val()},
         dataType: 'json',
         headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
