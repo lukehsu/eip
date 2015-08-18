@@ -68,11 +68,11 @@
                 name: "氯四環素",
                 y: {!!$MC['Kso']!!},
             }, {
-                name: "帕金寧",
-                y: {!!$MC['Bpn']!!},
+                name: "優平",
+                y: {!!$MC['Upi']!!},
             }, { 
                 name: "優福",
-                y: {!!$MC['Bpn']!!},
+                y: {!!$MC['Ufo']!!},
             }, { 
                 name: "Others",
                 y: {!!$MC['Others']!!},
@@ -175,7 +175,7 @@
           </tr>
           <tr>
             <td style="display:none">
-              Brexa (經銷商）
+              Brexa
             </td>
             <td>
               Brexa (經銷商）
@@ -187,13 +187,13 @@
               0
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Lepax10'])!!}
+              {!!number_format($MA['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Lepax10'])!!}
+              {!!number_format($MB['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Lepax10']!!} %
+              {!!$MC['Brexa']!!} %
             </td>
           </tr>
           <tr  class="active">
@@ -207,7 +207,7 @@
               {!!number_format($qtys['Wilcon'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Wilcon)!!}
+              {!!number_format($medicine['Wilcon'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Wilcon'])!!}
@@ -230,7 +230,7 @@
               {!!number_format($qtys['Kso'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Kso)!!}
+              {!!number_format($medicine['Kso'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Kso'])!!}
@@ -244,48 +244,48 @@
           </tr>
           <tr  class="active">
             <td style="display:none">
-              優達平
+              Upi
             </td>
             <td>
               優達平
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Bpn'])!!}
+              {!!number_format($qtys['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Bpn)!!}
+              {!!number_format($medicine['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Bpn'])!!}
+              {!!number_format($MA['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Bpn'])!!}
+              {!!number_format($MB['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Bpn']!!} %
+              {!!$MC['Upi']!!} %
             </td>
           </tr>
           <tr>
             <td style="display:none">
-              優福
+              Ufo
             </td>
             <td>
               優福
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Others'])!!}
+              {!!number_format($qtys['Ufo'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Others)!!}
+              {!!number_format($medicine['Ufo'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Others'])!!}
+              {!!number_format($MA['Ufo'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Others'])!!}
+              {!!number_format($MB['Ufo'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Others']!!} %
+              {!!$MC['Ufo']!!} %
             </td>
           </tr>
           <tr>
@@ -299,7 +299,7 @@
               {!!number_format($qtys['Others'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Others)!!}
+              {!!number_format($medicine['Others'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Others'])!!}
@@ -373,7 +373,7 @@
         //因為長度都一樣所以用medicine計算
         $.each(data.medicine, function (key,data) {len++ ;});
         
-        //key 是 key data 是 value 
+        //key 是 key data 是 value  
         $.each(data.qtys, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
@@ -410,11 +410,11 @@
             };
           };
         });
-        $('tr').eq(14).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
+        $('tr').eq(9).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
+        $('tr').eq(9).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
+        $('tr').eq(9).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
+        $('tr').eq(9).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
+        $('tr').eq(9).find('td').eq(6).html(data.totalmc + ' %');
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");
@@ -476,44 +476,29 @@
                         colorByPoint: true,
                         data: 
                     [{
-                        name: "Pitavol",
-                        y: data.MC["Pitavol"],
+                        name: "Pitavol （經銷商）",
+                        y: 0,
                     }, {
-                        name: "Denset",
-                        y: data.MC["Denset"],
+                        name: "Denset （經銷商)",
+                        y: 0,
                     }, {
-                        name: "Lepax 10mg",
-                        y: data.MC["Lepax10"],
+                        name: "Brexa (經銷商）",
+                        y: 0,
+                    },{
+                        name: "胃爾康",
+                        y: data.MC['Wilcon'],
                     }, {
-                        name: "Lepax 5mg",
-                        y: data.MC["Lepax5"],
+                        name: "氯四環素",
+                        y: data.MC['Kso'],
                     }, {
-                        name: "Lexapro",
-                        y: data.MC["Lexapro"],
-                    }, {
-                        name: "Ebixa",
-                        y: data.MC["Ebixa"],
-                    }, {
-                       name: "Denset",
-                        y: data.MC["Denset"],
-                    }, {
-                        name: "Lendormin (Bora)",
-                        y: data.MC["LendorminBora"],
-                    }, {
-                       name: "Lendormin (和安)",
-                        y: data.MC["Lendorminann"],
-                    }, {
-                      name: "胃爾康",
-                        y: data.MC["Wilcon"],
-                    }, {
-                      name: "氯四環素",
-                         y: data.MC["Kso"],
-                    }, {
-                      name: "帕金寧",
-                         y: data.MC["Bpn"],
+                      name: "優平",
+                        y: data.MC['Upi'],
                     }, { 
-                      name: "Others",
-                        y: data.MC["Others"],
+                      name: "優福",
+                        y: data.MC['Ufo'],
+                    }, { 
+                        name: "Others",
+                        y: data.MC['Others'],
                     }]
                     }]
                   };

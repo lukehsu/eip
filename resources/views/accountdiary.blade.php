@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="_token" content="{{ csrf_token() }}"/>
-  <title>保瑞日報表</title>
+  <title>業務部日報表</title>
   @include('head.bootstrapcss')
   <link rel="stylesheet"  href="../public/bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <script src="../public/bootstrap331/dist/js/highcharts.js"></script>
@@ -79,15 +79,6 @@
             },{
                 name: "Lendormin (和安)",
                 y: {!!$MC['Lendorminann']!!},
-            },{
-                name: "胃爾康",
-                y: {!!$MC['Wilcon']!!},
-            }, {
-                name: "氯四環素",
-                y: {!!$MC['Kso']!!},
-            }, {
-                name: "帕金寧",
-                y: {!!$MC['Bpn']!!},
             }, { 
                 name: "Others",
                 y: {!!$MC['Others']!!},
@@ -142,31 +133,31 @@
               Product
             </th>
             <th class="text-center">
-              Diary
+              Amount
             </th>
             <th class="text-center">
-              Actual
+              Month Actual
             </th>
             <th class="text-center">
-              Budget
+              Month Budget
             </th>
             <th class="text-center">
-              A/B
+              A / B
             </th>
             <th class="text-center">
-              A/L
+              A / L
             </th>
             <th class="text-center">
-              Product
+              Month Actual
             </th>
             <th class="text-center">
-              Actual
+              Month Budget
             </th>
             <th class="text-center">
-              Budget
+              A / B
             </th>
             <th class="text-center">
-              A/B
+              A / L
             </th>
           </tr>
         </thead>
@@ -194,9 +185,6 @@
               {!!$MC['Pitavol']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
               {!!number_format($Pitavol)!!}
             </td>
             <td class='text-right'>
@@ -204,17 +192,32 @@
             </td>
             <td class='text-right'>
               {!!number_format($MB['Pitavol'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Pitavol']!!} %
             </td>
           </tr>
           <tr class="active">
             <td style="display:none">
-              Pitavol
+              Denset
             </td>
             <td>
-              Pitavol
+              Denset
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Denset'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Denset)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Denset'])!!}
+            </td>
+              <td class='text-right'>
+              {!!number_format($MB['Denset'])!!}
+            </td>
+              <td class='text-right'>
+              {!!$MC['Denset']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -227,29 +230,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr>
             <td style="display:none">
-              Pitavol
+              Lepax10
             </td>
             <td>
-              Pitavol
+              Lepax 10mg
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Lepax10'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Lepax10)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Lepax10'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Lepax10'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Lepax10']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -262,29 +265,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr class="active">
             <td style="display:none">
-              Pitavol
+              Lepax5
             </td>
             <td>
-              Pitavol
+              Lepax5
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Lepax5'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Lepax5)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Lepax5'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Lepax5'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Lepax5']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -297,29 +300,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr>
             <td style="display:none">
-              Pitavol
+              Lexapro
             </td>
             <td>
-              Pitavol
+              Lexapro
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Lexapro'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Lexapro)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Lexapro'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Lexapro'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Lexapro']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -332,29 +335,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr class="active">
             <td style="display:none">
-              Pitavol
+              Ebixa
             </td>
             <td>
-              Pitavol
+              Ebixa
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Ebixa'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Ebixa)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Ebixa'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Ebixa'])!!}
+            </td>
+              <td class='text-right'>
+              {!!$MC['Ebixa']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -367,29 +370,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr>
             <td style="display:none">
-              Pitavol
+              Deanxit
             </td>
             <td>
-              Pitavol
+              Deanxit
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Deanxit'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Deanxit)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Deanxit'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Deanxit'])!!}
+            </td>
+              <td class='text-right'>
+              {!!$MC['Deanxit']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -402,29 +405,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr  class="active">
             <td style="display:none">
-              Pitavol
+              LendorminBora
             </td>
             <td>
-              Pitavol
+              Lendormin (Bora)
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['LendorminBora'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($LendorminBora)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['LendorminBora'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['LendorminBora'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['LendorminBora']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -437,29 +440,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr>
             <td style="display:none">
-              Pitavol
+              Lendorminann
             </td>
             <td>
-              Pitavol
+              Lendormin (和安)
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Lendorminann'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Lendorminann)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Lendorminann'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Lendorminann'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Lendorminann']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -472,169 +475,29 @@
             </td>
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-          </tr>
-          <tr  class="active">
-            <td style="display:none">
-              Pitavol
-            </td>
-            <td>
-              Pitavol
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Pitavol
-            </td>
-            <td>
-              Pitavol
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-          </tr>
-          <tr  class="active">
-             <td style="display:none">
-              Pitavol
-            </td>
-            <td>
-              Pitavol
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Pitavol
-            </td>
-            <td>
-              Pitavol
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
             </td>
           </tr>
           <tr class="active">
             <td style="display:none">
-              Pitavol
+              Others
             </td>
             <td>
-              Pitavol
+              Others
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($qtys['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Others)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Others'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Others']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -648,8 +511,28 @@
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
             </td>
+          </tr>
+          <tr class="">
+            <td style="display:none">
+              Pitavol
+            </td>
+            <td>
+              Total
+            </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
+              {!!number_format($allqty)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($totalsell)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($totalma,0)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($totalmb,0)!!}
+            </td>
+            <td class='text-right'>
+              {!!$totalmc!!} %
             </td>
             <td class='text-right'>
               {!!number_format($Pitavol)!!}
@@ -659,6 +542,9 @@
             </td>
             <td class='text-right'>
               {!!number_format($MB['Pitavol'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Pitavol']!!} %
             </td>
           </tr>
         </tbody>
@@ -737,11 +623,11 @@
             };
           };
         });
-        $('tr').eq(14).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
+        $('tr').eq(11).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(6).html(data.totalmc + ' %');
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");
@@ -829,15 +715,6 @@
                     }, {
                        name: "Lendormin (和安)",
                         y: data.MC["Lendorminann"],
-                    }, {
-                      name: "胃爾康",
-                        y: data.MC["Wilcon"],
-                    }, {
-                      name: "氯四環素",
-                         y: data.MC["Kso"],
-                    }, {
-                      name: "帕金寧",
-                         y: data.MC["Bpn"],
                     }, { 
                       name: "Others",
                         y: data.MC["Others"],

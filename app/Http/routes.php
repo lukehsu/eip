@@ -26,6 +26,7 @@ Route::get('accountdiary' , 'MainController@accountdiary');
 Route::get('personaldiary' , 'MainController@personaldiary');
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
+Route::get('uniexcel', 'ExcelController@uniexcel');
 
 
 //ajax日曆呼叫

@@ -1,11 +1,11 @@
 <?php 
 namespace App\Http\Controllers;
-use App\dailyreport;//bora 每日業績
 use App\user;
+use App\dailyreport;//bora 每日業績
 use App\boramonthbudget;//bora每月預算
-//use App\mainmenudisplay;
 use App\unidiaryreport;//每日業績
-use App\unimonthbudgets;//uni每月預算
+use App\unimonthbudget;//uni每月預算
+//use App\mainmenudisplay;
 use App\Http\Requests;
 use Hash,Input,Request,Response,Auth,Redirect,Log;
 class MainController extends Controller {
@@ -558,7 +558,7 @@ class MainController extends Controller {
         $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Brexa'] + $qtys['Wilcon'] + $qtys['Kso'] + $qtys['Upi'] + $qtys['Ufo'] + $qtys['Others'] ;
         $totalma = $MA['Pitavol'] + $MA['Denset'] + $MA['Brexa'] + $MA['Wilcon'] + $MA['Kso'] + $MA['Upi'] + $MA['Ufo'] + $MA['Others'] ;
         //撈每月目標業績
-        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = unimonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Brexa' => 0 , 
@@ -581,6 +581,18 @@ class MainController extends Controller {
             $BORAItemNo = $monthbudget->BORAItemNo;
             $MonthTotal = $monthbudget->budget; 
             switch ($BORAItemNo) {
+                case 'Pitavol':
+                    $MB['Pitavol'] = $MonthTotal ;
+                    $MC['Pitavol'] = round(($MA['Pitavol'] / $MonthTotal) * 100); 
+                    break;
+                case 'Denset':
+                    $MB['Denset'] = $MonthTotal ;
+                    $MC['Denset'] = round(($MA['Denset'] / $MonthTotal) * 100); 
+                    break;
+                case 'Brexa':
+                    $MB['Brexa'] = $MonthTotal ;
+                    $MC['Brexa'] = round(($MA['Brexa'] / $MonthTotal) * 100); 
+                    break;
                 case '57HWLCBC':
                     $MB['Wilcon'] = $MonthTotal ;
                     $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
@@ -636,7 +648,6 @@ class MainController extends Controller {
         } 
         $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Brexa'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Upi'] + $MB['Ufo'] + $MB['Others'] ;
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Brexa'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Upi'] + $MC['Ufo'] + $MC['Others'] ;
-
         return view('unidiary',['medicine'=>$medicine,
                                 'itemno'=>$itemno,
                                 'qtys'=>$qtys,
@@ -664,9 +675,6 @@ class MainController extends Controller {
                           'Deanxit' => 0 , 
                           'LendorminBora' => 0 , 
                           'Lendorminann' => 0 ,
-                          'Wilcon' => 0 ,
-                          'Kso' => 0 ,
-                          'Bpn' => 0,
                           'Others' => 0,
                          );
 
@@ -679,9 +687,6 @@ class MainController extends Controller {
                           'Deanxit' => null , 
                           'LendorminBora' => null , 
                           'Lendorminann' => null ,
-                          'Wilcon' => null ,
-                          'Kso' => null ,
-                          'Bpn' => null,
                           'Others' => null,
                          );
 
@@ -694,9 +699,6 @@ class MainController extends Controller {
                           'Deanxit' => 0 , 
                           'LendorminBora' => 0 , 
                           'Lendorminann' => 0 ,
-                          'Wilcon' => 0 ,
-                          'Kso' => 0 ,
-                          'Bpn' => 0,
                           'Others' => 0,
                     );
         $total = 0; 
@@ -754,34 +756,6 @@ class MainController extends Controller {
                     $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ; 
                     $itemno['Lendorminann'] = $BORAItemNo ; 
                     break;
-                //分段一下這邊是聯邦產品    
-                case '67HWLCBN'://胃爾康 100ml
-                    $medicine['Wilcon'] = $medicine['Wilcon'] + $dailysell ;
-                    $qtys['Wilcon'] = $qtys['Wilcon'] + $qty ; 
-                    $itemno['Wilcon'] = $BORAItemNo ; 
-                    break; 
-                case '67HWLCBC'://胃爾康 100ml  
-                    $medicine['Wilcon'] = $medicine['Wilcon'] + $dailysell ;
-                    $qtys['Wilcon'] = $qtys['Wilcon'] + $qty ; 
-                    break; 
-                case '67HWLCBJ'://胃爾康 60ml
-                    $medicine['Wilcon'] = $medicine['Wilcon'] + $dailysell ;
-                    $qtys['Wilcon'] = $qtys['Wilcon'] + $qty ; 
-                    break; 
-                case '67QCTCBQ'://氯四環素
-                    $medicine['Kso'] = $medicine['Kso'] + $dailysell ;
-                    $qtys['Kso'] = $qtys['Kso'] + $qty ; 
-                    $itemno['Kso'] = $BORAItemNo ; 
-                    break; 
-                case '57ABPNPA'://帕金寧
-                    $medicine['Bpn'] = $medicine['Bpn'] + $dailysell ;
-                    $qtys['Bpn'] = $qtys['Bpn'] + $qty ; 
-                    $itemno['Bpn'] = $BORAItemNo ; 
-                    break;    
-                case '57ABPNBA'://帕金寧
-                    $medicine['Bpn'] = $medicine['Bpn'] + $dailysell ;
-                    $qtys['Bpn'] = $qtys['Bpn'] + $qty ; 
-                    break;            
                 default:
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
                     $qtys['Others'] = $qtys['Others'] + $qty ; 
@@ -800,9 +774,6 @@ class MainController extends Controller {
                           'Deanxit' => 0 , 
                           'LendorminBora' => 0 , 
                           'Lendorminann' => 0 ,
-                          'Wilcon' => 0 ,
-                          'Kso' => 0 ,
-                          'Bpn' => 0,
                           'Others' => 0,
                          );
         foreach ($dailyreportstable as $dailyreport) {
@@ -836,37 +807,18 @@ class MainController extends Controller {
                     break;
                 case '68PTV001123':
                     $MA['Lendorminann'] = $MA['Lendorminann'] + $MonthTotal;
-                    break;
-                //分段一下這邊是聯邦產品    
-                case '67HWLCBN'://胃爾康 100ml
-                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
-                    break; 
-                case '67HWLCBC'://胃爾康 100ml  
-                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
-                    break; 
-                case '67HWLCBJ'://胃爾康 60ml 
-                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
-                    break; 
-                case '67QCTCBQ'://氯四環素
-                    $MA['Kso'] = $MA['Kso'] + $MonthTotal;
-                    break; 
-                case '57ABPNPA'://帕金寧
-                    $MA['Bpn'] = $MA['Bpn'] + $MonthTotal;
-                    break;    
-                case '57ABPNBA'://帕金寧
-                    $MA['Bpn'] = $MA['Bpn'] + $MonthTotal;
-                    break;            
+                    break;          
                 default:
                     $MA['Others'] = $MA['Others'] + $MonthTotal;
                     break;
             }
         }
         $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Lepax10'] + $medicine['Lepax5'] + $medicine['Lexapro'] +  $medicine['Ebixa'] + $medicine['Deanxit'] + $medicine['LendorminBora'] ;
-        $totalsell = $medicine['Lendorminann'] + $medicine['Wilcon'] + $medicine['Kso'] + $medicine['Bpn'] + $medicine['Others'] + $totalsell ;
+        $totalsell = $medicine['Lendorminann'] + $medicine['Others'] + $totalsell ;
         $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Lepax10'] + $qtys['Lepax5'] + $qtys['Lexapro'] + $qtys['Ebixa'] + $qtys['Deanxit'] + $qtys['LendorminBora'] ;
-        $allqty = $qtys['Lendorminann'] + $qtys['Wilcon'] + $qtys['Kso'] + $qtys['Bpn'] + $qtys['Others'] + $allqty;    
+        $allqty = $qtys['Lendorminann'] + $qtys['Others'] + $allqty;    
         $totalma = $MA['Pitavol'] + $MA['Denset'] + $MA['Lepax10'] + $MA['Lepax5'] + $MA['Lexapro'] + $MA['Ebixa'] + $MA['Deanxit'] + $MA['LendorminBora'] ;
-        $totalma = $MA['Lendorminann'] + $MA['Wilcon'] + $MA['Kso'] + $MA['Bpn'] + $MA['Others'] + $totalma;  
+        $totalma = $MA['Lendorminann']  + $MA['Others'] + $totalma;  
         //撈每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
@@ -878,9 +830,6 @@ class MainController extends Controller {
                           'Deanxit' => 0 , 
                           'LendorminBora' => 0 , 
                           'Lendorminann' => 0 ,
-                          'Wilcon' => 0 ,
-                          'Kso' => 0 ,
-                          'Bpn' => 0,
                           'Others' => 0,
                          );
         $MC = array(      'Pitavol' => 0 , 
@@ -892,9 +841,6 @@ class MainController extends Controller {
                           'Deanxit' => 0 , 
                           'LendorminBora' => 0 , 
                           'Lendorminann' => 0 ,
-                          'Wilcon' => 0 ,
-                          'Kso' => 0 ,
-                          'Bpn' => 0,
                           'Others' => 0,
                          );
         foreach ($monthbudgets as $monthbudget) {
@@ -937,31 +883,6 @@ class MainController extends Controller {
                 case '68PTV001123':
                     $MB['Lendorminann'] = $MonthTotal ;
                     $MC['Lendorminann'] = round(($MA['Lendorminann'] / $MonthTotal) * 100); 
-                    break;
-                //分段一下這邊是聯邦產品    
-                case '67HWLCBN'://胃爾康 100ml
-                    $MB['Wilcon'] = $MonthTotal ; 
-                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
-                    break; 
-                case '67HWLCBC'://胃爾康 100ml  
-                    $MB['Wilcon'] = $MonthTotal ; 
-                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
-                    break; 
-                case '67HWLCBJ'://胃爾康 60ml 
-                    $MB['Wilcon'] = $MonthTotal ; 
-                    $MC['Wilcon'] = round(($MA['Wilcon'] / $MonthTotal) * 100); 
-                    break; 
-                case '67QCTCBQ'://氯四環素
-                    $MB['Kso'] = $MonthTotal ;
-                    $MC['Kso'] = round(($MA['Kso'] / $MonthTotal) * 100) ; 
-                    break; 
-                case '57ABPNPA'://帕金寧
-                    $MB['Bpn'] = $MonthTotal ;
-                    $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
-                    break;    
-                case '57ABPNBA'://帕金寧
-                    $MB['Bpn'] = $MonthTotal ;
-                    $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
                     break;           
                 default:
                     $MB['Others'] = $MonthTotal ;
@@ -970,9 +891,9 @@ class MainController extends Controller {
             }
         } 
         $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] ;
-        $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
+        $totalmb = $MB['Lendorminann']  + $MB['Others'] + $totalmb ; 
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
-        $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
+        $totalmc = $MC['Lendorminann']  + $MC['Others'] + $totalmc ; 
         return view('accountdiary',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
                               'Lepax10'=>$medicine['Lepax10'],
@@ -982,9 +903,6 @@ class MainController extends Controller {
                               'Deanxit'=> $medicine['Deanxit'],
                               'LendorminBora'=>$medicine['LendorminBora'],
                               'Lendorminann'=>$medicine['Lendorminann'],
-                              'Wilcon'=>$medicine['Wilcon'],
-                              'Kso'=>$medicine['Kso'],
-                              'Bpn'=>$medicine['Bpn'],
                               'Others'=>$medicine['Others'],
                               'itemno'=>$itemno,
                               'qtys'=>$qtys,
