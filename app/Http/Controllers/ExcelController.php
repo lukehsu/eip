@@ -70,7 +70,7 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\borareport\*.xls');
+        $file = glob(dirname(__FILE__).'\borareport\*.*');
         //$file = glob(dirname(__FILE__).'/diaryexcel/*.xls');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);

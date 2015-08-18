@@ -55,6 +55,7 @@ class LoginController extends Controller {
             //取出帳號的所有資訊    
             $entries = ldap_get_entries($ldapconn, $result);
             $data = ldap_get_entries( $ldapconn, $result );
+            //print_r($data);
             $user = User::where('name','=',$userdata['name'] )->count();   
             if ($user==0)
             {
@@ -63,6 +64,7 @@ class LoginController extends Controller {
               //這邊的陣列是AD資訊別搞錯
               $user->cname = $data[0]['name'][0];
               $user->email = $data[0]['mail'][0];
+              $user->dep = $data[0]['department'][0];
               $user->password = Hash::Make(Input::get('password'));
               $user->save();
             }
@@ -87,13 +89,13 @@ class LoginController extends Controller {
         echo "認證失敗";     
       } 
       //撈姓名出來
-      //echo $data[0]['mail'][0];
+      //echo $data[0]['physicaldeliveryofficename'][0];
       //關閉LDAP連結
       ldap_close($ldapconn);
  
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
-        return redirect()->intended('boradiary');
+        return redirect()->intended('dashboard');
         //echo  Auth::user()->name;
       }
       else
@@ -101,7 +103,11 @@ class LoginController extends Controller {
         echo 'bad';
       }
     }
-
+    public function dashboard()
+    {
+        
+        return view('dashboard');
+    }
     public function logout()
     {
 

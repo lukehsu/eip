@@ -139,7 +139,7 @@
               Itemno
             </th>
             <th class="text-center">
-              Product
+              Name
             </th>
             <th class="text-center">
               Diary
