@@ -74,12 +74,9 @@
                 name: "Denset",
                 y: {!!$MC['Denset']!!},
             }, {
-                name: "Lendormin (Bora)",
+                name: "Lendormin",
                 y: {!!$MC['LendorminBora']!!},
             },{
-                name: "Lendormin (和安)",
-                y: {!!$MC['Lendorminann']!!},
-            }, { 
                 name: "Others",
                 y: {!!$MC['Others']!!},
             }]
@@ -170,10 +167,7 @@
               Pitavol
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              {!!number_format($medicine['Pitavol'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Pitavol'])!!}
@@ -185,16 +179,19 @@
               {!!$MC['Pitavol']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Pitavol'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Pitavol'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Pitavol']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr class="active">
@@ -205,10 +202,7 @@
               Denset
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Denset'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Denset)!!}
+              {!!number_format($medicine['Denset'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Denset'])!!}
@@ -220,16 +214,19 @@
               {!!$MC['Denset']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Denset'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Denset'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Denset']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr>
@@ -240,10 +237,7 @@
               Lepax 10mg
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Lepax10'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lepax10)!!}
+              {!!number_format($medicine['Lepax10'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Lepax10'])!!}
@@ -255,16 +249,19 @@
               {!!$MC['Lepax10']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Lepax10'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Lepax10'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Lepax10']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr class="active">
@@ -275,10 +272,7 @@
               Lepax5
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lepax5)!!}
+              {!!number_format($medicine['Lepax5'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Lepax5'])!!}
@@ -290,16 +284,19 @@
               {!!$MC['Lepax5']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Lepax5'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Lepax5'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Lepax5']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr>
@@ -310,10 +307,7 @@
               Lexapro
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lexapro)!!}
+              {!!number_format($medicine['Lexapro'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Lexapro'])!!}
@@ -325,16 +319,19 @@
               {!!$MC['Lexapro']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Lexapro'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Lexapro'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Lexapro']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr class="active">
@@ -345,10 +342,7 @@
               Ebixa
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Ebixa'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Ebixa)!!}
+              {!!number_format($medicine['Ebixa'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Ebixa'])!!}
@@ -360,16 +354,19 @@
               {!!$MC['Ebixa']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Ebixa'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Ebixa'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Ebixa']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr>
@@ -380,10 +377,7 @@
               Deanxit
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Deanxit'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Deanxit)!!}
+              {!!number_format($medicine['Deanxit'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Deanxit'])!!}
@@ -395,16 +389,19 @@
               {!!$MC['Deanxit']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Deanxit'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Deanxit'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Deanxit']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
           <tr  class="active">
@@ -412,13 +409,10 @@
               LendorminBora
             </td>
             <td>
-              Lendormin (Bora)
+              Lendormin
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($LendorminBora)!!}
+              {!!number_format($medicine['LendorminBora'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['LendorminBora'])!!}
@@ -430,54 +424,22 @@
               {!!$MC['LendorminBora']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['LendorminBora'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['LendorminBora'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['LendorminBora']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
-          <tr>
-            <td style="display:none">
-              Lendorminann
-            </td>
-            <td>
-              Lendormin (和安)
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lendorminann)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lendorminann']!!} %
-            </td>
-            <td class='text-right'>
-              {!!number_format($Pitavol)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
-            </td>
-          </tr>
-          <tr class="active">
+          <tr >
             <td style="display:none">
               Others
             </td>
@@ -485,10 +447,7 @@
               Others
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Others'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Others)!!}
+              {!!number_format($medicine['Others'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Others'])!!}
@@ -500,27 +459,27 @@
               {!!$MC['Others']!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($MAA['Others'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($MBB['Others'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$MCC['Others']!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
-          <tr class="">
+          <tr class="active">
             <td style="display:none">
-              Pitavol
+              Total
             </td>
             <td>
               Total
-            </td>
-            <td class='text-right'>
-              {!!number_format($allqty)!!}
             </td>
             <td class='text-right'>
               {!!number_format($totalsell)!!}
@@ -535,16 +494,19 @@
               {!!$totalmc!!} %
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              ''
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Pitavol'])!!}
+              {!!number_format($totalmaa)!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Pitavol'])!!}
+              {!!number_format($totalmbb)!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Pitavol']!!} %
+              {!!$totalmcc!!} %
+            </td>
+            <td class='text-right'>
+              ''
             </td>
           </tr>
         </tbody>
@@ -577,24 +539,25 @@
     $("#datetimepicker").change(function(){
       $.ajax({
         type: 'POST',
-        url: '/eip/public/borareportdate',
+        url: '/eip/public/accountreportdate',
         data: { date : $("#datetimepicker").val()},
         dataType: 'json',
         headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         success:  function(data){
-        var len = 0 ;
+        //因為最上面多一來所已開始預設為1
+        var len = 1 ;
         //因為長度都一樣所以用medicine計算
         $.each(data.medicine, function (key,data) {len++ ;});
         
         //key 是 key data 是 value 
-        $.each(data.qtys, function (key,data) {
+        $.each(data.medicine, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
               $('tr').eq(i).find('td').eq(2).html(Number(data).toLocaleString('en'));
             };
           };
         });
-        $.each(data.medicine, function (key,data) {
+        $.each(data.MA, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
               $('tr').eq(i).find('td').eq(3).html(Number(data).toLocaleString('en'));
@@ -602,32 +565,32 @@
           };
         });
       
-        $.each(data.MA, function (key,data) {
+        $.each(data.MB, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
               $('tr').eq(i).find('td').eq(4).html(Number(data).toLocaleString('en'));
             };
           };
         });
-        $.each(data.MB, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(5).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
         $.each(data.MC, function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(6).html(Number(data).toLocaleString('en') + ' %');
+              $('tr').eq(i).find('td').eq(5).html(Number(data).toLocaleString('en') + ' %');
             };
           };
         });
-        $('tr').eq(11).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(6).html(data.totalmc + ' %');
+        $.each(data.medicinealltime , function (key,data) {
+          for (var i = 1; i <= len ; i++) {          
+            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
+              $('tr').eq(i).find('td').eq(7).html(Number(data).toLocaleString('en'));
+            };
+          };
+        });
+        $('tr').eq(11).find('td').eq(2).html(Number(data.totalsell).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(3).html(Number(data.totalma).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(4).html(Number(data.totalmb).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(5).html(data.totalmc + ' %');
+        $('tr').eq(11).find('td').eq(7).html(Number(data.medicinealltimetotla).toLocaleString('en'));
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");
@@ -713,9 +676,6 @@
                         name: "Lendormin (Bora)",
                         y: data.MC["LendorminBora"],
                     }, {
-                       name: "Lendormin (和安)",
-                        y: data.MC["Lendorminann"],
-                    }, { 
                       name: "Others",
                         y: data.MC["Others"],
                     }]

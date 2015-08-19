@@ -544,7 +544,7 @@
         $('tr').eq(14).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
+        $('tr').eq(14).find('td').eq(6).html((data.totalmc / 12).toFixed(0) + ' %');
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");

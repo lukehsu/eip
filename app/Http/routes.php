@@ -34,6 +34,7 @@ Route::get('uniexcel', 'ExcelController@uniexcel');
 //ajax日曆呼叫
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
+Route::post('accountreportdate', 'DatechangController@accountreportdate');
 
 
 

@@ -5,7 +5,7 @@ use Input;
 use App\Http\Requests;
 use Response;
 use Auth;
-use App\user;
+use App\User;
 use Hash;
 use Closure;
 class LoginController extends Controller {
