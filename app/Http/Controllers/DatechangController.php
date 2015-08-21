@@ -70,18 +70,18 @@ class datechangController extends Controller {
             $BORACustomerNo= $dailyreport->BORACustomerNo;           
             switch ($BORAItemNo) {
                 case '68PTV001':
-
+                if ($BORACustomerNo<>'10824') {
                       $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
                       $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
                       $itemno['Pitavol'] = $BORAItemNo;
-
+                }      
                     break;
                 case '68DEN001':
-
+                if ($BORACustomerNo<>'10824') {
                       $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
                       $qtys['Denset'] = $qtys['Denset'] + $qty ; 
                       $itemno['Denset'] = $BORAItemNo;
-
+                }     
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -179,14 +179,14 @@ class datechangController extends Controller {
             $BORACustomerNo= $dailyreport->BORACustomerNo;      
             switch ($BORAItemNo) {
                 case '68PTV001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
-
+                }    
                     break;
                 case '68DEN001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
-                  
+                }  
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -714,18 +714,18 @@ class datechangController extends Controller {
             $BORACustomerNo = $dailyreport->BORACustomerNo;        
             switch ($BORAItemNo) {
                 case '68PTV001':
-
+                if ($BORACustomerNo<>'10824') {
                     $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
                     $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
                     $itemno['Pitavol'] = $BORAItemNo;
-
+                }
                     break;
                 case '68DEN001':
-
+                if ($BORACustomerNo<>'10824') {
                     $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
                     $qtys['Denset'] = $qtys['Denset'] + $qty ; 
                     $itemno['Denset'] = $BORAItemNo;
-                   
+                }   
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -759,7 +759,7 @@ class datechangController extends Controller {
                     $itemno['LendorminBora'] = $BORAItemNo ; 
                     break;
                 default:
-                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67') 
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORACustomerNo<>'10824' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67') 
                 {
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
                     $qtys['Others'] = $qtys['Others'] + $qty ; 
@@ -786,14 +786,14 @@ class datechangController extends Controller {
             $BORACustomerNo = $dailyreport->BORACustomerNo;                   
             switch ($BORAItemNo) {
                 case '68PTV001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
-                    
+                }    
                     break;
                 case '68DEN001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
-                  
+                }  
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -815,7 +815,7 @@ class datechangController extends Controller {
                     $MA['LendorminBora'] = $MA['LendorminBora'] + $MonthTotal;
                     break;       
                 default:
-                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67' ) 
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORACustomerNo<>'10824' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67' ) 
                 {
                     $MA['Others'] = $MA['Others'] + $MonthTotal;
                 }
@@ -847,14 +847,14 @@ class datechangController extends Controller {
             $BORACustomerNo = $dailyreport->BORACustomerNo;          
             switch ($BORAItemNo) {
                 case '68PTV001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MAA['Pitavol'] = $MAA['Pitavol'] + $dailysell;
-                    
+                }    
                     break;
                 case '68DEN001':
-
+                if ($BORACustomerNo<>'10824') {
                     $MAA['Denset'] = $MAA['Denset'] + $dailysell ;
-                   
+                }   
                     break;
                 case '68LEP002':
                     $MAA['Lepax10'] = $MAA['Lepax10'] + $dailysell ; 
@@ -876,7 +876,7 @@ class datechangController extends Controller {
                     $MAA['LendorminBora'] = $MAA['LendorminBora'] + $dailysell ;
                     break;
                 default: 
-                if ( $BORACustomerNo <> '10973' and $BORACustomerNo <> '11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo <> '57ARZTPG'  and substr($BORAItemNo,0,2)<>'67' ) 
+                if ( $BORACustomerNo <> '10973' and $BORACustomerNo <> '11032' and $BORACustomerNo<> 'UCS05' and $BORACustomerNo<>'10824' and $BORAItemNo <> '57ARZTPG'  and substr($BORAItemNo,0,2)<>'67' ) 
                 {
                     $MAA['Others'] = $MAA['Others'] + $dailysell ;
                 }     
