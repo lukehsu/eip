@@ -45,6 +45,7 @@ class MainController extends Controller {
 
     public function boradiary()
     {
+
         $medicine = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
@@ -96,17 +97,24 @@ class MainController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;         
+            $qty  = $dailyreport->OrderQty;    
+            $BORACustomerNo= $dailyreport->BORACustomerNo;    
             switch ($BORAItemNo) {
                 case '68PTV001':
-                    $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
-                    $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
-                    $itemno['Pitavol'] = $BORAItemNo;
+                if ($BORACustomerNo<>'10824') 
+                	{
+                    	$medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
+                    	$qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
+                    	$itemno['Pitavol'] = $BORAItemNo;
+                    }
                     break;
                 case '68DEN001':
-                    $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
-                    $qtys['Denset'] = $qtys['Denset'] + $qty ; 
-                    $itemno['Denset'] = $BORAItemNo;
+                if ($BORACustomerNo<>'10824') 
+                	{
+                    	$medicine['Denset'] = $medicine['Denset'] + $dailysell ;
+                    	$qtys['Denset'] = $qtys['Denset'] + $qty ; 
+                    	$itemno['Denset'] = $BORAItemNo;
+                    }
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -198,12 +206,19 @@ class MainController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $MonthTotal = $dailyreport->InoviceAmt;       
+            $BORACustomerNo= $dailyreport->BORACustomerNo;      
             switch ($BORAItemNo) {
                 case '68PTV001':
+                if ($BORACustomerNo<>'10824') 
+                  {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
+                  }
                     break;
                 case '68DEN001':
+                if ($BORACustomerNo<>'10824') 
+                  {
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
+                  }
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -352,10 +367,13 @@ class MainController extends Controller {
                 case '57ABPNBA'://帕金寧
                     $MB['Bpn'] = $MonthTotal ;
                     $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
-                    break;           
-                default:
+                    break;  
+                case '11111111'://others
                     $MB['Others'] = $MonthTotal ;
-                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
+                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
                     break;
             }
         } 
@@ -708,7 +726,9 @@ class MainController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;         
+            $qty  = $dailyreport->OrderQty;
+			$BORACustomerName = $dailyreport->BORACustomerName;
+            $BORACustomerNo = $dailyreport->BORACustomerNo;        
             switch ($BORAItemNo) {
                 case '68PTV001':
                     $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
@@ -752,9 +772,12 @@ class MainController extends Controller {
                     $itemno['LendorminBora'] = $BORAItemNo ; 
                     break;
                 default:
+                if (substr($BORAItemNo,0,2)<>'57' or substr($BORAItemNo,0,2)<>'67') 
+                {
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
                     $qtys['Others'] = $qtys['Others'] + $qty ; 
                     $itemno['Others'] = $BORAItemNo ; 
+                }
                     break;
             }
         }
@@ -800,10 +823,14 @@ class MainController extends Controller {
                     $MA['LendorminBora'] = $MA['LendorminBora'] + $MonthTotal;
                     break;       
                 default:
+                if (substr($BORAItemNo,0,2)<>'57' and substr($BORAItemNo,0,2)<>'67') 
+                {
                     $MA['Others'] = $MA['Others'] + $MonthTotal;
-                    break;
+                }
+                break;
             }
         }
+
         $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Lepax10'] + $medicine['Lepax5'] + $medicine['Lexapro'] +  $medicine['Ebixa'] + $medicine['Deanxit'] + $medicine['LendorminBora'] ;
         $totalsell =  $medicine['Others'] + $totalsell ;
         $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Lepax10'] + $qtys['Lepax5'] + $qtys['Lexapro'] + $qtys['Ebixa'] + $qtys['Deanxit'] + $qtys['LendorminBora'] ;
@@ -937,9 +964,12 @@ class MainController extends Controller {
                     $MB['LendorminBora'] = $MonthTotal ;
                     $MC['LendorminBora'] = round(($MA['LendorminBora'] / $MonthTotal) * 100); 
                     break;       
-                default:
+                case '22222222'://others
                     $MB['Others'] = $MonthTotal ;
-                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
+                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
                     break;
             }
         } 
@@ -980,9 +1010,12 @@ class MainController extends Controller {
                     $MBB['LendorminBora'] = $MonthTotal ;
                     $MCC['LendorminBora'] = round(($MAA['LendorminBora'] / $MonthTotal) * 100); 
                     break;       
-                default:
+                case '22222222'://others
                     $MBB['Others'] = $MonthTotal ;
-                    $MCC['Others'] = round(($MAA['Others'] / $MonthTotal) * 100) ;                     
+                    $MCC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
                     break;
             }
         } 

@@ -66,17 +66,24 @@ class datechangController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;         
+            $qty  = $dailyreport->OrderQty;
+            $BORACustomerNo= $dailyreport->BORACustomerNo;           
             switch ($BORAItemNo) {
                 case '68PTV001':
-                    $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
-                    $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
-                    $itemno['Pitavol'] = $BORAItemNo;
+                if ($BORACustomerNo<>'10824') 
+                  {
+                      $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
+                      $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
+                      $itemno['Pitavol'] = $BORAItemNo;
+                  }
                     break;
                 case '68DEN001':
-                    $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
-                    $qtys['Denset'] = $qtys['Denset'] + $qty ; 
-                    $itemno['Denset'] = $BORAItemNo;
+                if ($BORACustomerNo<>'10824') 
+                  {
+                      $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
+                      $qtys['Denset'] = $qtys['Denset'] + $qty ; 
+                      $itemno['Denset'] = $BORAItemNo;
+                  }
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -167,13 +174,20 @@ class datechangController extends Controller {
                          );
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
-            $MonthTotal = $dailyreport->InoviceAmt;       
+            $MonthTotal = $dailyreport->InoviceAmt; 
+            $BORACustomerNo= $dailyreport->BORACustomerNo;      
             switch ($BORAItemNo) {
                 case '68PTV001':
+                if ($BORACustomerNo<>'10824') 
+                  {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
+                  }
                     break;
                 case '68DEN001':
+                if ($BORACustomerNo<>'10824') 
+                  {
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
+                  }
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -323,9 +337,12 @@ class datechangController extends Controller {
                     $MB['Bpn'] = $MonthTotal ;
                     $MC['Bpn'] = round(($MA['Bpn'] / $MonthTotal) * 100); 
                     break;           
-                default:
+                case '11111111'://others
                     $MB['Others'] = $MonthTotal ;
-                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
+                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
                     break;
             }
         } 
