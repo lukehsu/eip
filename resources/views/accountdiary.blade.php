@@ -579,7 +579,7 @@
             };
           };
         });
-        $.each(data.medicinealltime , function (key,data) {
+        $.each(data.MAA , function (key,data) {
           for (var i = 1; i <= len ; i++) {          
             if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
               $('tr').eq(i).find('td').eq(7).html(Number(data).toLocaleString('en'));
@@ -590,7 +590,7 @@
         $('tr').eq(11).find('td').eq(3).html(Number(data.totalma).toLocaleString('en'));
         $('tr').eq(11).find('td').eq(4).html(Number(data.totalmb).toLocaleString('en'));
         $('tr').eq(11).find('td').eq(5).html(data.totalmc + ' %');
-        $('tr').eq(11).find('td').eq(7).html(Number(data.medicinealltimetotla).toLocaleString('en'));
+        $('tr').eq(11).find('td').eq(7).html(Number(data.totalmaa).toLocaleString('en'));
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");

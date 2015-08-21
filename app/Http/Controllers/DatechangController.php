@@ -70,20 +70,18 @@ class datechangController extends Controller {
             $BORACustomerNo= $dailyreport->BORACustomerNo;           
             switch ($BORAItemNo) {
                 case '68PTV001':
-                if ($BORACustomerNo<>'10824') 
-                  {
+
                       $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
                       $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
                       $itemno['Pitavol'] = $BORAItemNo;
-                  }
+
                     break;
                 case '68DEN001':
-                if ($BORACustomerNo<>'10824') 
-                  {
+
                       $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
                       $qtys['Denset'] = $qtys['Denset'] + $qty ; 
                       $itemno['Denset'] = $BORAItemNo;
-                  }
+
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -150,10 +148,13 @@ class datechangController extends Controller {
                     $qtys['Bpn'] = $qtys['Bpn'] + $qty ; 
                     break;            
                 default:
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032'  and $BORAItemNo<>'57ARZTPG') 
+                  {
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
                     $qtys['Others'] = $qtys['Others'] + $qty ; 
                     $itemno['Others'] = $BORAItemNo ; 
                     break;
+                  } 
             }
         }
         //and寫法註記一下每月銷售累加
@@ -178,16 +179,14 @@ class datechangController extends Controller {
             $BORACustomerNo= $dailyreport->BORACustomerNo;      
             switch ($BORAItemNo) {
                 case '68PTV001':
-                if ($BORACustomerNo<>'10824') 
-                  {
+
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
-                  }
+
                     break;
                 case '68DEN001':
-                if ($BORACustomerNo<>'10824') 
-                  {
+
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
-                  }
+                  
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -231,8 +230,11 @@ class datechangController extends Controller {
                     $MA['Bpn'] = $MA['Bpn'] + $MonthTotal;
                     break;            
                 default:
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032'  and $BORAItemNo<>'57ARZTPG') 
+                  {
                     $MA['Others'] = $MA['Others'] + $MonthTotal;
                     break;
+                  } 
             }
         }
         $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Lepax10'] + $medicine['Lepax5'] + $medicine['Lexapro'] +  $medicine['Ebixa'] + $medicine['Deanxit'] + $medicine['LendorminBora'] ;
@@ -373,7 +375,6 @@ class datechangController extends Controller {
             return Redirect::back()->withInput()->withErrors('錯誤！');
         }
     }
-
 
 
 
@@ -667,18 +668,9 @@ class datechangController extends Controller {
 
     public function accountreportdate(Request $request) 
     {
+        $getdate = Input::get('date');
+        $monthstart = substr($getdate, 0,8).'01';//依照選擇的日期轉換每月月初
         $medicine = array('Pitavol' => 0 , 
-                          'Denset' => 0 , 
-                          'Lepax10' => 0 , 
-                          'Lepax5' => 0 , 
-                          'Lexapro' => 0 , 
-                          'Ebixa' => 0 , 
-                          'Deanxit' => 0 , 
-                          'LendorminBora' => 0 , 
-                          'Others' => 0,
-                         );
-
-        $medicinealltime = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
                           'Lepax5' => 0 , 
@@ -712,24 +704,28 @@ class datechangController extends Controller {
                     );
         $total = 0; 
         $yearstart = date('Y-01-01');//今年年初
-        $monthstart = date('Y-m-01');//每月月初
         $todaydate = date('Y-m-d');//今天日期
-        $getdate = Input::get('date');        
         $dailyreportstable = dailyreport::where('InvDate','=',$getdate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;         
+            $qty  = $dailyreport->OrderQty;
+            $BORACustomerName = $dailyreport->BORACustomerName;
+            $BORACustomerNo = $dailyreport->BORACustomerNo;        
             switch ($BORAItemNo) {
                 case '68PTV001':
+
                     $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
                     $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
                     $itemno['Pitavol'] = $BORAItemNo;
+
                     break;
                 case '68DEN001':
+
                     $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
                     $qtys['Denset'] = $qtys['Denset'] + $qty ; 
                     $itemno['Denset'] = $BORAItemNo;
+                   
                     break;
                 case '68LEP002':
                     $medicine['Lepax10'] = $medicine['Lepax10'] + $dailysell ;
@@ -763,51 +759,15 @@ class datechangController extends Controller {
                     $itemno['LendorminBora'] = $BORAItemNo ; 
                     break;
                 default:
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67') 
+                {
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
                     $qtys['Others'] = $qtys['Others'] + $qty ; 
                     $itemno['Others'] = $BORAItemNo ; 
+                }
                     break;
             }
         }
-
-        $dailyreportstable = dailyreport::where('InvDate','>=',$yearstart)->where('InvDate','<=',$getdate)->get();
-        foreach ($dailyreportstable as $dailyreport) {
-            $BORAItemNo = $dailyreport->BORAItemNo;
-            $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;         
-            switch ($BORAItemNo) {
-                case '68PTV001':
-                    $medicinealltime['Pitavol'] = $medicinealltime['Pitavol'] + $dailysell;
-                    break;
-                case '68DEN001':
-                    $medicinealltime['Denset'] = $medicinealltime['Denset'] + $dailysell ;
-                    break;
-                case '68LEP002':
-                    $medicinealltime['Lepax10'] = $medicinealltime['Lepax10'] + $dailysell ; 
-                    break;
-                case '68LEP001':
-                    $medicinealltime['Lepax5'] = $medicinealltime['Lepax5'] + $dailysell ;
-                    break;
-                case '68LXP001':
-                    $medicinealltime['Lexapro'] = $medicinealltime['Lexapro'] + $dailysell ;
-                    break;
-                case '68EBP001': 
-                    $medicinealltime['Ebixa']  = $medicinealltime['Ebixa'] + $dailysell ;
-                    break;
-                case '68DEP001':
-                    $medicinealltime['Deanxit'] = $medicinealltime['Deanxit'] + $dailysell ;
-                    break;
-                ////分段一下這邊是LendorminBora  
-                case '68LMP002':
-                    $medicinealltime['LendorminBora'] = $medicinealltime['LendorminBora'] + $dailysell ;
-                    break;
-                default:
-                    $medicinealltime['Others'] = $medicinealltime['Others'] + $dailysell ;
-                    break;
-            }
-        }
-        $medicinealltimetotla = $medicinealltime['Pitavol'] + $medicinealltime['Denset'] + $medicinealltime['Lepax10'] + $medicinealltime['Lepax5'] ;
-        $medicinealltimetotla = $medicinealltimetotla + $medicinealltime['Lexapro'] + $medicinealltime['Ebixa'] + $medicinealltime['Deanxit'] + $medicinealltime['LendorminBora'] + $medicinealltime['Others'] ;
         //and寫法註記一下單月銷售累加
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$getdate)->get();
         $MA = array(      'Pitavol' => 0 , 
@@ -822,13 +782,18 @@ class datechangController extends Controller {
                          );
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
-            $MonthTotal = $dailyreport->InoviceAmt;       
+            $MonthTotal = $dailyreport->InoviceAmt; 
+            $BORACustomerNo = $dailyreport->BORACustomerNo;                   
             switch ($BORAItemNo) {
                 case '68PTV001':
+
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
+                    
                     break;
                 case '68DEN001':
+
                     $MA['Denset'] = $MA['Denset'] + $MonthTotal;
+                  
                     break;
                 case '68LEP002':
                     $MA['Lepax10'] = $MA['Lepax10'] + $MonthTotal;
@@ -850,18 +815,78 @@ class datechangController extends Controller {
                     $MA['LendorminBora'] = $MA['LendorminBora'] + $MonthTotal;
                     break;       
                 default:
+                if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo<>'57ARZTPG' and substr($BORAItemNo,0,2)<>'67' ) 
+                {
                     $MA['Others'] = $MA['Others'] + $MonthTotal;
-                    break;
+                }
+                break;
             }
         }
+
         $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Lepax10'] + $medicine['Lepax5'] + $medicine['Lexapro'] +  $medicine['Ebixa'] + $medicine['Deanxit'] + $medicine['LendorminBora'] ;
         $totalsell =  $medicine['Others'] + $totalsell ;
         $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Lepax10'] + $qtys['Lepax5'] + $qtys['Lexapro'] + $qtys['Ebixa'] + $qtys['Deanxit'] + $qtys['LendorminBora'] ;
         $allqty =  $qtys['Others'] + $allqty;    
         $totalma = $MA['Pitavol'] + $MA['Denset'] + $MA['Lepax10'] + $MA['Lepax5'] + $MA['Lexapro'] + $MA['Ebixa'] + $MA['Deanxit'] + $MA['LendorminBora'] ;
         $totalma = $MA['Others'] + $totalma;  
+        $MAA = array(     'Pitavol' => 0 , 
+                          'Denset' => 0 , 
+                          'Lepax10' => 0 , 
+                          'Lepax5' => 0 , 
+                          'Lexapro' => 0 , 
+                          'Ebixa' => 0 , 
+                          'Deanxit' => 0 , 
+                          'LendorminBora' => 0 , 
+                          'Others' => 0,
+                         );
+        $dailyreportstable = dailyreport::where('InvDate','>=',$yearstart)->where('InvDate','<=',$getdate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $BORAItemNo = $dailyreport->BORAItemNo;
+            $dailysell = $dailyreport->InoviceAmt;
+            $qty  = $dailyreport->OrderQty;  
+            $BORACustomerNo = $dailyreport->BORACustomerNo;          
+            switch ($BORAItemNo) {
+                case '68PTV001':
+
+                    $MAA['Pitavol'] = $MAA['Pitavol'] + $dailysell;
+                    
+                    break;
+                case '68DEN001':
+
+                    $MAA['Denset'] = $MAA['Denset'] + $dailysell ;
+                   
+                    break;
+                case '68LEP002':
+                    $MAA['Lepax10'] = $MAA['Lepax10'] + $dailysell ; 
+                    break;
+                case '68LEP001':
+                    $MAA['Lepax5'] = $MAA['Lepax5'] + $dailysell ;
+                    break;
+                case '68LXP001':
+                    $MAA['Lexapro'] = $MAA['Lexapro'] + $dailysell ;
+                    break;
+                case '68EBP001': 
+                    $MAA['Ebixa']  = $MAA['Ebixa'] + $dailysell ;
+                    break;
+                case '68DEP001':
+                    $MAA['Deanxit'] = $MAA['Deanxit'] + $dailysell ;
+                    break;
+                ////分段一下這邊是LendorminBora  
+                case '68LMP002':
+                    $MAA['LendorminBora'] = $MAA['LendorminBora'] + $dailysell ;
+                    break;
+                default: 
+                if ( $BORACustomerNo <> '10973' and $BORACustomerNo <> '11032' and $BORACustomerNo<> 'UCS05' and $BORAItemNo <> '57ARZTPG'  and substr($BORAItemNo,0,2)<>'67' ) 
+                {
+                    $MAA['Others'] = $MAA['Others'] + $dailysell ;
+                }     
+                break;
+            }
+        }
+        $totalmaa = $MAA['Pitavol'] + $MAA['Denset'] + $MAA['Lepax10'] + $MAA['Lepax5'] ;
+        $totalmaa = $totalmaa + $MAA['Lexapro'] + $MAA['Ebixa'] + $MAA['Deanxit'] + $MAA['LendorminBora'] + $MAA['Others'] ;
         //撈每月目標業績
-        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$getdate)->get();
         $MB = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
@@ -872,7 +897,27 @@ class datechangController extends Controller {
                           'LendorminBora' => 0 , 
                           'Others' => 0,
                          );
+        $MBB = array(      'Pitavol' => 0 , 
+                          'Denset' => 0 , 
+                          'Lepax10' => 0 , 
+                          'Lepax5' => 0 , 
+                          'Lexapro' => 0 , 
+                          'Ebixa' => 0 , 
+                          'Deanxit' => 0 , 
+                          'LendorminBora' => 0 , 
+                          'Others' => 0,
+                         );
         $MC = array(      'Pitavol' => 0 , 
+                          'Denset' => 0 , 
+                          'Lepax10' => 0 , 
+                          'Lepax5' => 0 , 
+                          'Lexapro' => 0 , 
+                          'Ebixa' => 0 , 
+                          'Deanxit' => 0 , 
+                          'LendorminBora' => 0 , 
+                          'Others' => 0,
+                         );
+        $MCC = array(     'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
                           'Lepax5' => 0 , 
@@ -919,33 +964,88 @@ class datechangController extends Controller {
                     $MB['LendorminBora'] = $MonthTotal ;
                     $MC['LendorminBora'] = round(($MA['LendorminBora'] / $MonthTotal) * 100); 
                     break;       
-                default:
+                case '22222222'://others
                     $MB['Others'] = $MonthTotal ;
-                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ;                     
+                    $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
                     break;
             }
         } 
-        $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] ;
-        $totalmb = $MB['Others'] + $totalmb ; 
-        $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
-        $totalmc = $MC['Others'] + $totalmc ; 
+        foreach ($monthbudgets as $monthbudget) {
+            $BORAItemNo = $monthbudget->BORAItemNo;
+            $MonthTotal = $monthbudget->budget; 
+            switch ($BORAItemNo) {
+                case '68PTV001':
+                    $MBB['Pitavol'] = $MonthTotal;
+                    $MCC['Pitavol'] = round(($MAA['Pitavol'] / $MonthTotal) * 100); 
+                    break;
+                case '68DEN001':
+                    $MBB['Denset'] = $MonthTotal ;
+                    $MCC['Denset'] = round(($MAA['Denset'] / $MonthTotal) * 100) ; 
+                    break;
+                case '68LEP002':
+                    $MBB['Lepax10'] = $MonthTotal ;
+                    $MCC['Lepax10'] = round(($MAA['Lepax10'] / $MonthTotal) * 100) ; 
+                    break;
+                case '68LEP001':
+                    $MBB['Lepax5'] = $MonthTotal ;
+                    $MCC['Lepax5'] = round(($MAA['Lepax5'] / $MonthTotal) * 100) ; 
+                    break;
+                case '68LXP001':
+                    $MBB['Lexapro'] = $MonthTotal ;
+                    $MCC['Lexapro'] = round(($MAA['Lexapro'] / $MonthTotal) * 100) ; 
+                    break;
+                case '68EBP001': 
+                    $MBB['Ebixa']  = $MonthTotal ;
+                    $MCC['Ebixa'] = round(($MAA['Ebixa'] / $MonthTotal) * 100) ; 
+                    break;
+                case '68DEP001':
+                    $MBB['Deanxit'] = $MonthTotal ;
+                    $MCC['Deanxit'] = round(($MAA['Deanxit'] / $MonthTotal) * 100) ; 
+                    break;
+                ////分段一下這邊是LendorminBora    
+                case '68LMP002':
+                    $MBB['LendorminBora'] = $MonthTotal ;
+                    $MCC['LendorminBora'] = round(($MAA['LendorminBora'] / $MonthTotal) * 100); 
+                    break;       
+                case '22222222'://others
+                    $MBB['Others'] = $MonthTotal ;
+                    $MCC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
+                    break;             
+                default:
+                  
+                    break;
+            }
+        } 
+        $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] + $MB['Others'] ;
+        $totalmbb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] + $MB['Others'] ;
+        $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] + $MC['Others'] ;
+        $totalmcc = $MCC['Pitavol'] + $MCC['Denset'] + $MCC['Lepax10'] + $MCC['Lepax5'] + $MCC['Lexapro'] + $MCC['Ebixa'] + $MCC['Deanxit'] + $MCC['LendorminBora'] + $MCC['Others'] ;
         $totalmc = round($totalmc / 9) ;
+        $totalmcc = round($totalmcc / 9) ;
+
         if (Request::ajax()) {
             return response()->json(array(
                                     'medicine'=>$medicine,
-                                    'medicinealltime'=>$medicinealltime,
-                                    'medicinealltimetotla'=>$medicinealltimetotla,
                                     'itemno'=>$itemno,
                                     'qtys'=>$qtys,
                                     'todaydate'=>$todaydate,
                                     'totalsell'=>$totalsell,
                                     'allqty'=>$allqty,
-                                    'MA'=>$MA, 
+                                    'MA'=>$MA,
+                                    'MAA'=>$MAA, 
                                     'MB'=>$MB, 
+                                    'MBB'=>$MBB, 
                                     'MC'=>$MC, 
+                                    'MCC'=>$MCC, 
                                     'totalma'=>$totalma,
+                                    'totalmaa'=>$totalmaa,                
                                     'totalmb'=>$totalmb,
+                                    'totalmbb'=>$totalmbb,
                                     'totalmc'=>$totalmc,
+                                    'totalmcc'=>$totalmcc,
                                     'monthstart'=>$monthstart
             ));
         } 
