@@ -43,7 +43,7 @@ class MainController extends Controller {
     }
 
 
-    public function boradiary()
+    public function boradiary($todaydate)
     {
 
         $medicine = array('Pitavol' => 0 , 
@@ -92,7 +92,7 @@ class MainController extends Controller {
                     );
         $total = 0; 
         $monthstart = date('Y-m-01');//每月月初
-        $todaydate = date('Y-m-d');//今天日期
+        //$todaydate = date('Y-m-d');//今天日期
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
@@ -1065,10 +1065,5 @@ class MainController extends Controller {
                                   ]);
     }
 
-    public function personaldiary()
-    {
-       $name = User::where('dep','=','藥品事業部')->where('location','<>','')->orderBy('Location', 'ASC')->get();
-       print_r($name);
 
-    }
 }

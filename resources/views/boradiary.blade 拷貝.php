@@ -5,8 +5,8 @@
   <meta name="_token" content="{{ csrf_token() }}"/>
   <title>保瑞日報表</title>
   @include('head.bootstrapcss')
-  <link rel="stylesheet"  href="../public/bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
-  <script src="../public/bootstrap331/dist/js/highcharts.js"></script>
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       var options = 
@@ -103,7 +103,7 @@
   @include('includes.navbar')
   <div class="row">
     <div class="col-md-1">
-        <input  type="text" id="datetimepicker"  class="dateinput" value="{!!$todaydate!!}">
+        <input  type="text" id="datetimepicker"  class="dateinput" name='ag' value="{!!$todaydate!!}">
         <button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button>
     </div>
   </div>
@@ -470,7 +470,7 @@
   </div>
 </div>
 <!--javascript-->
-<script type="text/javascript" src="../public/bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
   $('#datetimepicker').datetimepicker({
       language:  'en',
@@ -544,7 +544,7 @@
         $('tr').eq(14).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
         $('tr').eq(14).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(14).find('td').eq(6).html(data.totalmc + ' %');
+        $('tr').eq(14).find('td').eq(6).html((data.totalmc / 12).toFixed(0) + ' %');
 //我懶得縮排了      
                     //console.log(data.monthstart);
                     $("#chart").css("display","none");

@@ -3,6 +3,7 @@
 use App\mainmenudisplay;
 $mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem'));
 $menuitem = null;
+$today = date('Y-m-d');
 foreach ($mainitems as $mainitem) 
 {
   $menuitem .= '<ul class="nav navbar-nav"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' ;
@@ -11,8 +12,9 @@ foreach ($mainitems as $mainitem)
   $subitems = mainmenudisplay::where('user','=',Auth::user()->name)->where('mainitem','=',$mainitem['mainitem'])->orderBy('subitemid', 'ASC')->get();
   foreach ($subitems as $subitem) 
   {
-    $menuitem .=  '<li><a href="'.$subitem['url'].'">'.$subitem['subitem'].'</a></li>';
+    $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem['url'].'/'.$today.'">'.$subitem['subitem'].'</a></li>';
   }
+
   $menuitem .=  '</ul></li></ul>';
 }
 ?>
@@ -25,7 +27,7 @@ foreach ($mainitems as $mainitem)
           </button> <a class="navbar-brand" href="dashboard">Bora</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          {!!$menuitem!!}}
+          {!!$menuitem!!}
           <ul class="nav navbar-nav navbar-right">
           <form class="navbar-form navbar-left" method="POST" action="logout">
             <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />

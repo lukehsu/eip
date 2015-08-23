@@ -114,4 +114,26 @@ class LoginController extends Controller {
         Auth::logout();
         return redirect('login');       
     }
+
+
+        public function personaldiary()
+    {
+     
+      return view('personaldiary');
+
+    }
+
+    public function pp($yy)
+    {
+       
+      return view('pp');   
+
+    }
+        public function search()
+    {
+        $category = Input::get('category', 'default category');
+        $term = Input::get('term', false);
+
+        // do things with them...
+    }
 }

@@ -26,11 +26,13 @@ class logincheck
         }
         //取得網址
         $uri = Request::path();
+        $uris = strstr($uri,'/',true);
         //檢查是否有權限進入該區
-        $accesschecks = mainmenudisplay::where('user','=',Auth::user()->name)->where('url','=',$uri)->count();
+        $accesschecks = mainmenudisplay::where('user','=',Auth::user()->name)->where('url','=',$uris)->count();
         if ($accesschecks == 0)
         {
-            return redirect('login');              
+            return redirect('login');   
+            //echo $uris;           
         }
         return $next($request);
     }

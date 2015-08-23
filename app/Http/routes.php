@@ -22,10 +22,13 @@ Route::post('logout', 'LoginController@logout');
 //首頁
 Route::get('dashboard', 'LoginController@dashboard');
 //報表
-Route::get('boradiary', 'MainController@boradiary');
+Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary' , 'MainController@unidiary');
 Route::get('accountdiary' , 'MainController@accountdiary');
-Route::get('personaldiary' , 'MainController@personaldiary');
+Route::get('personaldiary' , 'LoginController@personaldiary');
+
+Route::get('/search/{category}/{term}', ['as' => 'search', 'uses' => 'LoginController@search']);
+Route::get('pp', 'LoginController@pp');
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');

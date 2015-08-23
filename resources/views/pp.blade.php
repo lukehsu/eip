@@ -10,17 +10,7 @@
 </head>
 <body>
 <div class="container-fluid">
-
-
-
-{!!Form::open(['route' => 'search', 'method' => 'GET'])!!}
-    <input type="text" name="term"/>
-    <select name="category" id="">
-        <option value="auto">Auto</option>
-        <option value="moto">Moto</option>
-    </select>
-    {!! Form::submit('Send') !!}
-{!! Form::close() !!}
+  @include('includes.pp1')
 
 
 </div>
