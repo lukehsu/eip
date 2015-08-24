@@ -91,8 +91,8 @@ class MainController extends Controller {
                           'Others' => 0,
                     );
         $total = 0; 
-        $monthstart = date('Y-m-01');//每月月初
-        //$todaydate = date('Y-m-d');//今天日期
+        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
@@ -314,7 +314,13 @@ class MainController extends Controller {
                     break;
                 case '68DEN001':
                     $MB['Denset'] = $MonthTotal ;
+                if ($MonthTotal<>0) {
                     $MC['Denset'] = round(($MA['Denset'] / $MonthTotal) * 100) ; 
+                }
+                else
+                {
+                    $MC['Denset'] = 0 ; 
+                }  
                     break;
                 case '68LEP002':
                     $MB['Lepax10'] = $MonthTotal ;
@@ -375,15 +381,21 @@ class MainController extends Controller {
                     $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100) ; 
                     break;             
                 default:
-                  
                     break;
             }
         } 
+        $q = 0 ;
+        foreach ($MB as $key => $value) {
+          if ($MB[$key]<>0)
+          {
+            $q = $q + 1 ;
+          }
+        }
         $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] ;
         $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
         $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
         $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
-        $totalmc = round($totalmc / 13) ;
+        $totalmc = round($totalmc / $q) ;
         return view('boradiary',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
                               'Lepax10'=>$medicine['Lepax10'],
@@ -444,8 +456,8 @@ class MainController extends Controller {
                           'Others' => 0,
                     );
         $total = 0; 
-        $monthstart = date('Y-m-01');//每月月初
-        //$todaydate = date('Y-m-d');//今天日期
+        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
         //每日販賣數量 金額
         $dailyreportstable = unidiaryreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
@@ -747,8 +759,8 @@ class MainController extends Controller {
                           'Others' => 0,
                     );
         $total = 0; 
-        $yearstart = date('Y-01-01');//今年年初
-        $monthstart = date('Y-m-01');//每月月初
+        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
         //$todaydate = date('Y-m-d');//今天日期
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
@@ -981,8 +993,15 @@ class MainController extends Controller {
                     $MC['Pitavol'] = round(($MA['Pitavol'] / $MonthTotal) * 100); 
                     break;
                 case '68DEN001':
+                if ($MonthTotal<>0) {
                     $MB['Denset'] = $MonthTotal ;
                     $MC['Denset'] = round(($MA['Denset'] / $MonthTotal) * 100) ; 
+                }
+                else
+                {
+                    $MB['Denset'] = 0 ;
+                    $MC['Denset'] = 0 ; 
+                }  
                     break;
                 case '68LEP002':
                     $MB['Lepax10'] = $MonthTotal ;
@@ -1027,8 +1046,16 @@ class MainController extends Controller {
                     $MCC['Pitavol'] = round(($MAA['Pitavol'] / $MonthTotal) * 100); 
                     break;
                 case '68DEN001':
+                if ($MonthTotal<>0) 
+                {
                     $MBB['Denset'] = $MonthTotal ;
                     $MCC['Denset'] = round(($MAA['Denset'] / $MonthTotal) * 100) ; 
+                }
+                else
+                {
+                    $MBB['Denset'] = $MonthTotal ;
+                    $MCC['Denset'] = round(($MAA['Denset'] / $MonthTotal) * 100) ; 
+                }      
                     break;
                 case '68LEP002':
                     $MBB['Lepax10'] = $MonthTotal ;
@@ -1101,12 +1128,12 @@ class MainController extends Controller {
       $MC = array();
       $users = User::where('dep','=','藥品事業部')->get();
       foreach ($users as $user) {
-        $dailyreports = dailyreport::where('SalesRepresentativeName','=',$user['cname'])->where('InvDate','=',$todaydate)->get();
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
         $dailyreportaday = 0 ;
         foreach ($dailyreports as $dailyreport) {
           $dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt'];
         }
-        $dailyreports = dailyreport::where('SalesRepresentativeName','=',$user['cname'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = 0 ;
         foreach ($dailyreports as $dailyreport) {
           $MA = $MA + $dailyreport['InoviceAmt'];
@@ -1119,7 +1146,7 @@ class MainController extends Controller {
         $MC[$i] = round(($MA/$MB) * 100) ;
         // M  A/L
 
-        $dailyreports = dailyreport::where('SalesRepresentativeName','=',$user['cname'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
         $MAA = 0 ;
         foreach ($dailyreports as $dailyreport) {
           $MAA = $MAA + $dailyreport['InoviceAmt'];
@@ -1140,23 +1167,20 @@ class MainController extends Controller {
           $active = 'active'  ;       
         } 
         $form .= '<tr class='.$active.'><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'">'.$user['cname'].'</a></td>';
-        $form .= '<td>'.$dailyreportaday.'</td><td>'.$MA.'</td>';
-        $form .= '<td>'.$MB.'</td><td>'.$MC[$i].' %</td>';
-        $form .= '<td>'.'123'.'</td><td>'.$MAA.'</td>';
-        $form .= '<td>'.$MBB.'</td><td>'.$MCC.' %</td>';  
-        $form .= '<td>'.'123'.'</td>';  
+        $form .= '<td class="text-right">'.$dailyreportaday.'</td><td class="text-right">'.$MA.'</td>';
+        $form .= '<td class="text-right">'.$MB.'</td><td class="text-right">'.$MC[$i].' %</td>';
+        $form .= '<td class="text-right">'.'123'.'</td><td class="text-right">'.$MAA.'</td>';
+        $form .= '<td class="text-right">'.$MBB.'</td><td class="text-right">'.$MCC.' %</td>';  
+        $form .= '<td class="text-right">'.'123'.'</td>';  
         $form .= '</tr>';
         $style = $style + 1 ;
         $i = $i+1;
       }
-
       return view('personaldiary',[ 'form'=>$form,
                                     'MC'=>$MC, 
                                     'todaydate'=>$todaydate,
                                   ]);
     }
-
-
 
     public function personalmedicinediary($user)
     {
