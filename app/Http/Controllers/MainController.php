@@ -188,7 +188,7 @@ class MainController extends Controller {
                   } 
             }
         }
-        //and寫法註記一下每月銷售累加
+        //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -268,13 +268,7 @@ class MainController extends Controller {
                   } 
             }
         }
-        $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Lepax10'] + $medicine['Lepax5'] + $medicine['Lexapro'] +  $medicine['Ebixa'] + $medicine['Deanxit'] + $medicine['LendorminBora'] ;
-        $totalsell = $medicine['Lendorminann'] + $medicine['Wilcon'] + $medicine['Kso'] + $medicine['Bpn'] + $medicine['Others'] + $totalsell ;
-        $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Lepax10'] + $qtys['Lepax5'] + $qtys['Lexapro'] + $qtys['Ebixa'] + $qtys['Deanxit'] + $qtys['LendorminBora'] ;
-        $allqty = $qtys['Lendorminann'] + $qtys['Wilcon'] + $qtys['Kso'] + $qtys['Bpn'] + $qtys['Others'] + $allqty;    
-        $totalma = $MA['Pitavol'] + $MA['Denset'] + $MA['Lepax10'] + $MA['Lepax5'] + $MA['Lexapro'] + $MA['Ebixa'] + $MA['Deanxit'] + $MA['LendorminBora'] ;
-        $totalma = $MA['Lendorminann'] + $MA['Wilcon'] + $MA['Kso'] + $MA['Bpn'] + $MA['Others'] + $totalma;  
-        //撈每月目標業績
+        //每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -385,16 +379,32 @@ class MainController extends Controller {
             }
         } 
         $q = 0 ;
+        $allqty  = 0 ;
+        $totalsell = 0 ;
+        $totalma = 0; 
+        $totalmb = 0;
+        $totalmc = 0;
         foreach ($MB as $key => $value) {
           if ($MB[$key]<>0)
           {
             $q = $q + 1 ;
           }
         }
-        $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Lepax10'] + $MB['Lepax5'] + $MB['Lexapro'] + $MB['Ebixa'] + $MB['Deanxit'] + $MB['LendorminBora'] ;
-        $totalmb = $MB['Lendorminann'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Bpn'] + $MB['Others'] + $totalmb ; 
-        $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Lepax10'] + $MC['Lepax5'] + $MC['Lexapro'] + $MC['Ebixa'] + $MC['Deanxit'] + $MC['LendorminBora'] ;
-        $totalmc = $MC['Lendorminann'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Bpn'] + $MC['Others'] + $totalmc ; 
+        foreach ($qtys as $key => $value) {
+          $allqty  = $allqty + $qtys[$key] ;
+        }
+        foreach ($medicine as $key => $value) {
+          $totalsell = $totalsell + $medicine[$key];
+        }
+        foreach ($MA as $key => $value) {
+          $totalma = $totalma + $MA[$key];
+        }
+        foreach ($MB as $key => $value) {
+          $totalmb = $totalmb + $MB[$key] ;
+        }
+        foreach ($MC as $key => $value) {
+          $totalmc = $totalmc + $MC[$key] ;
+        }
         $totalmc = round($totalmc / $q) ;
         return view('boradiary',['Pitavol'=>$medicine['Pitavol'],
                               'Denset'=>$medicine['Denset'],
@@ -546,7 +556,7 @@ class MainController extends Controller {
                     break;
             }
         }
-        //每月銷售累加  and寫法註記一下
+        //每月銷售累加  and 寫法註記一下
         $dailyreportstable = unidiaryreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
@@ -614,9 +624,6 @@ class MainController extends Controller {
                     break;
             }
         }
-        $totalsell = $medicine['Pitavol'] + $medicine['Denset'] + $medicine['Brexa'] + $medicine['Wilcon'] + $medicine['Kso'] + $medicine['Upi'] + $medicine['Ufo'] + $medicine['Others'] ;
-        $allqty = $qtys['Pitavol'] + $qtys['Denset'] + $qtys['Brexa'] + $qtys['Wilcon'] + $qtys['Kso'] + $qtys['Upi'] + $qtys['Ufo'] + $qtys['Others'] ;
-        $totalma = $MA['Pitavol'] + $MA['Denset'] + $MA['Brexa'] + $MA['Wilcon'] + $MA['Kso'] + $MA['Upi'] + $MA['Ufo'] + $MA['Others'] ;
         //撈每月目標業績
         $monthbudgets = unimonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
@@ -705,9 +712,27 @@ class MainController extends Controller {
                     $MC['Others'] = round(($MA['Others'] / $MonthTotal) * 100);                    
                     break;
             }
-        } 
-        $totalmb = $MB['Pitavol'] + $MB['Denset'] + $MB['Brexa'] + $MB['Wilcon'] + $MB['Kso'] + $MB['Upi'] + $MB['Ufo'] + $MB['Others'] ;
-        $totalmc = $MC['Pitavol'] + $MC['Denset'] + $MC['Brexa'] + $MC['Wilcon'] + $MC['Kso'] + $MC['Upi'] + $MC['Ufo'] + $MC['Others'] ;
+        }
+        $allqty = 0 ;
+        $totalsell = 0 ; 
+        $totalma = 0;
+        $totalmb = 0 ;
+        $totalmc = 0 ;
+        foreach ($qtys as $key => $value) {
+          $allqty  = $allqty + $qtys[$key] ;
+        }
+        foreach ($medicine as $key => $value) {
+          $totalsell = $totalsell + $medicine[$key];
+        }
+        foreach ($MA as $key => $value) {
+          $totalma = $totalma + $MA[$key];
+        }
+        foreach ($MB as $key => $value) {
+          $totalmb = $totalmb + $MB[$key];
+        }
+        foreach ($MC as $key => $value) {
+          $totalmc = $totalmc + $MC[$key];
+        }
         return view('unidiary',['medicine'=>$medicine,
                                 'itemno'=>$itemno,
                                 'qtys'=>$qtys,
