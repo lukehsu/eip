@@ -5,10 +5,14 @@
   <meta name="_token" content="{{ csrf_token() }}"/>
   <title>業務部日報表</title>
   @include('head.bootstrapcss')
-  <link rel="stylesheet"  href="../public/bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
-  <script src="../public/bootstrap331/dist/js/highcharts.js"></script>
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
+      $("#chart").css("display","none");
+      $("#chart").fadeIn(2000);
+      $("#tablezone").css("display","none");
+      $("#tablezone").fadeIn(2000);
       var options = 
       {    
         chart: {
@@ -515,7 +519,7 @@
   </div>
 </div>
 <!--javascript-->
-<script type="text/javascript" src="../public/bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
   $('#datetimepicker').datetimepicker({
       language:  'en',
@@ -535,161 +539,14 @@
     });
 </script>
 <script type="text/javascript">
-  $("document").ready(function(){
-    $("#datetimepicker").change(function(){
-      $.ajax({
-        type: 'POST',
-        url: '/eip/public/accountreportdate',
-        data: { date : $("#datetimepicker").val()},
-        dataType: 'json',
-        headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
-        success:  function(data){
-        //因為最上面多一來所已開始預設為1
-        var len = 1 ;
-        //因為長度都一樣所以用medicine計算
-        $.each(data.medicine, function (key,data) {len++ ;});
-        
-        //key 是 key data 是 value 
-        $.each(data.medicine, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(2).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $.each(data.MA, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(3).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-      
-        $.each(data.MB, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(4).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $.each(data.MC, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(5).html(Number(data).toLocaleString('en') + ' %');
-            };
-          };
-        });
-        $.each(data.MAA , function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(7).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $('tr').eq(11).find('td').eq(2).html(Number(data.totalsell).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(3).html(Number(data.totalma).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(4).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(11).find('td').eq(5).html(data.totalmc + ' %');
-        $('tr').eq(11).find('td').eq(7).html(Number(data.totalmaa).toLocaleString('en'));
-//我懶得縮排了      
-                    //console.log(data.monthstart);
-                    $("#chart").css("display","none");
-                    $("#chart").fadeIn(2000);
-                    $("#tablezone").css("display","none");
-                    $("#tablezone").fadeIn(2000);
-                    var options = 
-                    {    
-                      chart: 
-                    {
-                      renderTo: 'chart',
-                      type: 'column'
-                    },
-                      title: {
-                      text: '銷售達成率'
-                    },
-                      subtitle: {
-                      text: '日業績表'
-                    },
-                      xAxis: 
-                    {
-                      type: 'category'
-                    },
-                      credits:{
-                      //隱藏官方連結
-                      enabled: false
-                    },
-                      yAxis: 
-                    {
-                      title: 
-                      {
-                        text: '百分比'
-                      }
-                    },
-                      legend: 
-                    {
-                      enabled: false
-                    },
-                      plotOptions: 
-                    {
-                      series: 
-                      {
-                          borderWidth: 0,
-                          dataLabels: 
-                          {
-                            enabled: true,
-                            format: '{point.y:.1f}%'
-                          }
-                      }
-                    },
-                    tooltip: 
-                    {
-                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                      pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
-                    },
-                    series: 
-                    [{
-                        name: "Brands",
-                        colorByPoint: true,
-                        data: 
-                    [{
-                        name: "Pitavol",
-                        y: data.MC["Pitavol"],
-                    }, {
-                        name: "Denset",
-                        y: data.MC["Denset"],
-                    }, {
-                        name: "Lepax 10mg",
-                        y: data.MC["Lepax10"],
-                    }, {
-                        name: "Lepax 5mg",
-                        y: data.MC["Lepax5"],
-                    }, {
-                        name: "Lexapro",
-                        y: data.MC["Lexapro"],
-                    }, {
-                        name: "Ebixa",
-                        y: data.MC["Ebixa"],
-                    }, {
-                       name: "Denset",
-                        y: data.MC["Denset"],
-                    }, {
-                        name: "Lendormin (Bora)",
-                        y: data.MC["LendorminBora"],
-                    }, {
-                      name: "Others",
-                        y: data.MC["Others"],
-                    }]
-                    }]
-                  };
-                  $("#chart").highcharts(options);
-                },
-                  error: function(xhr, type)
-                  {
-                    alert('Ajax error!')
-                  }
-      });  
+    $("#changedate").click(function(){
+    $('#datetimepicker').focus();
     });
-  });
+</script>
+<script type="text/javascript">
+    $("#datetimepicker").change(function(){
+      window.location.replace("http://127.0.0.1/eip/public/accountdiary/" + $("#datetimepicker").val());
+    });
 </script>
 </body>
 </html>

@@ -23,12 +23,13 @@ Route::post('logout', 'LoginController@logout');
 Route::get('dashboard', 'LoginController@dashboard');
 //報表
 Route::get('boradiary/{todaydate}', 'MainController@boradiary');
-Route::get('unidiary' , 'MainController@unidiary');
-Route::get('accountdiary' , 'MainController@accountdiary');
-Route::get('personaldiary' , 'LoginController@personaldiary');
-
-Route::get('/search/{category}/{term}', ['as' => 'search', 'uses' => 'LoginController@search']);
-Route::get('pp', 'LoginController@pp');
+Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
+Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
+Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
+Route::get('personalmedicinediary/{todaydate}' , 'MainController@personalmedicinediary');
+//test
+//Route::get('/search/{category}/{term}', ['as' => 'search', 'uses' => 'LoginController@search']);
+//Route::get('pp', 'LoginController@pp');
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');

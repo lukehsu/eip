@@ -116,13 +116,6 @@ class LoginController extends Controller {
     }
 
 
-        public function personaldiary()
-    {
-     
-      return view('personaldiary');
-
-    }
-
     public function pp($yy)
     {
        

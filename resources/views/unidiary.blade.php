@@ -5,9 +5,13 @@
   <meta name="_token" content="{{ csrf_token() }}"/>
   <title>聯邦日報表</title>
   @include('head.bootstrapcss')
-  <link rel="stylesheet"  href="../public/bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
-  <script src="../public/bootstrap331/dist/js/highcharts.js"></script>
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
+    $("#chart").css("display","none");
+    $("#chart").fadeIn(2000);
+    $("#tablezone").css("display","none");
+    $("#tablezone").fadeIn(2000);
     $(document).ready(function() {
       var options = 
       {    
@@ -340,7 +344,7 @@
   </div>
 </div>
 <!--javascript-->
-<script type="text/javascript" src="../public/bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="../bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
   $('#datetimepicker').datetimepicker({
       language:  'en',
@@ -360,157 +364,14 @@
     });
 </script>
 <script type="text/javascript">
-  $("document").ready(function(){
-    $("#datetimepicker").change(function(){
-      $.ajax({
-        type: 'POST',
-        url: '/eip/public/unireportdate',
-        data: { date : $("#datetimepicker").val()},
-        dataType: 'json',
-        headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
-        success:  function(data){
-        var len = 0 ;
-        //因為長度都一樣所以用medicine計算
-        $.each(data.medicine, function (key,data) {len++ ;});
-        
-        //key 是 key data 是 value  
-        $.each(data.qtys, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(2).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $.each(data.medicine, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(3).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-      
-        $.each(data.MA, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(4).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $.each(data.MB, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(5).html(Number(data).toLocaleString('en'));
-            };
-          };
-        });
-        $.each(data.MC, function (key,data) {
-          for (var i = 1; i <= len ; i++) {          
-            if (key==$('tr').eq(i).find('td').eq(0).text().trim()) {
-              $('tr').eq(i).find('td').eq(6).html(Number(data).toLocaleString('en') + ' %');
-            };
-          };
-        });
-        $('tr').eq(9).find('td').eq(2).html(Number(data.allqty).toLocaleString('en'));
-        $('tr').eq(9).find('td').eq(3).html(Number(data.totalsell).toLocaleString('en'));
-        $('tr').eq(9).find('td').eq(4).html(Number(data.totalma).toLocaleString('en'));
-        $('tr').eq(9).find('td').eq(5).html(Number(data.totalmb).toLocaleString('en'));
-        $('tr').eq(9).find('td').eq(6).html(data.totalmc + ' %');
-//我懶得縮排了      
-                    //console.log(data.monthstart);
-                    $("#chart").css("display","none");
-                    $("#chart").fadeIn(2000);
-                    $("#tablezone").css("display","none");
-                    $("#tablezone").fadeIn(2000);
-                    var options = 
-                    {    
-                      chart: 
-                    {
-                      renderTo: 'chart',
-                      type: 'column'
-                    },
-                      title: {
-                      text: '銷售達成率'
-                    },
-                      subtitle: {
-                      text: '日業績表'
-                    },
-                      xAxis: 
-                    {
-                      type: 'category'
-                    },
-                      credits:{
-                      //隱藏官方連結
-                      enabled: false
-                    },
-                      yAxis: 
-                    {
-                      title: 
-                      {
-                        text: '百分比'
-                      }
-                    },
-                      legend: 
-                    {
-                      enabled: false
-                    },
-                      plotOptions: 
-                    {
-                      series: 
-                      {
-                          borderWidth: 0,
-                          dataLabels: 
-                          {
-                            enabled: true,
-                            format: '{point.y:.1f}%'
-                          }
-                      }
-                    },
-                    tooltip: 
-                    {
-                      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                      pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
-                    },
-                    series: 
-                    [{
-                        name: "Brands",
-                        colorByPoint: true,
-                        data: 
-                    [{
-                        name: "Pitavol （經銷商）",
-                        y: 0,
-                    }, {
-                        name: "Denset （經銷商)",
-                        y: 0,
-                    }, {
-                        name: "Brexa (經銷商）",
-                        y: 0,
-                    },{
-                        name: "胃爾康",
-                        y: data.MC['Wilcon'],
-                    }, {
-                        name: "氯四環素",
-                        y: data.MC['Kso'],
-                    }, {
-                      name: "優平",
-                        y: data.MC['Upi'],
-                    }, { 
-                      name: "優福",
-                        y: data.MC['Ufo'],
-                    }, { 
-                        name: "Others",
-                        y: data.MC['Others'],
-                    }]
-                    }]
-                  };
-                  $("#chart").highcharts(options);
-                },
-                  error: function(xhr, type)
-                  {
-                    alert('Ajax error!')
-                  }
-      });  
+    $("#changedate").click(function(){
+    $('#datetimepicker').focus();
     });
-  });
+</script>
+<script type="text/javascript">
+    $("#datetimepicker").change(function(){
+      window.location.replace("http://127.0.0.1/eip/public/unidiary/" + $("#datetimepicker").val());
+    });
 </script>
 </body>
 </html>

@@ -1,18 +1,27 @@
 <?php
 //選單權限資料庫
 use App\mainmenudisplay;
-$mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem'));
+$mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem','mainitemid'));
 $menuitem = null;
 $today = date('Y-m-d');
 foreach ($mainitems as $mainitem) 
 {
+
   $menuitem .= '<ul class="nav navbar-nav"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' ;
   $menuitem .= $mainitem['mainitem'] ;
   $menuitem .= '<strong class="caret"></strong></a><ul class="dropdown-menu">';
   $subitems = mainmenudisplay::where('user','=',Auth::user()->name)->where('mainitem','=',$mainitem['mainitem'])->orderBy('subitemid', 'ASC')->get();
   foreach ($subitems as $subitem) 
   {
+    if ($mainitem['mainitemid']=='2')
+    {
+    $today = '' ;
     $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem['url'].'/'.$today.'">'.$subitem['subitem'].'</a></li>';
+    }
+    else
+    {
+    $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem['url'].'/'.$today.'">'.$subitem['subitem'].'</a></li>';
+    }
   }
 
   $menuitem .=  '</ul></li></ul>';
