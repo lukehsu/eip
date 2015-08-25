@@ -95,8 +95,8 @@ class LoginController extends Controller {
  
       if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
       {
-        return redirect()->intended('dashboard');
-        //echo  Auth::user()->name;
+        //return redirect()->intended('dashboard');
+        return  response()->json(array('good'));
       }
       else
       {    
