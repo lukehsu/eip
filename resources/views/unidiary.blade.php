@@ -58,13 +58,13 @@
             colorByPoint: true,
             data: [{
                 name: "Pitavol （經銷商）",
-                y: 0,
+                y: {!!$MC['Pitavol']!!},
             }, {
                 name: "Denset （經銷商)",
-                y: 0,
+                y: {!!$MC['Denset']!!},
             }, {
                 name: "Brexa (經銷商）",
-                y: 0,
+                y: {!!$MC['Brexa']!!},
             },{
                 name: "胃爾康",
                 y: {!!$MC['Wilcon']!!},
@@ -139,10 +139,10 @@
               Pitavol （經銷商）
             </td>
             <td class='text-right' id="q1">
-              0
+              {!!number_format($qtys['Pitavol'])!!}
             </td>
             <td class='text-right'>
-              0
+              {!!number_format($medicine['Pitavol'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Pitavol'])!!}
@@ -162,10 +162,10 @@
               Denset （經銷商）
             </td>
             <td class='text-right'>
-              0
+              {!!number_format($qtys['Denset'])!!}
             </td>
             <td class='text-right'>
-              0
+              {!!number_format($medicine['Denset'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Denset'])!!}
@@ -182,13 +182,13 @@
               Brexa
             </td>
             <td>
-              Brexa (經銷商）
+              Brexa  (經銷商）
             </td>
             <td class='text-right'>
-              0
+              {!!number_format($qtys['Brexa'])!!}
             </td>
             <td class='text-right'>
-              0
+              {!!number_format($medicine['Brexa'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Brexa'])!!}
@@ -292,7 +292,7 @@
               {!!$MC['Ufo']!!} %
             </td>
           </tr>
-          <tr>
+          <tr class="active">
             <td style="display:none">
               Others
             </td>
@@ -315,7 +315,7 @@
               {!!$MC['Others']!!} %
             </td>
           </tr>
-          <tr class="active">
+          <tr >
             <td style="display:none">
               Pitavol
             </td>

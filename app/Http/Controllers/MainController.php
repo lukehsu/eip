@@ -469,12 +469,12 @@ class MainController extends Controller {
         $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
         $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
         //每日販賣數量 金額
-        $dailyreportstable = unidiaryreport::where('InvDate','=',$todaydate)->get();
+        $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
-            $qty  = $dailyreport->OrderQty;  
-            $BORACustomerNo= $dailyreport->BORACustomerNo;        
+            $qty  = $dailyreport->OrderQty;    
+            $BORACustomerNo= $dailyreport->BORACustomerNo;    
             switch ($BORAItemNo) {
                 case '68PTV001':
                 if ($BORACustomerNo=='10824') {
@@ -482,14 +482,33 @@ class MainController extends Controller {
                     $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
                     $itemno['Pitavol'] = $BORAItemNo;
                 }    
-                    break;
+                break;
                 case '68DEN001':
                 if ($BORACustomerNo=='10824') {
                     $medicine['Denset'] = $medicine['Denset'] + $dailysell ;
                     $qtys['Denset'] = $qtys['Denset'] + $qty ; 
                     $itemno['Denset'] = $BORAItemNo;
                 }    
-                    break;
+                break;
+                case '68BRP001':
+                if ($BORACustomerNo=='10824') {
+                    $medicine['Brexa'] = $medicine['Brexa'] + $dailysell ;
+                    $qtys['Brexa'] = $qtys['Brexa'] + $qty ; 
+                    $itemno['Brexa'] = $BORAItemNo;
+                }    
+                break;
+                default:
+
+                break;
+            } 
+        }      	
+        $dailyreportstable = unidiaryreport::where('InvDate','=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $BORAItemNo = $dailyreport->BORAItemNo;
+            $dailysell = $dailyreport->InoviceAmt;
+            $qty  = $dailyreport->OrderQty;  
+            $BORACustomerName = $dailyreport->BORACustomerName;        
+            switch ($BORAItemNo) {
                 // 胃爾康
                 case '57HWLCBC':
                     $medicine['Wilcon'] = $medicine['Wilcon'] + $dailysell;
@@ -556,8 +575,6 @@ class MainController extends Controller {
                     break;
             }
         }
-        //每月銷售累加  and 寫法註記一下
-        $dailyreportstable = unidiaryreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Brexa' => 0 , 
@@ -567,30 +584,47 @@ class MainController extends Controller {
                           'Ufo'=>0,
                           'Others' => 0,
                    );
+        $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $BORAItemNo = $dailyreport->BORAItemNo;
+            $MonthTotal = $dailyreport->InoviceAmt;       
+            $BORACustomerNo= $dailyreport->BORACustomerNo;      
+            switch ($BORAItemNo) {
+                case '68PTV001':
+                if ($BORACustomerNo=='10824') {
+                    $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
+                }      
+                break;
+                case '68DEN001':
+                if ($BORACustomerNo=='10824') {
+                    $MA['Denset'] = $MA['Denset'] + $MonthTotal;
+                }    
+                break;
+                case '68BRP001':
+                if ($BORACustomerNo=='10824') {
+                    $MA['Brexa'] = $MA['Brexa'] + $MonthTotal;
+                }    
+                break;
+                default:
+
+                break;
+            } 
+        }  
+        $dailyreportstable = unidiaryreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $MonthTotal = $dailyreport->InoviceAmt; 
             $BORACustomerNo= $dailyreport->BORACustomerNo;       
             switch ($BORAItemNo) { 
-                case '68PTV001':
-                if ($BORACustomerNo=='10824') {
-                    $MA['Pitavol'] = $medicine['Pitavol'] + $MonthTotal;
-                }    
-                    break;
-                case '68DEN001':
-                if ($BORACustomerNo=='10824') {
-                    $MA['Denset'] = $medicine['Denset'] + $MonthTotal;
-                }    
-                    break;
                 // 胃爾康
                 case '57HWLCBC':
-                    $MA['Wilcon'] = $medicine['Wilcon'] + $MonthTotal;
+                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break;
                 case '57HWLCBJ':
-                    $MA['Wilcon'] = $medicine['Wilcon'] + $MonthTotal;
+                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break;
                 case '57HWLCBK':
-                    $MA['Wilcon'] = $medicine['Wilcon'] + $MonthTotal;
+                    $MA['Wilcon'] = $MA['Wilcon'] + $MonthTotal;
                     break;
                 // 氯四環素
                 case '57QCTCBQ':
@@ -648,15 +682,15 @@ class MainController extends Controller {
             $BORAItemNo = $monthbudget->BORAItemNo;
             $MonthTotal = $monthbudget->budget; 
             switch ($BORAItemNo) {
-                case 'Pitavol':
+                case '68PTV001':
                     $MB['Pitavol'] = $MonthTotal ;
                     $MC['Pitavol'] = round(($MA['Pitavol'] / $MonthTotal) * 100); 
                     break;
-                case 'Denset':
+                case '68DEN001':
                     $MB['Denset'] = $MonthTotal ;
                     $MC['Denset'] = round(($MA['Denset'] / $MonthTotal) * 100); 
                     break;
-                case 'Brexa':
+                case '68BRP001':
                     $MB['Brexa'] = $MonthTotal ;
                     $MC['Brexa'] = round(($MA['Brexa'] / $MonthTotal) * 100); 
                     break;
