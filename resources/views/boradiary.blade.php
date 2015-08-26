@@ -220,7 +220,7 @@
               Lepax5
             </td>
             <td>
-              Lepax5
+              Lepax 5mg 
             </td>
             <td class='text-right'>
               {!!number_format($qtys['Lepax5'])!!}

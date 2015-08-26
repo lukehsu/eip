@@ -26,7 +26,7 @@ Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
-Route::get('personalmedicinediary/{todaydate}' , 'MainController@personalmedicinediary');
+Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
 //test
 //Route::get('/search/{category}/{term}', ['as' => 'search', 'uses' => 'LoginController@search']);
 //Route::get('pp', 'LoginController@pp');

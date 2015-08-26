@@ -183,7 +183,7 @@
               {!!$MC['Pitavol']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Pitavol']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Pitavol'])!!}
@@ -195,7 +195,7 @@
               {!!$MCC['Pitavol']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Pitavol']!!} %
             </td>
           </tr>
           <tr class="active">
@@ -218,7 +218,7 @@
               {!!$MC['Denset']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Denset']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Denset'])!!}
@@ -230,7 +230,7 @@
               {!!$MCC['Denset']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Denset']!!} %
             </td>
           </tr>
           <tr>
@@ -253,7 +253,7 @@
               {!!$MC['Lepax10']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Lepax10']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Lepax10'])!!}
@@ -265,7 +265,7 @@
               {!!$MCC['Lepax10']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Lepax10']!!} %
             </td>
           </tr>
           <tr class="active">
@@ -273,7 +273,7 @@
               Lepax5
             </td>
             <td>
-              Lepax5
+              Lepax 5mg
             </td>
             <td class='text-right'>
               {!!number_format($medicine['Lepax5'])!!}
@@ -288,7 +288,7 @@
               {!!$MC['Lepax5']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Lepax5']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Lepax5'])!!}
@@ -300,7 +300,7 @@
               {!!$MCC['Lepax5']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Lepax5']!!} %
             </td>
           </tr>
           <tr>
@@ -323,7 +323,7 @@
               {!!$MC['Lexapro']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Lexapro']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Lexapro'])!!}
@@ -335,7 +335,7 @@
               {!!$MCC['Lexapro']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Lexapro']!!} %
             </td>
           </tr>
           <tr class="active">
@@ -358,7 +358,7 @@
               {!!$MC['Ebixa']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Ebixa']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Ebixa'])!!}
@@ -370,7 +370,7 @@
               {!!$MCC['Ebixa']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Ebixa']!!} %
             </td>
           </tr>
           <tr>
@@ -393,7 +393,7 @@
               {!!$MC['Deanxit']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Deanxit']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Deanxit'])!!}
@@ -405,7 +405,7 @@
               {!!$MCC['Deanxit']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Deanxit']!!} %
             </td>
           </tr>
           <tr  class="active">
@@ -428,7 +428,7 @@
               {!!$MC['LendorminBora']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['LendorminBora']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['LendorminBora'])!!}
@@ -440,7 +440,7 @@
               {!!$MCC['LendorminBora']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['LendorminBora']!!} %
             </td>
           </tr>
           <tr >
@@ -463,7 +463,7 @@
               {!!$MC['Others']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$ML['Others']!!} %
             </td>
             <td class='text-right'>
               {!!number_format($MAA['Others'])!!}
@@ -475,7 +475,7 @@
               {!!$MCC['Others']!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!$MLL['Others']!!} %
             </td>
           </tr>
           <tr class="active">
