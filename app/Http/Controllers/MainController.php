@@ -1213,9 +1213,11 @@ class MainController extends Controller {
         $totalma = 0; 
         $totalmb = 0;
         $totalmc = 0;
+        $totalml = 0 ;
         $totalmaa = 0 ;
         $totalmbb = 0 ;
         $totalmcc = 0 ;
+        $totalmll = 0 ;
         foreach ($MB as $key => $value) {
           if ($MB[$key]<>0)
           {
@@ -1303,6 +1305,8 @@ class MainController extends Controller {
         }
         $totalmc = round(($totalma / $totalmb) * 100) ;
         $totalmcc = round(($totalmaa / $totalmbb) * 100) ;
+        $totalml = round(($totalma / $totalmb) * 100) ;
+        $totalmll = round(($totalmaa / $totalmbb) * 100) ;
         return view('accountdiary',['medicine'=>$medicine,
                                     'itemno'=>$itemno,
                                     'qtys'=>$qtys,
