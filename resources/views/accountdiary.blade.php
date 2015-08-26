@@ -498,7 +498,7 @@
               {!!$totalmc!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!number_format($totalml)!!} %
             </td>
             <td class='text-right'>
               {!!number_format($totalmaa)!!}
@@ -510,7 +510,7 @@
               {!!$totalmcc!!} %
             </td>
             <td class='text-right'>
-              ''
+              {!!number_format($totalmll)!!} %
             </td>
           </tr>
         </tbody>

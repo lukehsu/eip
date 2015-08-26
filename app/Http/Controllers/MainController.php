@@ -1267,6 +1267,7 @@ class MainController extends Controller {
         }
         foreach ($ML as $key => $value) 
         {
+          $totalml = $totalml + $ML[$key];
           if ($ML[$key]<>0)
           {  
             $ML[$key] = $MA[$key] / $ML[$key]  ;
@@ -1276,7 +1277,7 @@ class MainController extends Controller {
             }
             else
             {
-              $ML[$key] = round(($ML[$key]) * 100) ;
+              $ML[$key] = round($ML[$key] * 100) ;
             }  
           }
           else
@@ -1286,6 +1287,7 @@ class MainController extends Controller {
         }
         foreach ($MLL as $key => $value) 
         {
+          $totalmll = $totalmll + $MLL[$key];
           if ($MLL[$key]<>0)
           {  
             $MLL[$key] = $MAA[$key] / $MLL[$key]  ;
@@ -1295,7 +1297,7 @@ class MainController extends Controller {
             }
             else
             {
-              $MLL[$key] = round(($MLL[$key]) * 100) ;
+              $MLL[$key] = round($MLL[$key] * 100) ;
             }  
           }
           else
@@ -1305,8 +1307,24 @@ class MainController extends Controller {
         }
         $totalmc = round(($totalma / $totalmb) * 100) ;
         $totalmcc = round(($totalmaa / $totalmbb) * 100) ;
-        $totalml = round(($totalma / $totalmb) * 100) ;
-        $totalmll = round(($totalmaa / $totalmbb) * 100) ;
+        $totalml = $totalma / $totalml ;
+        $totalmll = $totalmaa / $totalmll ;
+        if ($totalml<1) 
+        {
+          $totalml = '-'. round((1-$totalml)*100);
+        }
+        else
+        {
+          $totalml = round( $totalml * 100) ;
+        } 
+        if ($totalmll<1) 
+        {
+          $totalmll = '-'. round((1-$totalmll)*100);
+        }
+        else
+        {
+          $totalmll = round( $totalmll * 100) ;
+        } 
         return view('accountdiary',['medicine'=>$medicine,
                                     'itemno'=>$itemno,
                                     'qtys'=>$qtys,
@@ -1327,6 +1345,8 @@ class MainController extends Controller {
                                     'totalmbb'=>$totalmbb,
                                     'totalmc'=>$totalmc,
                                     'totalmcc'=>$totalmcc,
+                                    'totalml'=>$totalml,
+                                    'totalmll'=>$totalmll,
                                   ]);
     }
 
