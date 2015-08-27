@@ -1362,7 +1362,7 @@ class MainController extends Controller {
       $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
       $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日 
       $MC = array();
-      $users = User::where('dep','=','藥品事業部')->get();
+      $users = User::where('dep','=','藥品事業部')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) {
         if ($user['name']=='b0153') {
           $user['cname'] = '物流';
@@ -1473,7 +1473,7 @@ class MainController extends Controller {
 
     public function personalmedicinediary($user,$todaydate)
     {
-      echo $todaydate;
+
         $medicine = array('Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
