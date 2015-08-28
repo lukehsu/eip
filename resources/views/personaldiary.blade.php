@@ -125,7 +125,7 @@
               Itemno
             </th>
             <th class="text-center">
-              Product
+              Area / Name
             </th>
             <th class="text-center">
               Amount

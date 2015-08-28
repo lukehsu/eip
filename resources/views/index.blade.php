@@ -34,8 +34,7 @@
     $(document).ready(function() {
       $("#checklogin").click(function()
       {  
-
-      $.ajax({
+        $.ajax({
         type: 'POST',
         url: '/eip/public/login',
         data: { name : $("#login-name").val(), password : $("#login-pass").val() },
@@ -44,13 +43,23 @@
         success:  function(data){
           window.location.replace("http://127.0.0.1/eip/public/dashboard" );
         },
-                  error: function(xhr, type)
-                  {
-                    alert('Ajax error!')
-                  }
+        error: function(xhr, type){
+          alert('Ajax error!')
+        }
       }); 
     });  
    }); 
 </script>  
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#login-pass").keypress(function(event){
+      code = (event.keyCode ? event.keyCode : event.which);
+      if (code == 13)
+      {
+        $("#checklogin").click();
+      }
+    });
+  }); 
+</script> 
 </body>
 </html>

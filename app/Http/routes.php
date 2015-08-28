@@ -18,7 +18,7 @@
 Route::get('login', 'MainController@login');
 Route::post('login', 'LoginController@login');
 //登出
-Route::post('logout', 'LoginController@logout');
+Route::get('logout', 'LoginController@logout');
 //首頁
 Route::get('dashboard', 'LoginController@dashboard');
 //報表

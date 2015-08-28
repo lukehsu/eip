@@ -1,11 +1,9 @@
 <?php
 //選單權限資料庫
 use App\mainmenudisplay;
-$mainitems = mainmenudisplay::where('mainitem','<>','隱藏選單')->where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem','mainitemid'));
+$mainitems = mainmenudisplay::where('user','=',Auth::user()->name)->distinct()->orderBy('mainitemid', 'ASC')->get(array('mainitem','mainitemid'));
 $menuitem = null;
 $today = date('Y-m-d');
-$today = strtotime($today) - 3600*24;
-$today =  date('Y-m-d',$today);
 foreach ($mainitems as $mainitem) 
 {
 
@@ -42,7 +40,7 @@ foreach ($mainitems as $mainitem)
           <ul class="nav navbar-nav navbar-right">
           <div class="navbar-form " >
             <button type="submit" id="logindisplays" class="btn btn-default">
-              logout
+              登入
             </button>
           </div>
           </ul>
@@ -65,7 +63,7 @@ foreach ($mainitems as $mainitem)
     $(document).ready(function() {
       $("#logindisplays").click(function()
       {  
-        window.location.replace("http://127.0.0.1/eip/public/logout");
+        $("#logindisplay").fadeIn(500);
       });
     });  
 </script>

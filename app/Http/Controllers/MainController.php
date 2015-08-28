@@ -8,6 +8,7 @@ use App\unimonthbudget;//uni每月預算
 use App\logistic;
 //use App\mainmenudisplay;
 use App\Http\Requests;
+use App\personalmonthbudget;
 use Hash,Input,Request,Response,Auth,Redirect,Log;
 class MainController extends Controller {
 
@@ -1394,7 +1395,7 @@ class MainController extends Controller {
             $MA = $MA + $dailyreport['InoviceAmt'];
           }  
         } 
-        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = personalmonthbudget::where('zone','=',$user['location'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         foreach ($monthbudgets as $monthbudget) {
           $MB = $monthbudget['budget'];
         } 
@@ -1425,9 +1426,10 @@ class MainController extends Controller {
             $MAA = $MAA + $dailyreport['InoviceAmt'];
           }  
         }
-        $monthbudgets = boramonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = personalmonthbudget::where('zone','=',$user['location'])->where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+        $MBB  = 0 ;
         foreach ($monthbudgets as $monthbudget) {
-          $MBB = $monthbudget['budget'];
+          $MBB = $MBB +  $monthbudget['budget'];
         } 
         // M  A/B
         $MCC = round(($MAA/$MBB) * 100) ;
@@ -1455,11 +1457,12 @@ class MainController extends Controller {
         {
           $active = 'active'  ;       
         } 
-        $form .= '<tr class='.$active.'><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$user['cname'].'</a></td>';
-        $form .= '<td class="text-right">'.$dailyreportaday.'</td><td class="text-right">'.$MA.'</td>';
-        $form .= '<td class="text-right">'.$MB.'</td><td class="text-right">'.$MC[$i].' %</td>';
-        $form .= '<td class="text-right">'.$ML.'</td><td class="text-right">'.$MAA.'</td>';
-        $form .= '<td class="text-right">'.$MBB.'</td><td class="text-right">'.$MCC.' %</td>';  
+
+        $form .= '<tr class='.$active.'><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$user['location'].'   /  '.$user['cname'].'</a></td>';
+        $form .= '<td class="text-right">'.number_format($dailyreportaday).'</td><td class="text-right">'.number_format($MA).'</td>';
+        $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].' %</td>';
+        $form .= '<td class="text-right">'.$ML.'</td><td class="text-right">'.number_format($MAA).'</td>';
+        $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC.' %</td>';  
         $form .= '<td class="text-right">'.$MLL.'</td>';  
         $form .= '</tr>';
         $style = $style + 1 ;
