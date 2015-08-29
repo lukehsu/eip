@@ -6,7 +6,6 @@ use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\logistic;
-//use App\mainmenudisplay;
 use App\Http\Requests;
 use App\personalmonthbudget;
 use Hash,Input,Request,Response,Auth,Redirect,Log;
@@ -95,6 +94,7 @@ class MainController extends Controller {
         $total = 0; 
         $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
         $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
+        $chardate =  str_replace('-','',$todaydate);
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
@@ -417,9 +417,10 @@ class MainController extends Controller {
                               'MA'=>$MA, 
                               'MB'=>$MB, 
                               'MC'=>$MC, 
+                              'chardate'=>$chardate, 
                               'totalma'=>$totalma,
                               'totalmb'=>$totalmb,
-                              'totalmc'=>$totalmc,
+                              'totalmc'=>$totalmc,                         
                               ]);
     }
 
@@ -458,6 +459,7 @@ class MainController extends Controller {
         $total = 0; 
         $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
         $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
+        $chardate =  str_replace('-','',$todaydate);
         //每日販賣數量 金額
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
@@ -762,6 +764,7 @@ class MainController extends Controller {
                                 'MA'=>$MA, 
                                 'MB'=>$MB, 
                                 'MC'=>$MC, 
+                                'chardate'=>$chardate, 
                                 'totalma'=>$totalma,
                                 'totalmb'=>$totalmb,
                                 'totalmc'=>$totalmc,
@@ -812,6 +815,7 @@ class MainController extends Controller {
         $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
         $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
         $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日 
+        $chardate =  str_replace('-','',$todaydate);
         $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
@@ -1340,6 +1344,7 @@ class MainController extends Controller {
                                     'MCC'=>$MCC, 
                                     'ML'=>$ML,
                                     'MLL'=>$MLL,
+                                    'chardate'=>$chardate, 
                                     'totalma'=>$totalma,
                                     'totalmaa'=>$totalmaa,                
                                     'totalmb'=>$totalmb,
@@ -1361,7 +1366,8 @@ class MainController extends Controller {
       $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
       $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
       $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-      $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日 
+      $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
+      $chardate =  str_replace('-','',$todaydate); 
       $MC = array();
       $users = User::where('dep','=','藥品事業部')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) {
@@ -1471,6 +1477,7 @@ class MainController extends Controller {
       return view('personaldiary',[ 'form'=>$form,
                                     'MC'=>$MC, 
                                     'todaydate'=>$todaydate,
+                                    'chardate'=>$chardate, 
                                   ]);
     }
 

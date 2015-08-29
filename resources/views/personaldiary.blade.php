@@ -6,6 +6,7 @@
   <title>業務部日報表</title>
   @include('head.bootstrapcss')
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/placeholdercolor.css">
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -20,7 +21,7 @@
             type: 'column'
         },
         title: {
-            text: '銷售達成率'
+            text: {!!$chardate!!} + '業績表'
         },
         subtitle: {
             text: '日業績表'
@@ -88,9 +89,9 @@
 <div class="container-fluid">
   @include('includes.navbar')
   <div class="row">
-    <div class="col-md-1">
-        <input  type="text" id="datetimepicker"  class="dateinput"  value="{!!$todaydate!!}">
-        <button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button>
+    <div class="col-md-3">
+        <input  type="text" id="datetimepicker"  style="background-color:#95A5A6;cursor:pointer;" class="dateinput" placeholder="選擇其他日期"  value="">
+        <!--button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button-->
     </div>
   </div>
   <br>
