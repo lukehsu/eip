@@ -1314,11 +1314,11 @@ label {
   }
 
 .dateinput {
-  height: 30px;
-  width:  98px;
+  height: 60px;
+  width:  208px;
   padding: 8px 12px;
   font-family: "Lato", Helvetica, Arial, sans-serif;
-  font-size: 5px;
+  font-size: 10px;
   line-height: 1.467;
   color: #34495e;
   border: 0px solid #ECF0F1;

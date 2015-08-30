@@ -102,13 +102,23 @@
       $("#chart").highcharts(options);
     });
   </script>
+<style type="text/css">
+    input[type="date"]:before {
+    content: attr(placeholder) !important;
+    color: #FFFFFF;
+  }
+  input[type="date"]:focus:before,
+  input[type="date"]:valid:before {
+    content: "";
+  }
+</style>  
 </head>
 <body>
 <div class="container-fluid">
   @include('includes.navbar')
   <div class="row">
     <div class="col-md-3">
-        <input  type="text" id="datetimepicker"  style="background-color:#95A5A6;cursor:pointer;" class="dateinput" placeholder="選擇其他日期"  value="">
+        <input type="date" id="datetimepicker" style="background-color:#95A5A6;cursor:pointer;" class="dateinput" placeholder="日期選擇">
         <!--button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button-->
     </div>
   </div>
@@ -476,28 +486,6 @@
 </div>
 <!--javascript-->
 <script type="text/javascript" src="../bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript">
-  $('#datetimepicker').datetimepicker({
-      language:'en',
-      format: 'yyyy-mm-dd',
-      weekStart: 1,
-      todayBtn:  1,
-      autoclose: 1,
-      todayHighlight: 1,
-      startView: 2,
-      minView: 2,
-      forceParse: 0
-  });
-</script>
-<script type="text/javascript">
-    $("#changedate").click(function(){
-    $('#datetimepicker').focus();
-    });
-</script>
-<script type="text/javascript">
-    $("#datetimepicker").change(function(){
-      window.location.replace("http://127.0.0.1/eip/public/boradiary/" + $("#datetimepicker").val());
-    });
-</script>
+
 </body>
 </html>
