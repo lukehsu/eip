@@ -6,7 +6,7 @@
   <title>保瑞日報表</title>
   @include('head.bootstrapcss')
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
-  <link rel="stylesheet"  href="../bootstrap331/dist/css/placeholdercolor.css">
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -102,16 +102,6 @@
       $("#chart").highcharts(options);
     });
   </script>
-<style type="text/css">
-    input[type="date"]:before {
-    content: attr(placeholder) !important;
-    color: #FFFFFF;
-  }
-  input[type="date"]:focus:before,
-  input[type="date"]:valid:before {
-    content: "";
-  }
-</style>  
 </head>
 <body>
 <div class="container-fluid">
@@ -485,7 +475,10 @@
   </div>
 </div>
 <!--javascript-->
-<script type="text/javascript" src="../bootstrap331/dist/js/bootstrap-datetimepicker.js"></script>
-
+<script type="text/javascript">
+    $("#datetimepicker").change(function(){
+      window.location.replace("http://127.0.0.1/eip/public/boradiary/" + $("#datetimepicker").val());
+    });
+</script>
 </body>
 </html>

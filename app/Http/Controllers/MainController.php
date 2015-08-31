@@ -6,6 +6,7 @@ use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\logistic;
+use App\medicinebudgetbypersonal;
 use App\Http\Requests;
 use App\personalmonthbudget;
 use Hash,Input,Request,Response,Auth,Redirect,Log;
@@ -1517,12 +1518,21 @@ class MainController extends Controller {
                           'Others' => 0,
                     );
         $total = 0; 
+        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
         $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
-        $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
-        foreach ($dailyreportstable as $dailyreport) {
+        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
+        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
+        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
+        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
+        $charuser =  $user ; 
+        $chardate =  str_replace('-','',$todaydate);
+        $users = User::where('cname','=',$user)->get();
+        foreach ($users as $userinfo ) {
+        }
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$userinfo['name'])->where('InvDate','=',$todaydate)->get();
+        foreach ($dailyreports as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
-            $dailysell = $dailyreport->InoviceAmt;
+            $dailysell  = $dailyreport->InoviceAmt;
             $qty  = $dailyreport->OrderQty;
             $BORACustomerName = $dailyreport->BORACustomerName;
             $BORACustomerNo = $dailyreport->BORACustomerNo;        
@@ -1582,8 +1592,7 @@ class MainController extends Controller {
                     break;
             }
         }
-        //and寫法註記一下單月銷售累加
-        $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        //單月銷售累加
         $MA = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
@@ -1594,7 +1603,8 @@ class MainController extends Controller {
                           'LendorminBora' => 0 , 
                           'Others' => 0,
                          );
-        foreach ($dailyreportstable as $dailyreport) {
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$userinfo['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        foreach ($dailyreports as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $MonthTotal = $dailyreport->InoviceAmt; 
             $BORACustomerNo = $dailyreport->BORACustomerNo;                   
@@ -1646,8 +1656,8 @@ class MainController extends Controller {
                           'LendorminBora' => 0 , 
                           'Others' => 0,
                          );
-        $dailyreportstable = dailyreport::where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
-        foreach ($dailyreportstable as $dailyreport) {
+        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$userinfo['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        foreach ($dailyreports as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
             $qty  = $dailyreport->OrderQty;  
@@ -1691,7 +1701,7 @@ class MainController extends Controller {
             }
         }
         //撈每月目標業績
-        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = medicinebudgetbypersonal::where('month','>=',$monthstart)->where('month','<=',$todaydate)->where('zone','=',$userinfo['location'])->get();
         $MB = array(      'Pitavol' => 0 , 
                           'Denset' => 0 , 
                           'Lepax10' => 0 , 
@@ -1761,7 +1771,7 @@ class MainController extends Controller {
                 case '68LMP002':
                     $MB['LendorminBora'] = $MonthTotal ;
                     break;       
-                case '22222222'://others
+                case '33333333'://others
                     $MB['Others'] = $MonthTotal ;
                     break;             
                 default:
@@ -1769,7 +1779,7 @@ class MainController extends Controller {
                     break;
             }
         } 
-        $monthbudgets = boramonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+        $monthbudgets = medicinebudgetbypersonal::where('month','>=',$yearstart)->where('month','<=',$todaydate)->where('zone','=',$userinfo['location'])->get();
         foreach ($monthbudgets as $monthbudget) {
             $BORAItemNo = $monthbudget->BORAItemNo;
             $MonthTotal = $monthbudget->budget; 
@@ -1799,7 +1809,7 @@ class MainController extends Controller {
                 case '68LMP002':
                     $MBB['LendorminBora'] = $MBB['LendorminBora'] + $MonthTotal ;
                     break;       
-                case '22222222'://others
+                case '33333333'://others
                     $MBB['Others'] = $MBB['Others'] + $MonthTotal ;
                     break;             
                 default:
@@ -1865,16 +1875,20 @@ class MainController extends Controller {
         }
         $totalmc = round(($totalma / $totalmb) * 100) ;
         $totalmcc = round(($totalmaa / $totalmbb) * 100) ;
-        $form  = '<tr><td>pivavol</td><td>'.$medicine['Pitavol'].'</td><td>'.$MA['Pitavol'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr class="active"><td>Denset</td><td>'.$medicine['Denset'].'</td><td>'.$MA['Denset'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr><td>Lepax 10mg</td><td>'.$medicine['Lepax10'].'</td><td>'.$MA['Lepax10'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr class="active"><td>Lepax 5mg</td><td>'.$medicine['Lepax5'].'</td><td>'.$MA['Lepax5'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr><td>Lexapro</td><td>'.$medicine['Lexapro'].'</td><td>'.$MA['Lexapro'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr class="active"><td>Ebixa</td><td>'.$medicine['Ebixa'].'</td><td>'.$MA['Ebixa'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr><td>Deanxit</td><td>'.$medicine['Deanxit'].'</td><td>'.$MA['Deanxit'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr class="active"><td>Lendormin</td><td>'.$medicine['LendorminBora'].'</td><td>'.$MA['LendorminBora'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr><td>Others</td><td>'.$medicine['Others'].'</td><td>'.$MA['Others'].'</td><td>'.$MB['Pitavol'].'</td></tr>';
-        $form .= '<tr class="active"><td>Total</td><td>'.$totalsell.'</td><td>'.$totalma.'</td><td>'.$totalmb.'</td></tr>';
-        return view('personalmedicinediary',['form'=>$form]);
+        $form  = '<tr><td>pivavol</td><td class="text-right">'.number_format($medicine['Pitavol']).'</td><td class="text-right">'.number_format($MA['Pitavol']).'</td><td class="text-right">'.number_format($MB['Pitavol']).'</td><td class="text-right">'.$MC['Pitavol'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['Pitavol']).'</td><td class="text-right">'.number_format($MBB['Pitavol']).'</td><td class="text-right">'.$MCC['Pitavol'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr class="active"><td>Denset</td><td class="text-right">'.number_format($medicine['Denset']).'</td><td class="text-right">'.number_format($MA['Denset']).'</td><td class="text-right">'.number_format($MB['Denset']).'</td><td class="text-right">'.$MC['Denset'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['Denset']).'</td><td class="text-right">'.number_format($MBB['Denset']).'</td><td class="text-right">'.$MCC['Denset'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr><td>Lepax 10mg</td><td class="text-right">'.number_format($medicine['Lepax10']).'</td><td class="text-right">'.number_format($MA['Lepax10']).'</td><td class="text-right">'.number_format($MB['Lepax10']).'</td><td class="text-right">'.$MC['Lepax10'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['Lepax10']).'</td><td class="text-right">'.number_format($MBB['Lepax10']).'</td><td class="text-right">'.$MCC['Lepax10'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr class="active"><td>Lepax 5mg</td><td class="text-right">'.number_format($medicine['Lepax5']).'</td><td class="text-right">'.number_format($MA['Lepax5']).'</td><td class="text-right">'.number_format($MB['Lepax5']).'</td><td class="text-right">'.$MC['Lepax5'].'%</td><td class="text-right">'.''.'</td><td class="text-right">'.number_format($MAA['Lepax5']).'</td><td class="text-right">'.number_format($MBB['Lepax5']).'</td><td class="text-right">'.$MCC['Lepax5'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr><td>Lexapro</td><td class="text-right">'.number_format($medicine['Lexapro']).'</td><td class="text-right">'.number_format($MA['Lexapro']).'</td><td class="text-right">'.number_format($MB['Lexapro']).'</td><td class="text-right">'.$MC['Lexapro'].'%</td><td class="text-right">'.''.'</td><td class="text-right">'.number_format($MAA['Lexapro']).'</td><td class="text-right">'.number_format($MBB['Lexapro']).'</td><td class="text-right">'.$MCC['Lexapro'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr class="active"><td>Ebixa</td><td class="text-right">'.number_format($medicine['Ebixa']).'</td><td class="text-right">'.number_format($MA['Ebixa']).'</td><td class="text-right">'.number_format($MB['Ebixa']).'</td><td class="text-right">'.$MC['Ebixa'].'%</td><td class="text-right">'.''.'</td><td class="text-right">'.number_format($MAA['Ebixa']).'</td><td class="text-right">'.number_format($MBB['Ebixa']).'</td><td class="text-right">'.$MCC['Ebixa'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr><td>Deanxit</td><td class="text-right">'.number_format($medicine['Deanxit']).'</td><td class="text-right">'.number_format($MA['Deanxit']).'</td><td class="text-right">'.number_format($MB['Deanxit']).'</td><td class="text-right">'.$MC['Deanxit'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['Deanxit']).'</td><td class="text-right">'.number_format($MBB['Deanxit']).'</td><td class="text-right">'.$MCC['Deanxit'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr class="active"><td>Lendormin</td><td class="text-right">'.number_format($medicine['LendorminBora']).'</td><td class="text-right">'.number_format($MA['LendorminBora']).'</td><td class="text-right">'.number_format($MB['LendorminBora']).'</td><td class="text-right">'.$MC['LendorminBora'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['LendorminBora']).'</td><td class="text-right">'.number_format($MBB['LendorminBora']).'</td><td class="text-right">'.$MCC['LendorminBora'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr><td>Others</td><td class="text-right">'.number_format($medicine['Others']).'</td><td class="text-right">'.number_format($MA['Others']).'</td><td class="text-right">'.number_format($MB['Others']).'</td><td class="text-right">'.$MC['Others'].'%</td><td>'.''.'</td><td class="text-right">'.number_format($MAA['Others']).'</td><td class="text-right">'.number_format($MBB['Others']).'</td><td class="text-right">'.$MCC['Others'].'%</td><td>'.''.'</td></tr>';
+        $form .= '<tr class="active"><td>Total</td><td class="text-right">'.number_format($totalsell).'</td><td class="text-right">'.number_format($totalma).'</td><td class="text-right">'.number_format($totalmb).'</td><td class="text-right">'.$totalmc.'%</td><td class="text-right">'.''.'</td><td class="text-right">'.number_format($totalmaa).'</td><td class="text-right">'.number_format($totalmbb).'</td><td class="text-right">'.$totalmcc.'%</td><td class="text-right">'.''.'</td></tr>';
+        return view('personalmedicinediary',['form'=>$form,
+                                             'MC'=>$MC,
+                                             'user'=>$userinfo['cname'],
+                                             'chardate'=>$chardate
+                                            ]);
     }
 }
