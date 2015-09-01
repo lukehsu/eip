@@ -520,10 +520,35 @@
   </div>
 </div>
 <!--javascript-->
-<script type="text/javascript">
-    $("#datetimepicker").change(function(){
-      window.location.replace("http://127.0.0.1/eip/public/accountdiary/" + $("#datetimepicker").val());
-    });
-</script>
+<script type="text/javascript"> 
+<!-- 
+        //平台操作系统 
+        var system = { 
+            win: false, 
+            mac: false, 
+            xll: false, 
+            ipad:false 
+        }; 
+        //平台 
+        var p = navigator.platform; 
+        system.win = p.indexOf("Win") == 0; 
+        system.mac = p.indexOf("Mac") == 0; 
+        system.x11 = (p == "X11") || (p.indexOf("Linux") == 0); 
+        system.ipad = (navigator.userAgent.match(/iPad/i) != null)?true:false; 
+
+        if (system.win || system.mac || system.xll||system.ipad) 
+        { 
+          $("#datetimepicker").change(function(){
+            window.location.replace("http://127.0.0.1/eip/public/accountdiary/" + $("#datetimepicker").val());
+          }); 
+        } 
+        else 
+        { 
+          $("#datetimepicker").blur(function(){
+            window.location.replace("http://127.0.0.1/eip/public/accountdiary/" + $("#datetimepicker").val());
+          }); 
+        } 
+--> 
+</script> 
 </body>
 </html>

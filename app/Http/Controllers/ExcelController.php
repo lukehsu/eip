@@ -74,6 +74,13 @@ class ExcelController extends Controller {
         //$file = glob(dirname(__FILE__).'/diaryexcel/*.xls');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
+        $check = count($file);
+        if ($check<1) 
+        {
+            echo  "<script type='text/javascript'>setTimeout(self.close(),10000);</script>"; 
+        }
+        else
+        {    
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
@@ -141,11 +148,9 @@ class ExcelController extends Controller {
                 $alldatabase->save();
                 print_r($info); 
                 echo '<br />'; 
-        } 
-        $test = dailyreport::all() ;
-        $test = $alldatabase->InoviceAmt;
-        $a = $test + $a ;
-        echo $a;
+        }
+        echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        }
     }
 
 
@@ -182,6 +187,13 @@ class ExcelController extends Controller {
         //$file = glob(dirname(__FILE__).'/unireport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
+        $check = count($file);
+        if ($check<1) 
+        {
+            echo  "<script type='text/javascript'>setTimeout(self.close(),10000);</script>"; 
+        }
+        else
+        {    
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
@@ -237,9 +249,7 @@ class ExcelController extends Controller {
                 print_r($info); 
                 echo '<br />'; 
         } 
-        $test = unidiaryreport::all() ;
-        $test = $alldatabase->InoviceAmt;
-        $a = $test + $a ;
-        echo $a;
+        echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        }
     }
 }
