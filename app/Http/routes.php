@@ -33,6 +33,7 @@ Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personal
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
+Route::get('haexcel', 'ExcelController@haexcel');
 
 
 //ajax日曆呼叫

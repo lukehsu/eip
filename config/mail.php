@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'mail.bora-corp.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 25),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'service@bora-corp.com', 'name' => 'service'],
 
     /*
     |--------------------------------------------------------------------------
@@ -66,8 +66,8 @@ return [
     | transport layer security protocol should provide great security.
     |
     */
-
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    //不使用加密
+    //'encryption' => env('MAIL_ENCRYPTION', 'tls'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,8 +80,8 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
-
+    //'username' => env('service'),
+    'username' => 'service',
     /*
     |--------------------------------------------------------------------------
     | SMTP Server Password
@@ -93,7 +93,8 @@ return [
     |
     */
 
-    'password' => env('MAIL_PASSWORD'),
+    //'password' => env('bora8888'),
+    'password' => 'bora8888',
 
     /*
     |--------------------------------------------------------------------------

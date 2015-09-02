@@ -1,6 +1,7 @@
 <?php 
 namespace App\Http\Controllers;
 use App\user;
+use App\hareport;
 use App\dailyreport;//bora 每日業績
 use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
@@ -191,6 +192,24 @@ class MainController extends Controller {
                   } 
             }
         }
+        //和安戀多眠另外再算一次
+        $dailyreportstable = hareport::where('INVDT','=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $HAItemNo = $dailyreport->HAITMNO;
+            $dailysell = $dailyreport->INVAM;
+            $qty  = $dailyreport->ORQTY;    
+            $HACustomerNo= $dailyreport->CUSNAME;  
+            switch ($HAItemNo) {
+                case 'LEN25100':
+                    $medicine['Lendorminann'] = $medicine['Lendorminann'] + $dailysell ;
+                    $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ; 
+                    $itemno['Lendorminann'] = $HACustomerNo ; 
+                    break;
+                default:
+
+                    break;
+            }    
+        }    
         //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
@@ -271,6 +290,20 @@ class MainController extends Controller {
                   } 
             }
         }
+        //和安戀多眠另外再算一次 
+        $dailyreportstable = hareport::where('INVDT','>=',$monthstart)->where('INVDT','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $HAItemNo = $dailyreport->HAITMNO;
+            $dailysell = $dailyreport->INVAM; 
+            switch ($HAItemNo) {
+                case 'LEN25100':
+                    $MA['Lendorminann'] = $MA['Lendorminann'] + $dailysell;
+                break;
+                default:
+
+                 break;
+            }    
+        }  
         //每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
