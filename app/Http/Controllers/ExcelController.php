@@ -71,8 +71,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\borareport\*.*');
-        //$file = glob(dirname(__FILE__).'/diaryexcel/*.xls');
+        //$file = glob(dirname(__FILE__).'\borareport\*.*');
+        $file = glob(dirname(__FILE__).'/borareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -137,7 +137,9 @@ class ExcelController extends Controller {
                 
                 ); 
                 //寫入資料庫了 
-
+                if ($info['word0']=='R2') {
+                	$info['word9'] = 0 - $info['word9'];
+                }
                 $alldatabase = new dailyreport ;
                 $alldatabase->SalesType = $info['word0'];
                 $alldatabase->OrderNo = $info['word1'];
