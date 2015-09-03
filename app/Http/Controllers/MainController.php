@@ -102,7 +102,8 @@ class MainController extends Controller {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
             $qty  = $dailyreport->OrderQty;    
-            $BORACustomerNo= $dailyreport->BORACustomerNo;    
+            $BORACustomerNo = $dailyreport->BORACustomerNo;    
+            $SaleType = $dailyreport->SaleType;
             switch ($BORAItemNo) {
                 case '68PTV001':
                 if ($BORACustomerNo<>'10824') {
@@ -229,10 +230,11 @@ class MainController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $MonthTotal = $dailyreport->InoviceAmt;       
-            $BORACustomerNo= $dailyreport->BORACustomerNo;      
+            $BORACustomerNo= $dailyreport->BORACustomerNo;   
+            $SalesType= $dailyreport->SalesType;   
             switch ($BORAItemNo) {
                 case '68PTV001':
-                if ($BORACustomerNo<>'10824') {
+                if ($BORACustomerNo<>'10824' ) {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
                 }      
                     break;
