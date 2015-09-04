@@ -364,13 +364,13 @@
         if (system.win || system.mac || system.xll||system.ipad) 
         { 
           $("#datetimepicker").change(function(){
-            window.location.replace("http://127.0.0.1/eip/public/uniadiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/unidiary/" + $("#datetimepicker").val());
           }); 
         } 
         else 
         { 
           $("#datetimepicker").blur(function(){
-            window.location.replace("http://127.0.0.1/eip/public/uniadiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/unidiary/" + $("#datetimepicker").val());
           }); 
         } 
 --> 

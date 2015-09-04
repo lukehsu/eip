@@ -71,8 +71,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        //$file = glob(dirname(__FILE__).'\borareport\*.*');
-        $file = glob(dirname(__FILE__).'/borareport/*.*');
+        $file = glob(dirname(__FILE__).'\borareport\*.*');
+        //$file = glob(dirname(__FILE__).'/borareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -224,7 +224,7 @@ class ExcelController extends Controller {
         $highestColumn = $sheet->getHighestColumn(); //取得列（英文顯示）
         //$objWorksheet = $objPHPExcel->getActiveSheet();//取得總行數(不指定sheet寫法) 
         //$highestRow = $objWorksheet->getHighestRow();//取得總列數(不指定sheet寫法)  
-        echo 'highestRow='.$highestRow ; 
+        echo 'highestRow123='.$highestRow ; 
         echo "<br>"; 
         //$highestColumn = $objWorksheet->getHighestColumn();//我不知道這一行到底是幹嘛的
         $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);//列數轉化成數字 
