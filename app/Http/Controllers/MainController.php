@@ -106,6 +106,7 @@ class MainController extends Controller {
             $SaleType = $dailyreport->SaleType;
             switch ($BORAItemNo) {
                 case '68PTV001':
+                //10824 = 和安
                 if ($BORACustomerNo<>'10824') {
                     $medicine['Pitavol'] = $medicine['Pitavol'] + $dailysell;
                     $qtys['Pitavol'] = $qtys['Pitavol'] + $qty ; 
@@ -184,6 +185,7 @@ class MainController extends Controller {
                     $qtys['Bpn'] = $qtys['Bpn'] + $qty ; 
                     break;            
                 default:
+                //10973 = 衛采  11032 = 聯邦化學   57ARZTPG = 羅莎疼
                 if ($BORACustomerNo<>'10973' and $BORACustomerNo<>'11032'  and $BORAItemNo<>'57ARZTPG'  ) 
                   {
                     $medicine['Others'] = $medicine['Others'] + $dailysell ;
@@ -199,10 +201,11 @@ class MainController extends Controller {
             $HAItemNo = $dailyreport->HAITMNO;
             $dailysell = $dailyreport->INVAM;
             $qty  = $dailyreport->ORQTY;    
-            $HACustomerNo= $dailyreport->CUSNAME;  
+            $HACustomerNo = $dailyreport->CUSNAME;  
+            $CDAMT = $dailyreport->CDAMT;
             switch ($HAItemNo) {
                 case 'LEN25100':
-                    $medicine['Lendorminann'] = $medicine['Lendorminann'] + $dailysell ;
+                    $medicine['Lendorminann'] = $medicine['Lendorminann'] + $dailysell - $CDAMT ;
                     $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ; 
                     $itemno['Lendorminann'] = $HACustomerNo ; 
                     break;
@@ -297,9 +300,10 @@ class MainController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $HAItemNo = $dailyreport->HAITMNO;
             $dailysell = $dailyreport->INVAM; 
+            $CDAMT = $dailyreport->CDAMT;
             switch ($HAItemNo) {
                 case 'LEN25100':
-                    $MA['Lendorminann'] = $MA['Lendorminann'] + $dailysell;
+                    $MA['Lendorminann'] = $MA['Lendorminann'] + $dailysell - $CDAMT;
                 break;
                 default:
 
@@ -1405,7 +1409,7 @@ class MainController extends Controller {
       $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
       $chardate =  str_replace('-','',$todaydate); 
       $MC = array();
-      $users = User::where('dep','=','藥品事業部')->orderBy('sorts', 'ASC')->get();
+      $users = User::where('dep','=','藥品事業部')->where('location','<>','')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) {
         if ($user['name']=='b0153') {
           $user['cname'] = '物流';
@@ -1503,9 +1507,9 @@ class MainController extends Controller {
         $form .= '<tr class='.$active.'><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$user['location'].'   /  '.$user['cname'].'</a></td>';
         $form .= '<td class="text-right">'.number_format($dailyreportaday).'</td><td class="text-right">'.number_format($MA).'</td>';
         $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].' %</td>';
-        $form .= '<td class="text-right">'.$ML.'</td><td class="text-right">'.number_format($MAA).'</td>';
+        $form .= '<td class="text-right">'.''.'</td><td class="text-right">'.number_format($MAA).'</td>';
         $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC.' %</td>';  
-        $form .= '<td class="text-right">'.$MLL.'</td>';  
+        $form .= '<td class="text-right">'.''.'</td>';  
         $form .= '</tr>';
         $style = $style + 1 ;
         $i = $i+1;

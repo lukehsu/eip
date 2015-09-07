@@ -58,25 +58,25 @@
             name: "Brands",
             colorByPoint: true,
             data: [{
-                name: "Pitavol",
+                name: "江隆昌",
                 y: {!!$MC[0]!!},
             }, {
-                name: "Denset",
+                name: "陳彥錕",
                 y: {!!$MC[1]!!},
             }, {
-                name: "Lepax 10mg",
+                name: "彭羣皓",
                 y: {!!$MC[2]!!},
             }, {
-                name: "Lepax 5mg",
+                name: "何俊昇",
                 y: {!!$MC[3]!!},
             }, {
-                name: "Lexapro",
+                name: "陳昱均",
                 y: {!!$MC[4]!!},
             }, {
-                name: "Ebixa",
+                name: "唐維澤",
                 y: {!!$MC[5]!!},
             }, {
-                name: "Denset",
+                name: "物流",
                 y: {!!$MC[6]!!},
             }]
           }]
