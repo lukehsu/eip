@@ -15,10 +15,9 @@ foreach ($mainitems as $mainitem)
   $subitems = mainmenudisplay::where('user','=',Auth::user()->name)->where('mainitem','=',$mainitem['mainitem'])->orderBy('subitemid', 'ASC')->get();
   foreach ($subitems as $subitem) 
   {
-    if ($mainitem['mainitemid']=='2')
+    if ($mainitem['mainitemid']<>'1')
     {
-    $today = '' ;
-    $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem['url'].'/'.$today.'">'.$subitem['subitem'].'</a></li>';
+    $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem['url'].'">'.$subitem['subitem'].'</a></li>';
     }
     else
     {

@@ -27,6 +27,10 @@ class logincheck
         //取得網址
         $uri = Request::path();
         $uris = strstr($uri,'/',true);
+
+        if ($uris=='') {
+            $uris = $uri ;
+        }
         //檢查是否有權限進入該區
         $accesschecks = mainmenudisplay::where('user','=',Auth::user()->name)->where('url','=',$uris)->count();
         if ($accesschecks == 0)

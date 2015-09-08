@@ -16,6 +16,7 @@
 //});
 //登入
 Route::get('login', 'MainController@login');
+//這條沒做了但是先留著
 Route::post('login', 'LoginController@login');
 //登出
 Route::get('logout', 'LoginController@logout');
@@ -41,8 +42,8 @@ Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
 Route::post('accountreportdate', 'DatechangController@accountreportdate');
 
-
-
+//管理員權限
+Route::get('access', 'AdminController@access');
 
 Route::get('/test', function()
 {

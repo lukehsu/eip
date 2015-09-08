@@ -114,30 +114,17 @@ class LoginController extends Controller {
       }
       }
     }
+
     public function dashboard()
     {
-        
-        return view('dashboard');
+      return view('dashboard');
     }
+
+
     public function logout()
     {
-
-        Auth::logout();
-        return redirect('login');       
+      Auth::logout();
+      return redirect('login');       
     }
 
-
-    public function pp($yy)
-    {
-       
-      return view('pp');   
-
-    }
-        public function search()
-    {
-        $category = Input::get('category', 'default category');
-        $term = Input::get('term', false);
-
-        // do things with them...
-    }
 }
