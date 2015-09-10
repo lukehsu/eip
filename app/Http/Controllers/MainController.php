@@ -1466,7 +1466,14 @@ class MainController extends Controller {
           }  
         } 
         //$ML = $MB / $ML ;
-        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        if ($user['name']=='b0153') {
+          $user['cname'] = '物流';
+          $dailyreports = logistic::where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        }
+        else
+        {
+          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        }
         $MAA = 0 ;
         foreach ($dailyreports as $dailyreport) {
           if ($dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225'  ) 
