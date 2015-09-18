@@ -1412,45 +1412,61 @@ class MainController extends Controller {
       $users = User::where('dep','=','藥品事業部')->where('location','<>','')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) {
         if ($user['name']=='b0153') {
-          $user['cname'] = '物流';
-          $dailyreports = logistic::where('InvDate','=',$todaydate)->get();
+          	$user['cname'] = '物流';
+          	$dailyreports = logistic::where('InvDate','=',$todaydate)->get();
+        	$dailyreportaday = 0 ;
+        	foreach ($dailyreports as $dailyreport) {  
+          		if (substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' ) 
+          		{
+            		$dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt']; 
+          		}
+        	}
         }
         else
         {
-          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
-        }
-
-        $dailyreportaday = 0 ;
-        foreach ($dailyreports as $dailyreport) {  
-          if ($dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225' ) 
-          {
-            $dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt']; 
-          }
+          	$dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
+        	$dailyreportaday = 0 ;
+        	foreach ($dailyreports as $dailyreport) {  
+          		if (substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225') 
+          		{
+            		$dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt']; 
+          		}
+        	}
         }
 
         if ($user['name']=='b0153') {
-          $user['cname'] = '物流';
-          $dailyreports = logistic::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+          	$user['cname'] = '物流';
+          	$dailyreports = logistic::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        	$MA = 0 ;
+        	foreach ($dailyreports as $dailyreport) {
+          		if (substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG') 
+          		{
+            		$MA = $MA + $dailyreport['InoviceAmt'];
+          		}  
+        	}
         }
         else
         {
-          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        	$dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+        	$MA = 0 ;
+        	foreach ($dailyreports as $dailyreport) {
+          		if ( substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225' ) 
+          		{   
+            		$MA = $MA + $dailyreport['InoviceAmt'];
+          		}  
+        	} 
         }
-        $MA = 0 ;
-        foreach ($dailyreports as $dailyreport) {
-          if ($dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225' ) 
-          {
-            $MA = $MA + $dailyreport['InoviceAmt'];
-          }  
-        } 
+
         $monthbudgets = personalmonthbudget::where('zone','=',$user['location'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         foreach ($monthbudgets as $monthbudget) {
           $MB = $monthbudget['budget'];
         } 
-        // M  A/B
+
+        // MC  A/B
         $MC[$i] = round(($MA/$MB) * 100) ;
-        // M  A/L
-        if ($user['name']=='b0153') {
+
+        // ML  A/L
+        /*if ($user['name']=='b0153') {
           $user['cname'] = '物流';
           $dailyreports = logistic::where('InvDate','>=',$lastyearmonthstart)->where('InvDate','<=',$lastyearday)->get();
         }
@@ -1464,32 +1480,46 @@ class MainController extends Controller {
           {
             $ML = $ML + $dailyreport['InoviceAmt'];
           }  
-        } 
-        //$ML = $MB / $ML ;
+        }*/
+
+
         if ($user['name']=='b0153') {
-          $user['cname'] = '物流';
-          $dailyreports = logistic::where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+          	$user['cname'] = '物流';
+          	$dailyreports = logistic::where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        	$MAA = 0 ;
+
+        	foreach ($dailyreports as $dailyreport) {
+          		if (substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG') 
+          		{
+            		$MAA = $MAA + $dailyreport['InoviceAmt'];
+          		}  
+        	}
         }
         else
         {
-          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+          	$dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+        	$MAA = 0 ;
+        	foreach ($dailyreports as $dailyreport) {
+          		if (substr($dailyreport['$BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225' ) 
+          		{
+            		$MAA = $MAA + $dailyreport['InoviceAmt'];
+          		}  
+        	}
         }
-        $MAA = 0 ;
-        foreach ($dailyreports as $dailyreport) {
-          if ($dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225'  ) 
-          {
-            $MAA = $MAA + $dailyreport['InoviceAmt'];
-          }  
-        }
+
         $monthbudgets = personalmonthbudget::where('zone','=',$user['location'])->where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
         $MBB  = 0 ;
+
         foreach ($monthbudgets as $monthbudget) {
           $MBB = $MBB +  $monthbudget['budget'];
         } 
-        // M  A/B
+
+        // MCC  A/B
         $MCC = round(($MAA/$MBB) * 100) ;
-        // M  A/L
-        if ($user['name']=='b0153') {
+
+
+        // MLL  A/L
+        /*if ($user['name']=='b0153') {
           $user['cname'] = '物流';
           $dailyreports = logistic::where('InvDate','>=',$lastyearstart)->where('InvDate','<=',$lastyearday)->get();
         }
@@ -1503,7 +1533,8 @@ class MainController extends Controller {
           {
             $MLL = $MLL + $dailyreport['InoviceAmt'];
           }  
-        } 
+        }*/
+
         if ($style==2 or $style==0) {
           $style = 0 ;
           $active = '' ;

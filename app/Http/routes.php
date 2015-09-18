@@ -36,7 +36,12 @@ Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
 Route::get('haexcel', 'ExcelController@haexcel');
 
+//TV
+Route::get('tv', 'TvController@tv');
 
+//單據
+Route::get('it', 'ServiceController@it');
+Route::post('itreceive', 'ServiceajaxController@itreceive');
 //ajax日曆呼叫
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
