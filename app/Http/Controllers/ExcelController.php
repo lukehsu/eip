@@ -276,6 +276,7 @@ class ExcelController extends Controller {
 
     public function haexcel()
     {
+
         $objPHPExcel = new \PHPExcel();
         /*
         $objPHPExcel->getProperties()->setCreator("Maarten Balliauw");
@@ -313,7 +314,11 @@ class ExcelController extends Controller {
             echo  "<script type='text/javascript'>setTimeout(self.close(),10000);</script>"; 
         }
         else
-        {    
+        {  
+        //和安的因為資料有重複需要刪掉後再加入
+        $monstart = date('Y-m-01');    
+        echo  $monstart;
+        $deldata = hareport::where('INVDT', '>=', $monstart)->delete();  
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 

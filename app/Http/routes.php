@@ -47,6 +47,12 @@ Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
 Route::post('accountreportdate', 'DatechangController@accountreportdate');
 
+//轉址
+Route::get('monitor', function()
+{
+    return redirect('http://192.168.1.34/nagios/');
+});
+
 //管理員權限
 Route::get('access', 'AdminController@access');
 

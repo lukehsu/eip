@@ -6,6 +6,7 @@ use App\Http\Requests;
 use Response;
 use Auth;
 use App\User;
+use App\itticket;
 use Hash;
 use Closure;
 class LoginController extends Controller {
@@ -117,7 +118,23 @@ class LoginController extends Controller {
 
     public function dashboard()
     {
-      return view('dashboard');
+      $userinfos = User::where('name','=',Auth::user()->name)->get();      
+      foreach ($userinfos as $userinfo) {
+        $cname = $userinfo->cname;
+        $dep = $userinfo->dep;     
+      } 
+      $itservice = null;
+      $ittickets = itticket::where('dep','=',$dep)->get();
+      foreach ($ittickets as $itticket) {
+        $name = $itticket->name;
+        $dep = $itticket->dep; 
+        $date = $itticket->date;
+        $description = $itticket->description;
+        $description = $description."......";
+        $items = $itticket->items;
+        $itservice .= '<div class="row" style="position: absolute;height:30px"><div class="col-md-1"><label class="checkbox" for="checkbox4"><input type="checkbox" value="" id="checkbox4" data-toggle="checkbox"></label></div><div class="col-md-2 pa">'.$date.'</div><div class="col-md-2 pa">'.$dep.'</div><div class="col-md-2 pa">'.$name.'</div><div class="col-md-2 pa">'.$items.'</div><div class="col-md-3 pa">'.$description.'</div></div>' ;                     
+      } 
+      return view('dashboard',['itservice'=>$itservice]);
     }
 
 

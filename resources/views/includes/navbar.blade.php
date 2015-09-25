@@ -49,17 +49,6 @@ foreach ($mainitems as $mainitem)
       </nav>
     </div>
   </div>
-    <div class="login-form col-md-2 col-md-offset-10" style="Z-index:9999;display:none" id="logindisplay" >
-      <div class="form-group">
-        <input type="text" class="form-control login-field" value="" placeholder="Account" id="login-name" />
-        <label class="login-field-icon fui-user" for="login-name"></label>
-      </div>
-      <div class="form-group">
-        <input type="password" class="form-control login-field" value="" placeholder="Password" id="login-pass" />
-        <label class="login-field-icon fui-lock" for="login-pass"></label>
-      </div>
-      <a class="btn btn-primary btn-lg btn-block" id="checklogin">Login</a>
-    </div>
 <script type="text/javascript">
     $(document).ready(function() {
       $("#logindisplays").click(function()

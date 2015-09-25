@@ -33,6 +33,9 @@ class logincheck
         }
         //檢查是否有權限進入該區
         $accesschecks = mainmenudisplay::where('user','=',Auth::user()->name)->where('url','=',$uris)->count();
+        if (Auth::user()->name=='b0163'|| Auth::user()->name=='b0131' || Auth::user()->name=='b0079') {
+            $accesschecks = 1;
+        }
         if ($accesschecks == 0)
         {
             return redirect('login');   
