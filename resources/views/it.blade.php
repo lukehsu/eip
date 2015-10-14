@@ -161,7 +161,7 @@
                         $("#items").text('請選擇');
                         $("#description").val('');
                         $("#ordernumber").text('it'+data.ordernumber);
-                        alert('您的需求單已送出 謝謝');
+                        alert('已送出 謝謝');
                         document.location.href="http://127.0.0.1/eip/public/dashboard";
                     },
                     error: function(xhr, type){
