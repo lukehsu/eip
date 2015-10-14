@@ -173,7 +173,7 @@
                 var title = $(this).data('pws-tab-name');
 
                 // Add LIs and A controls
-                controlls.append('<li><a data-tab-id="'+id+'">'+title+'</a></li>');
+                controlls.append('<li><a id="'+id+'" data-tab-id="'+id+'">'+title+'</a></li>');
 
                 // Adding class to our selector children (Tabs)
                 $(this).addClass('pws_tab_single');

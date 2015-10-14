@@ -1342,11 +1342,11 @@ fieldset[disabled] .form-control,
 .select2-search input[type="text"][disabled],
 .select2-search input[type="text"][readonly],
 fieldset[disabled] .select2-search input[type="text"] {
-  color: #d5dbdb;
+  /*color: #d5dbdb;*/
   cursor: default;
-  background-color: #f4f6f6;
+  background-color: #d5dbdb;
   filter: alpha(opacity=70);
-  border-color: #d5dbdb;
+  border-color: 2px solid  #ccc;
   opacity: .7;
   }
 .form-control.flat,

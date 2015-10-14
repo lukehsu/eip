@@ -121,23 +121,56 @@ class LoginController extends Controller {
       $userinfos = User::where('name','=',Auth::user()->name)->get();      
       foreach ($userinfos as $userinfo) {
         $cname = $userinfo->cname;
-        $dep = $userinfo->dep;     
+        $dep = $userinfo->dep;  
+        $level = $userinfo->level;    
       } 
-      $itservice = null;
-      $ittickets = itticket::where('dep','=',$dep)->get();
+      //GM 專用判斷
+      if (Auth::user()->name == 'b0001') {
+        $level = 'GM';
+        $itservice = null;
+        $ittickets = itticket::where('process','=',$level)->get();
+      }
+      elseif ($dep=='資訊部' and $level == 'manager' ) 
+      {
+        $level = 'finish';
+        $itservice = null;
+        $ittickets = itticket::where('process','=',$level)->orwhere('process','=','manager')->where('dep','=',$dep)->get();
+      }
+      elseif ($dep=='資訊部') 
+      {
+        $level = 'finish';
+        $itservice = null;
+        $ittickets = itticket::where('process','=',$level)->get();       
+      }
+      else
+      {  
+        $itservice = null;
+        $ittickets = itticket::where('dep','=',$dep)->where('process','=',$level)->get();
+      }  
+      $i = 1;
       foreach ($ittickets as $itticket) {
+        $ordernumber = $itticket->ordernumber;
         $name = $itticket->name;
         $dep = $itticket->dep; 
         $date = $itticket->date;
         $description = $itticket->description;
-        $description = $description."......";
+        $description = mb_substr($description,0,8,"utf-8")."......";
         $items = $itticket->items;
-        $itservice .= '<div class="row" style="position: absolute;height:30px"><div class="col-md-1"><label class="checkbox" for="checkbox4"><input type="checkbox" value="" id="checkbox4" data-toggle="checkbox"></label></div><div class="col-md-2 pa">'.$date.'</div><div class="col-md-2 pa">'.$dep.'</div><div class="col-md-2 pa">'.$name.'</div><div class="col-md-2 pa">'.$items.'</div><div class="col-md-3 pa">'.$description.'</div></div>' ;                     
+        $items = mb_substr($items,0,6,"utf-8")."......";
+        $itservice .= '<div class="row" style="height:30px"><div class="col-md-1"><label id="chkgroup'.$i.'" class="checkbox"><input name="itbox" type="checkbox" value="1" id="checkbox'.$i.'" data-toggle="checkbox"></label></div><a href="http://127.0.0.1/eip/public/'.$ordernumber.'/it"><div class="col-md-2 pa">'.$date.'</div><div class="col-md-2 pa">'.$dep.'</div><div class="col-md-2 pa">'.$name.'</div><div class="col-md-2 pa">'.$items.'</div><div class="col-md-3 pa">'.$description.'<input id="ordernumber'.$i.'" type="hidden" value="'.$ordernumber.'"></div></a></div>' ;                     
+        $i = $i + 1 ;
       } 
-      return view('dashboard',['itservice'=>$itservice]);
+
+      if ($i<>0) 
+      {
+        $i = $i-1;
+      }
+
+      return view('dashboard',['itservice'=>$itservice,'icount'=>$i]);
     }
 
 
+    
     public function logout()
     {
       Auth::logout();

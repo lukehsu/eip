@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="_token" content="{{ csrf_token() }}"/>
   <title>資訊服務單</title>
-    <link rel="stylesheet"  href="./bootstrap331/dist/css/bootstrap.css">
-    <link rel="stylesheet"  href="./bootstrap331/dist/css/flat-ui.css">
-    <link rel="stylesheet"  href="./bootstrap331/dist/css/droplist.css">
-    <script type="text/javascript" src="./bootstrap331/dist/js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="./bootstrap331/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap.css">
+    <link rel="stylesheet"  href="../bootstrap331/dist/css/flat-ui.css">
+    <link rel="stylesheet"  href="../bootstrap331/dist/css/droplist.css">
+    <script type="text/javascript" src="../bootstrap331/dist/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../bootstrap331/dist/js/bootstrap.min.js"></script>
     <style type="text/css">
     .inputformat{
         height: 35px; 
@@ -21,26 +21,26 @@
     <div class="col-md-10 col-md-offset-1" style="padding-bottom:12px;box-shadow:3px 3px 5px 6px #cccccc;">
       <input type="hidden" name="_token" value="{!!csrf_token()!!}">
         <div class="row">
-            <div class="col-md-3" style="margin-left:30px;" >
+            <div class="col-md-3" style="margin-left:40px;" >
                 <div class="row">
                     <div class="col-md-12"><label>單號:</label><br><p id="ordernumber">it{!!$ordernumber!!}</p></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6"><label>部門:</label><input  type="text" id="dep"  value="{!!$dep!!}"  class="form-control inputformat" /></div>
-                    <div class="col-md-6"><label>日期:</label><input  type="text" id="date" value="{!!$today!!}"  class="form-control inputformat" /></div>
+                    <div class="col-md-6"><label>部門:</label><input  type="text" id="dep"  value="{!!$dep!!}"  class="form-control inputformat" {!!$disabled!!} /></div>
+                    <div class="col-md-6"><label>日期:</label><input  type="text" id="date" value="{!!$today!!}"  class="form-control inputformat" {!!$disabled!!} /></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6"><label>員編:</label><input  type="text" id="enumber" value="{!!$enumber!!}"  class="form-control inputformat" /></div>
-                    <div class="col-md-6"><label>姓名:</label><input  type="text" name="name" id="name" value="{!!$name!!}"  class="form-control inputformat" /></div>
+                    <div class="col-md-6"><label>員編:</label><input  type="text" id="enumber" value="{!!$enumber!!}"  class="form-control inputformat" {!!$disabled!!}  /></div>
+                    <div class="col-md-6"><label>姓名:</label><input  type="text" name="name" id="name" value="{!!$name!!}"  class="form-control inputformat" {!!$disabled!!} /></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><label>需求項目:</label>
-                        <section class="main">
-                            <div class="wrapper-demo">
-                                <div name="items" id="dd" class="wrapper-dropdown-3" tabindex="1">
+                        <section class="main"  >
+                            <div class="wrapper-demo" >
+                                <div name="items" id="dd" class="wrapper-dropdown-3" tabindex="1" style="{!!$style!!}">
                                     <input type="hidden" name="items" id="hiddenitems" value="">
-                                    <span id="items">請選擇</span>
-                                        <ul id="test" class="dropdown uiscroll" >
+                                    <span id="items">{!!$items!!}</span>
+                                        <ul  class="dropdown uiscroll"  >
                                             <li><a href="#"><i></i>軟體</a></li>
                                             <li><a href="#"><i></i>網路障礙</a></li>
                                             <li><a href="#"><i></i>電子信箱</a></li>
@@ -61,29 +61,48 @@
                             </div>
                         </section>
                     </div>
-                </div>         
+                </div>
+                <!--隱藏用-->
+                <!--div style="display:{!!$none!!}">
+                <div class="row">
+                    <div class="col-md-12" >
+                        <label>回覆使用者:</label>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-md-12"><textarea id="itresponse" style="font-size:12px;border:2px #ccc solid;border-radius:10px;width:100%;"  rows="3"   placeholder="處理方式...." {!!$disable!!}></textarea></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="margin-top:0px;">
+                        <button type="submit" id="noway" class="btn  btn-danger">否</button>
+                    </div>
+                    <div class="col-md-6" style="margin-top:0px;">
+                        <button type="submit" id="yesway" class="btn  btn-info">是</button>
+                    </div>
+                </div> 
+                </div-->    
             </div>  
             <div class="col-md-4" >
                 <div class="row">
-                    <div class="col-md-12" ><label>問題說明:</label><textarea id="description" style="border:2px #ccc solid;border-radius:10px;width:100%;" rows="18"  cols="20"></textarea></div>
+                    <div class="col-md-12" ><label>問題說明:</label><textarea id="description" style="border:2px #ccc solid;border-radius:10px;width:100%;" rows="18"  cols="20" {!!$disabled!!} >{!!$description!!}</textarea></div>
                 </div>
             </div>    
             <div class="col-md-3" >
                 <div class="row">
-                    <div class="col-md-12"><label>回覆意見:</label><textarea style="border:2px #ccc solid;border-radius:10px;width:100%;" disabled="disabled" rows="8"  cols="20"></textarea></div>
+                    <div class="col-md-12"><label>回覆意見:</label><textarea style="border:2px #ccc solid;border-radius:10px;width:100%;"  rows="8"  cols="20" {!!$disable!!}></textarea></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><label>單據下一流程:</label><br>{!!$name!!}<br>↓<br>{!!$dep!!}主管</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6" style="margin-top:40px;">
+                    <div class="col-md-6" style="margin-top:63px;">
                         <button type="submit" class="btn btn-block btn-lg btn-default disabled">退單</button>
                     </div>
-                    <div class="col-md-6" style="margin-top:40px;">
+                    <div class="col-md-6" style="margin-top:63px;">
                         <button type="submit" id="done" class="btn btn-block btn-lg btn-info">送出</button>
                     </div>
                 </div> 
-            </div>       
+            </div> 
         </div>
     </div>  
 </div>
@@ -143,6 +162,24 @@
                         $("#description").val('');
                         $("#ordernumber").text('it'+data.ordernumber);
                         alert('您的需求單已送出 謝謝');
+                        document.location.href="http://127.0.0.1/eip/public/dashboard";
+                    },
+                    error: function(xhr, type){
+                        alert('??');
+                    }
+                });  
+            });
+            $('#yesway').click(function(){
+                $('#hiddenitems').val($('#items').text().trim());
+                $.ajax({
+                    type: 'POST',
+                    url: '/eip/public/itrespone',
+                    data: {ordernumber: $("#ordernumber").text() , dep: $("#dep").val(), date: $("#date").val() , enumber: $("#enumber").val() , name: $("#name").val() , items: $("#hiddenitems").val() , description: $("#description").val(), itresponse: $("#itresponse").val()},
+                    dataType: 'json',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                    success:  function(data){
+                        alert('已送出 謝謝');
+                        document.location.href="http://127.0.0.1/eip/public/dashboard";
                     },
                     error: function(xhr, type){
                         alert('??');

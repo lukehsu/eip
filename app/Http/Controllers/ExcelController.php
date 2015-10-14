@@ -233,7 +233,7 @@ class ExcelController extends Controller {
         $headtitle=array(); 
         $test = null;
         $a = null;
-        for ($row = 2;$row < $highestRow;$row++) 
+        for ($row = 2;$row <= $highestRow;$row++) 
         { 
             $strs=array(); 
         //注意highestColumnIndex的列數索引從0開始 
@@ -341,7 +341,7 @@ class ExcelController extends Controller {
         { 
             $strs=array(); 
         //注意highestColumnIndex的列數索引從0開始 
-            for ($col = 0;$col < $highestColumnIndex;$col++) 
+            for ($col = 0;$col <= $highestColumnIndex;$col++) 
             {  
                 $strs[$col] = $sheet->getCellByColumnAndRow($col, $row)->getValue();//宣告陣列長度
             }  

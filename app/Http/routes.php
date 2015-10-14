@@ -14,23 +14,26 @@
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+
 //登入
 Route::get('login', 'MainController@login');
+
 //這條沒做了但是先留著
 Route::post('login', 'LoginController@login');
+
 //登出
 Route::get('logout', 'LoginController@logout');
+
 //首頁
 Route::get('dashboard', 'LoginController@dashboard');
+
 //報表
 Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
-//test
-//Route::get('/search/{category}/{term}', ['as' => 'search', 'uses' => 'LoginController@search']);
-//Route::get('pp', 'LoginController@pp');
+
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
@@ -40,8 +43,10 @@ Route::get('haexcel', 'ExcelController@haexcel');
 Route::get('tv', 'TvController@tv');
 
 //單據
-Route::get('it', 'ServiceController@it');
+Route::get('app/it', 'ServiceController@it');
 Route::post('itreceive', 'ServiceajaxController@itreceive');
+Route::get('{ordernumber}/it', 'ServiceController@ordernumber');
+Route::post('quickok', 'ServiceajaxController@quickok');
 //ajax日曆呼叫
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
@@ -56,12 +61,16 @@ Route::get('monitor', function()
 //管理員權限
 Route::get('access', 'AdminController@access');
 
+
+
+/*
+測試中間層
 Route::get('/test', function()
 {
     // pages 為網站進入點
     return View('home');
 });
-/*看sql用
+看sql用
 Event::listen('illuminate.query', function($query)
 {
     var_dump($query);
