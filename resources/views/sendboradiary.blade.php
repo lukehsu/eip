@@ -44,7 +44,7 @@
     <div class="col-md-12" style="align=center" ><h6><span style="font-weight:bold;">{!!$todaydate!!}保瑞業績表</span></h6></div>
   </div>
   <div class="row">
-    <div id="chart1" class="col-md-12" style="height:300px;font-size:14px" ></div>
+    <div id="chart1" class="col-md-12" style="margin-left:20px;height:300px;font-size:12px" ></div>
   </div>
   <br>
   <br>
@@ -450,6 +450,6 @@
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.barRenderer.min.js"></script>
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pieRenderer.min.js"></script>
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.categoryAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pointLabels.js"></script>
 </body>
 </html>

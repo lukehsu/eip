@@ -1587,8 +1587,8 @@ class AutosendController extends Controller {
       //$bora = dirname(__FILE__).'/sendreport/'.$todaydate.'bora.jpg';
       //$union = dirname(__FILE__).'/sendreport/'.$todaydate.'union.jpg';
 
-      $to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
-      //$to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
+      //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
+      $to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
       //信件的內容
       $data = [];
       //寄出信件

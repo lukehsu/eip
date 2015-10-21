@@ -13,86 +13,6 @@
   <script src="./bootstrap331/dist/js/highcharts.js"></script>
   <script src="./bootstrap331/dist/js/html2canvas.js"></script>
   <script type="text/javascript">
-    $(document).ready(function() {
-      $("#chart").css("display","none");
-      $("#chart").fadeIn(2000);
-      $("#tablezone").css("display","none");
-      $("#tablezone").fadeIn(2000);
-      var options = 
-      {    
-        chart: {
-            renderTo: 'chart',
-            type: 'column'
-        },
-        title: {
-            text: '聯邦銷售達成率'
-        },
-        subtitle: {
-            text: {!!$chardate!!} + '業績表'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        credits:{
-              //隱藏官方連結
-             enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '百分比'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%'
-                }
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
-        },
-        series: [{
-            name: "Brands",
-            colorByPoint: true,
-            data: [
-            {
-                name: "Pitavol(經銷商)",
-                y: {!!$MC['Pitavol']!!},
-            }, {
-                name: "Denset(經銷商)",
-                y: {!!$MC['Denset']!!},
-            }, {
-                name: "Brexa(經銷商)",
-                y: {!!$MC['Brexa']!!},
-            },{
-                name: "胃爾康",
-                y: {!!$MC['Wilcon']!!},
-            }, {
-                name: "氯四環素",
-                y: {!!$MC['Kso']!!},
-            }, {
-                name: "優平",
-                y: {!!$MC['Upi']!!},
-            }, { 
-                name: "優福",
-                y: {!!$MC['Ufo']!!},
-            }, { 
-                name: "Others",
-                y: {!!$MC['Others']!!},
-            }]
-          }]
-      };
-      $("#chart").highcharts(options);
-    });
-  </script>
-  <script type="text/javascript">
   $(document).ready(function(){
         $.jqplot.config.enablePlugins = true;
         var s1 = [{!!$MC['Pitavol']!!}, {!!$MC['Denset']!!}, {!!$MC['Brexa']!!},  {!!$MC['Wilcon']!!}, {!!$MC['Kso']!!}, {!!$MC['Upi']!!}, {!!$MC['Ufo']!!}, {!!$MC['Others']!!}];
@@ -124,7 +44,7 @@
     <div class="col-md-12" style="align=center" ><h6><span style="font-weight:bold;">{!!$todaydate!!}聯邦業績表</span></h6></div>
   </div>
   <div class="row">
-    <div id="chart1" class="col-md-12" style="height:400px;font-size:16px"></div>
+    <div id="chart1" class="col-md-12" style="margin-left:20px;height:300px;font-size:16px"></div>
   </div>
   <br>
   <br>
@@ -415,6 +335,6 @@
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.barRenderer.min.js"></script>
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pieRenderer.min.js"></script>
   <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.categoryAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pointLabels.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pointLabels.js"></script>
 </body>
 </html>
