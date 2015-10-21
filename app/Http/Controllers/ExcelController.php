@@ -386,4 +386,8 @@ class ExcelController extends Controller {
         echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }
     }
+    public function api()
+    {
+        return view('api');
+    }
 }

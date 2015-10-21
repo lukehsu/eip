@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="_token" content="{{ csrf_token() }}"/>
-  <title>保瑞日報表</title>
-  @include('head.bootstrapcss')
-  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
-  <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
-  <script src="../bootstrap331/dist/js/highcharts.js"></script>
+  <title>聯邦日報表</title>
+  <link rel="stylesheet"  href="./bootstrap331/dist/css/bootstrap.css">
+  <link rel="stylesheet"  href="./bootstrap331/dist/css/flat-ui.css">
+  <script type="text/javascript" src="./bootstrap331/dist/js/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet"  href="./bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <link rel="stylesheet"  href="./bootstrap331/dist/css/datepickerplacehold.css">
+  <script src="./bootstrap331/dist/js/highcharts.js"></script>
+  <script src="./bootstrap331/dist/js/html2canvas.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#chart").css("display","none");
@@ -21,7 +25,7 @@
             type: 'column'
         },
         title: {
-            text: '銷售達成率'
+            text: '聯邦銷售達成率'
         },
         subtitle: {
             text: {!!$chardate!!} + '業績表'
@@ -57,33 +61,16 @@
         series: [{
             name: "Brands",
             colorByPoint: true,
-            data: [{
-                name: "Pitavol",
+            data: [
+            {
+                name: "Pitavol(經銷商)",
                 y: {!!$MC['Pitavol']!!},
             }, {
-                name: "Denset",
+                name: "Denset(經銷商)",
                 y: {!!$MC['Denset']!!},
             }, {
-                name: "Lepax 10mg",
-                y: {!!$MC['Lepax10']!!},
-            }, {
-                name: "Lepax 5mg",
-                y: {!!$MC['Lepax5']!!},
-            }, {
-                name: "Lexapro",
-                y: {!!$MC['Lexapro']!!},
-            }, {
-                name: "Ebixa",
-                y: {!!$MC['Ebixa']!!},
-            }, {
-                name: "Deanxit",
-                y: {!!$MC['Deanxit']!!},
-            }, {
-                name: "Lendormin (Bora)",
-                y: {!!$MC['LendorminBora']!!},
-            },{
-                name: "Lendormin (和安)",
-                y: {!!$MC['Lendorminann']!!},
+                name: "Brexa(經銷商)",
+                y: {!!$MC['Brexa']!!},
             },{
                 name: "胃爾康",
                 y: {!!$MC['Wilcon']!!},
@@ -91,8 +78,11 @@
                 name: "氯四環素",
                 y: {!!$MC['Kso']!!},
             }, {
-                name: "帕金寧",
-                y: {!!$MC['Bpn']!!},
+                name: "優平",
+                y: {!!$MC['Upi']!!},
+            }, { 
+                name: "優福",
+                y: {!!$MC['Ufo']!!},
             }, { 
                 name: "Others",
                 y: {!!$MC['Others']!!},
@@ -102,19 +92,39 @@
       $("#chart").highcharts(options);
     });
   </script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+        $.jqplot.config.enablePlugins = true;
+        var s1 = [{!!$MC['Pitavol']!!}, {!!$MC['Denset']!!}, {!!$MC['Brexa']!!},  {!!$MC['Wilcon']!!}, {!!$MC['Kso']!!}, {!!$MC['Upi']!!}, {!!$MC['Ufo']!!}, {!!$MC['Others']!!}];
+        var ticks = ['Pitavol(經銷商)', 'Denset(經銷商)', 'Brexa(經銷商)', '胃爾康', '氯四環素', '優平', '優福', 'Others'];
+        plot1 = $.jqplot('chart1', [s1], {
+            // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+            animate: !$.jqplot.use_excanvas,
+            seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+                pointLabels: { show: true },
+                rendererOptions: {
+                varyBarColor: true
+              }
+            },
+            axes: {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ticks
+                }
+            },
+            highlighter: { show: false }
+        });
+    });
+  </script>
 </head>
 <body>
-<div class="container-fluid">
-  @include('includes.navbar')
+<div class="container-fluid" id="ourdiv" style="background-color:#FFFFFF">
   <div class="row">
-    <div class="col-md-3">
-        <input type="date" id="datetimepicker" style="background-color:#95A5A6;cursor:pointer;" class="dateinput" placeholder="其他日期">
-        <!--button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button-->
-    </div>
+    <div class="col-md-12" style="align=center" ><h6><span style="font-weight:bold;">{!!$todaydate!!}聯邦業績表</span></h6></div>
   </div>
-  <br>
   <div class="row">
-    <div class="col-md-12" id='chart'></div>
+    <div id="chart1" class="col-md-12" style="height:400px;font-size:16px"></div>
   </div>
   <br>
   <br>
@@ -130,19 +140,19 @@
               Product
             </th>
             <th class="text-center">
-              Quantity
+              QTY.
             </th>
             <th class="text-center">
-              Amount
+              AMT
             </th>
             <th class="text-center">
-              Month Actual
+              ACT-MON
             </th>
             <th class="text-center">
-              Month Budget
+              Budget-MON
             </th>
             <th class="text-center">
-              Achievement %
+              ACH.%
             </th>
           </tr>
         </thead>
@@ -152,13 +162,13 @@
               Pitavol
             </td>
             <td>
-              Pitavol
+              Pitavol<br>經銷商
             </td>
-            <td class='text-right'>
+            <td class='text-right' id="q1">
               {!!number_format($qtys['Pitavol'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Pitavol)!!}
+              {!!number_format($medicine['Pitavol'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Pitavol'])!!}
@@ -175,13 +185,13 @@
               Denset
             </td>
             <td>
-              Denset
+              Denset<br>經銷商
             </td>
             <td class='text-right'>
               {!!number_format($qtys['Denset'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Denset)!!}
+              {!!number_format($medicine['Denset'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Denset'])!!}
@@ -195,163 +205,25 @@
           </tr>
           <tr>
             <td style="display:none">
-              Lepax10
+              Brexa
             </td>
             <td>
-              Lepax 10mg
+              Brexa<br>經銷商
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Lepax10'])!!}
+              {!!number_format($qtys['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Lepax10)!!}
+              {!!number_format($medicine['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Lepax10'])!!}
+              {!!number_format($MA['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Lepax10'])!!}
+              {!!number_format($MB['Brexa'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Lepax10']!!} %
-            </td>
-          </tr>
-          <tr class="active">
-            <td style="display:none">
-              Lepax5
-            </td>
-            <td>
-              Lepax 5mg 
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lepax5)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lepax5'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lepax5']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Lexapro
-            </td>
-            <td>
-              Lexapro
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lexapro)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lexapro'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lexapro']!!} %
-            </td>
-          </tr>
-          <tr class="active">
-            <td style="display:none">
-              Ebixa
-            </td>
-            <td>
-              Ebixa
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Ebixa'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Ebixa)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Ebixa'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Ebixa'])!!}
-            </td>
-              <td class='text-right'>
-              {!!$MC['Ebixa']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Deanxit
-            </td>
-            <td>
-              Deanxit
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Deanxit'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Deanxit)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Deanxit'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Deanxit'])!!}
-            </td>
-              <td class='text-right'>
-              {!!$MC['Deanxit']!!} %
-            </td>
-          </tr>
-          <tr  class="active">
-            <td style="display:none">
-              LendorminBora
-            </td>
-            <td>
-              Lendormin (Bora)
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($LendorminBora)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['LendorminBora'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['LendorminBora']!!} %
-            </td>
-          </tr>
-          <tr>
-            <td style="display:none">
-              Lendorminann
-            </td>
-            <td>
-              Lendormin (和安)
-            </td>
-            <td class='text-right'>
-              {!!number_format($qtys['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($Lendorminann)!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MA['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!number_format($MB['Lendorminann'])!!}
-            </td>
-            <td class='text-right'>
-              {!!$MC['Lendorminann']!!} %
+              {!!$MC['Brexa']!!} %
             </td>
           </tr>
           <tr  class="active">
@@ -365,7 +237,7 @@
               {!!number_format($qtys['Wilcon'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Wilcon)!!}
+              {!!number_format($medicine['Wilcon'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Wilcon'])!!}
@@ -388,7 +260,7 @@
               {!!number_format($qtys['Kso'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Kso)!!}
+              {!!number_format($medicine['Kso'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Kso'])!!}
@@ -402,28 +274,51 @@
           </tr>
           <tr  class="active">
             <td style="display:none">
-              Bpn
+              Upi
             </td>
             <td>
-              帕金寧
+              優達平
             </td>
             <td class='text-right'>
-              {!!number_format($qtys['Bpn'])!!}
+              {!!number_format($qtys['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Bpn)!!}
+              {!!number_format($medicine['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MA['Bpn'])!!}
+              {!!number_format($MA['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($MB['Bpn'])!!}
+              {!!number_format($MB['Upi'])!!}
             </td>
             <td class='text-right'>
-              {!!$MC['Bpn']!!} %
+              {!!$MC['Upi']!!} %
             </td>
           </tr>
           <tr>
+            <td style="display:none">
+              Ufo
+            </td>
+            <td>
+              優福
+            </td>
+            <td class='text-right'>
+              {!!number_format($qtys['Ufo'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($medicine['Ufo'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Ufo'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Ufo'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Ufo']!!} %
+            </td>
+          </tr>
+          <tr class="active">
             <td style="display:none">
               Others
             </td>
@@ -434,7 +329,7 @@
               {!!number_format($qtys['Others'])!!}
             </td>
             <td class='text-right'>
-              {!!number_format($Others)!!}
+              {!!number_format($medicine['Others'])!!}
             </td>
             <td class='text-right'>
               {!!number_format($MA['Others'])!!}
@@ -446,7 +341,7 @@
               {!!$MC['Others']!!} %
             </td>
           </tr>
-          <tr class="active">
+          <tr >
             <td style="display:none">
               Pitavol
             </td>
@@ -494,16 +389,32 @@
         if (system.win || system.mac || system.xll||system.ipad) 
         { 
           $("#datetimepicker").change(function(){
-            window.location.replace("http://127.0.0.1/eip/public/boradiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/unidiary/" + $("#datetimepicker").val());
           }); 
         } 
         else 
         { 
           $("#datetimepicker").blur(function(){
-            window.location.replace("http://127.0.0.1/eip/public/boradiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/unidiary/" + $("#datetimepicker").val());
           }); 
         } 
 --> 
 </script> 
+<script type="text/javascript">
+  $(function(){
+    setTimeout(function(){
+      $.getScript("./bootstrap331/dist/js/pic.js");
+    },5000)
+  })
+</script>
+<script language="javascript">setTimeout("self.opener = null; self.close();",15000)</script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/shCore.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/shBrushJScript.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/shBrushXml.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.barRenderer.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pieRenderer.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.categoryAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="./bootstrap331/dist/js/jqplot.pointLabels.min.js"></script>
 </body>
 </html>

@@ -34,6 +34,14 @@ Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
 
+//報表自動寄送
+Route::get('sendboradiary', 'AutosendController@sendboradiary');
+Route::get('sendunidiary' , 'AutosendController@sendunidiary');
+Route::get('sendreport' , 'AutosendController@sendreport');
+//自動寄報表手動
+Route::get('nonesendboradiary/{todaydate}', 'AutosendController@nonesendboradiary');
+Route::get('nonesendunidiary/{todaydate}' , 'AutosendController@nonesendunidiary');
+
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
@@ -62,6 +70,8 @@ Route::get('monitor', function()
 Route::get('access', 'AdminController@access');
 
 
+//test
+Route::get('api', 'ExcelController@api');
 
 /*
 測試中間層

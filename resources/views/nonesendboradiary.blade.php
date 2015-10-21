@@ -8,6 +8,7 @@
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
+  <script src="../bootstrap331/dist/js/html2canvas.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#chart").css("display","none");
@@ -76,8 +77,8 @@
                 name: "Ebixa",
                 y: {!!$MC['Ebixa']!!},
             }, {
-                name: "Deanxit",
-                y: {!!$MC['Deanxit']!!},
+                name: "Denset",
+                y: {!!$MC['Denset']!!},
             }, {
                 name: "Lendormin (Bora)",
                 y: {!!$MC['LendorminBora']!!},
@@ -104,15 +105,7 @@
   </script>
 </head>
 <body>
-<div class="container-fluid">
-  @include('includes.navbar')
-  <div class="row">
-    <div class="col-md-3">
-        <input type="date" id="datetimepicker" style="background-color:#95A5A6;cursor:pointer;" class="dateinput" placeholder="其他日期">
-        <!--button id="changedate" type="button" class="btn btn-xs btn-info">選擇其他日期</button-->
-    </div>
-  </div>
-  <br>
+<div class="container-fluid" id="ourdiv" style="background-color:#FFFFFF;width: 710px;height:1100;">
   <div class="row">
     <div class="col-md-12" id='chart'></div>
   </div>
@@ -136,13 +129,13 @@
               Amount
             </th>
             <th class="text-center">
-              Month Actual
+              ACT(MON)
             </th>
             <th class="text-center">
-              Month Budget
+              Budget(MON)
             </th>
             <th class="text-center">
-              Achievement %
+              ACH.%
             </th>
           </tr>
         </thead>
@@ -505,5 +498,12 @@
         } 
 --> 
 </script> 
+<script type="text/javascript">
+  $(function(){
+    setTimeout(function(){
+      $.getScript("../bootstrap331/dist/js/pic.js");
+    },10000)
+  })
+</script>
 </body>
 </html>
