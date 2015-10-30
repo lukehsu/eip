@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\user;
 use App\dailyreport;
 use App\hareport;
+use App\boehringer;
 use App\boramonthbudget;
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
@@ -386,8 +387,85 @@ class ExcelController extends Controller {
         echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }
     }
-    public function api()
+
+    public function boehringer()
     {
-        return view('api');
+
+        $objPHPExcel = new \PHPExcel();
+        //$inputFileType = 'Excel5';    //這個是讀舊版的 
+        $inputFileType = 'Excel2007';   //這個2003以上的 
+        //另一種寫法
+        //print_r (scandir(dirname(__FILE__))) ;
+        //自動撈檔名 下面兩行一種是linux專用一種是windows
+        $file = glob(dirname(__FILE__).'\hareport\*.*');
+        //$file = glob(dirname(__FILE__).'/hareport/*.*');
+        //$file = $file[0];
+        //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
+        $check = count($file);
+        if ($check<1) 
+        {
+            echo  "<script type='text/javascript'>setTimeout(self.close(),10000);</script>"; 
+        }
+        else
+        {  
+        //和安的因為資料有重複需要刪掉後再加入
+        $monstart = date('Y-m-01');    
+        echo  $monstart;
+        $deldata = boehringer::where('date', '>=', $monstart)->delete();  
+        $inputFileName = $file[0];
+        echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
+        $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
+        $objPHPExcel = $objReader->load($inputFileName); 
+        $sheet = $objPHPExcel->getSheet(0); 
+        $highestRow = $sheet->getHighestRow(); //取得總行數 
+        $highestColumn = $sheet->getHighestColumn(); //取得列（英文顯示）
+        //$objWorksheet = $objPHPExcel->getActiveSheet();//取得總行數(不指定sheet寫法) 
+        //$highestRow = $objWorksheet->getHighestRow();//取得總列數(不指定sheet寫法)  
+        echo 'highestRow='.$highestRow ; 
+        echo "<br>"; 
+        //$highestColumn = $objWorksheet->getHighestColumn();//我不知道這一行到底是幹嘛的
+        $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);//列數轉化成數字 
+        echo 'highestColumnIndex='.$highestColumnIndex.'test'; 
+        echo "<br />"; 
+        $headtitle=array(); 
+        $test = null;
+        $a = null;
+        for ($row = 2;$row <= $highestRow;$row++) 
+        { 
+            $strs=array(); 
+        //注意highestColumnIndex的列數索引從0開始 
+            for ($col = 0;$col <= $highestColumnIndex;$col++) 
+            {  
+                $strs[$col] = $sheet->getCellByColumnAndRow($col, $row)->getValue();//宣告陣列長度
+            }  
+                $info = array( 
+                'word0'=>"$strs[0]", 
+                'word1'=>"$strs[1]", 
+                'word2'=>"$strs[2]", 
+                'word3'=>"$strs[3]",  
+                'word4'=>"$strs[4]",
+                'word5'=>"$strs[5]",               
+                'word6'=>"$strs[6]",
+                'word7'=>"$strs[7]", 
+                'word8'=>"$strs[8]", 
+                ); 
+                //寫入資料庫了 
+                $alldatabase = new boehringer ;
+                $alldatabase->SaleType=$info['word0'];
+                $alldatabase->SalesOrder=$info['word1'];
+                $alldatabase->CustomerNo=$info['word2'];            
+                $alldatabase->ItemNo=$info['word3'];
+                $alldatabase->Date=$info['word4'];
+                $alldatabase->QTY=$info['word5'];
+                $alldatabase->Amount=$info['word6'];
+                $alldatabase->GUINo=$info['word7'];
+                $alldatabase->RECID=$info['word8'];
+                $alldatabase->save();
+                print_r($info); 
+                echo '<br />'; 
+        } 
+        echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        }
     }
+
 }

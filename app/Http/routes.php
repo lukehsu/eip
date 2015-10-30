@@ -46,7 +46,7 @@ Route::get('nonesendunidiary/{todaydate}' , 'AutosendController@nonesendunidiary
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
 Route::get('haexcel', 'ExcelController@haexcel');
-
+Route::get('boehringer', 'ExcelController@boehringer');
 //TV
 Route::get('tv', 'TvController@tv');
 

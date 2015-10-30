@@ -89,10 +89,10 @@
             </div>    
             <div class="col-md-3" >
                 <div class="row">
-                    <div class="col-md-12"><label>回覆意見:</label><textarea style="border:2px #ccc solid;border-radius:10px;width:100%;"  rows="8"  cols="20" {!!$disable!!}></textarea></div>
+                    <div class="col-md-12"><label>回覆意見:</label><textarea id="response"  style="border:2px #ccc solid;border-radius:10px;width:100%;"  rows="8"  cols="20" {!!$disable!!}></textarea></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><label>單據下一流程:</label><br>{!!$name!!}<br>↓<br>{!!$dep!!}主管</div>
+                    <div class="col-md-12" style="margin-top:90px"><!--label>單據下一流程:</label><br>{!!$name!!}<br>↓<br>{!!$dep!!}主管--></div>
                 </div>
                 <div class="row">
                     <div class="col-md-6" style="margin-top:63px;">
@@ -154,7 +154,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/eip/public/itreceive',
-                    data: {ordernumber: $("#ordernumber").text() , dep: $("#dep").val(), date: $("#date").val() , enumber: $("#enumber").val() , name: $("#name").val() , items: $("#hiddenitems").val() , description: $("#description").val()  },
+                    data: {ordernumber: $("#ordernumber").text() , dep: $("#dep").val(), date: $("#date").val() , enumber: $("#enumber").val() , name: $("#name").val() , items: $("#hiddenitems").val() , description: $("#description").val(), response: $("#response").val()},
                     dataType: 'json',
                     headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
                     success:  function(data){
@@ -174,7 +174,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/eip/public/itrespone',
-                    data: {ordernumber: $("#ordernumber").text() , dep: $("#dep").val(), date: $("#date").val() , enumber: $("#enumber").val() , name: $("#name").val() , items: $("#hiddenitems").val() , description: $("#description").val(), itresponse: $("#itresponse").val()},
+                    data: {ordernumber: $("#ordernumber").text() , dep: $("#dep").val(), date: $("#date").val() , enumber: $("#enumber").val() , name: $("#name").val() , items: $("#hiddenitems").val() , description: $("#description").val()},
                     dataType: 'json',
                     headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
                     success:  function(data){

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\user;
 use App\hareport;
+use App\boehringer;
 use App\dailyreport;//bora 每日業績
 use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
@@ -213,7 +214,16 @@ class MainController extends Controller {
 
                     break;
             }    
+        }   
+        //百靈佳戀多眠另外再算一次
+        $dailyreportstable = boehringer::where('Date','=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $amount = $dailyreport->Amount;
+            $qty = $dailyreport->QTY;
+            $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount;
+            $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ;
         }    
+           
         //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
@@ -310,6 +320,12 @@ class MainController extends Controller {
                  break;
             }    
         }  
+        //百靈佳戀多眠另外再算一次
+        $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $amount = $dailyreport->Amount;
+            $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
+        }    
         //每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\user;
 use App\hareport;
+use App\boehringer;
 use App\dailyreport;//bora 每日業績
 use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
@@ -209,7 +210,16 @@ class AutosendController extends Controller {
 
                     break;
             }    
-        }    
+        }
+
+        //百靈佳戀多眠另外再算一次
+        $dailyreportstable = boehringer::where('Date','=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $amount = $dailyreport->Amount;
+            $qty = $dailyreport->QTY;
+            $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount;
+            $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ;
+        }     
         //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
@@ -306,6 +316,12 @@ class AutosendController extends Controller {
                  break;
             }    
         }  
+        //百靈佳戀多眠另外再算一次
+        $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+            $amount = $dailyreport->Amount;
+            $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
+        }   
         //每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
         $MB = array(      'Pitavol' => 0 , 
@@ -1586,13 +1602,14 @@ class AutosendController extends Controller {
       //Linux
       //$bora = dirname(__FILE__).'/sendreport/'.$todaydate.'bora.jpg';
       //$union = dirname(__FILE__).'/sendreport/'.$todaydate.'union.jpg';
-
+      $to = ['luke.hsu@bora-corp.com','sean1606@gmail.com'];
       //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
-      $to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
+      //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','sean1606@gmail.com'];
+      //$to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
       //信件的內容
-      $data = [];
+      $data = ['borapic'=>$bora,'unionpic'=>$union];
       //寄出信件
-      Mail::send('mail.sendreport', [], function($message) use ($to,$bora,$union,$todaydate) 
+      Mail::send('mail.sendreport', $data, function($message) use ($to,$bora,$union,$todaydate) 
       {
          $message->to($to)->subject($todaydate.'業績日報表')->attach($bora)->attach($union);
       });

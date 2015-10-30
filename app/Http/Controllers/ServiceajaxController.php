@@ -1,6 +1,6 @@
 <?php 
 namespace App\Http\Controllers;
-use App\user;
+use App\User;
 use App\itticket;
 use App\Http\Requests;
 use Hash,Input,Request,Response,Auth,Redirect,Log,Mail;
@@ -41,6 +41,7 @@ class ServiceajaxController extends Controller {
 		foreach ($users as $user) {
 			$level = $user['level'];
 		}
+		// 如果level是空就打上manager 不然就打 GM 主要是判斷流程
 		if (empty($level)) 
 		{
 			$level = 'manager';
@@ -93,15 +94,36 @@ class ServiceajaxController extends Controller {
     	else
     	{
     		$processcheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->count();
-    		if ($processcheck==1) {
+    		$processcheckf = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->count();
+    		if ($processcheckf==1) 
+    		{
+    			$response = Input::get('response');
+    			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->update(['process' => 'close','itresponse'=>$response]);
+    			$toit = 'luke.hsu@bora-corp.com';
+                $users = User::where('name','=',$enumber)->get(); 
+                foreach ($users as $user) {
+                    $mail = $user['email'];
+                }
+                $tomyself = $mail;
+    			//信件的內容
+        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>$response);
+        		//寄出信件
+        		Mail::send('mail.itokmail', $data, function($message) use ($toit,$tomyself) 
+        		{
+        			$message->to($toit)->to($tomyself)->subject('資訊需求單(完成)');
+        		});
+    		}
+    		elseif ($processcheck==1) 
+    		{
     			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->update(['process' => 'finish']);
     			$toit = 'luke.hsu@bora-corp.com';
-        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
+    			//信件的內容
+        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description);
         		//寄出信件
         		Mail::send('mail.itmail', $data, function($message) use ($toit) 
         		{
         			$message->to($toit)->subject('資訊需求單(簽核流程已完成)');
-        		});
+        		});    			
     		}
     		else
     		{	
@@ -116,13 +138,8 @@ class ServiceajaxController extends Controller {
         			$message->to($toit)->subject('資訊需求單(簽核流程已完成)');
         		});
     		}	
-    	}	
-        //產生新的單號
-        //$today = date('Y-m-d');
-	    //$ordernumber = itticket::where('date','=',$today)->get()->max('ordernumber');
-		//$ordernumber = str_replace('-','',$ordernumber);
-		//$ordernumber = substr($ordernumber,2,12);
-		//$ordernumber = $ordernumber + 1;
+    	}
+    	
         if (Request::ajax()) {
             return response()->json(array(
                 'ordernumber' => 'ok'
