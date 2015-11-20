@@ -123,4 +123,12 @@ class ServiceController extends Controller {
 						  'none'=>$none,
 						]);
 	}
+
+    public function oprocess()
+    {
+
+    $ppApp = new \com_exception("PowerPoint.Application");
+
+		return view('oprocess');
+	}
 }

@@ -17,8 +17,6 @@
 
 //登入
 Route::get('login', 'MainController@login');
-
-//這條沒做了但是先留著
 Route::post('login', 'LoginController@login');
 
 //登出
@@ -33,6 +31,7 @@ Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
+Route::get('itemscount' , 'MainController@itemscount');
 
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
@@ -47,14 +46,23 @@ Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
 Route::get('haexcel', 'ExcelController@haexcel');
 Route::get('boehringer', 'ExcelController@boehringer');
+Route::get('boracm', 'ExcelController@boracm');
+Route::get('everymonth' , 'ExcelController@everymonth');
+
+//頁面轉出excel
+Route::post('transferajax' , 'ServiceajaxController@transferajax');
 //TV
 Route::get('tv', 'TvController@tv');
 
 //單據
 Route::get('app/it', 'ServiceController@it');
+Route::get('oprocess', 'ServiceController@oprocess');
 Route::post('itreceive', 'ServiceajaxController@itreceive');
 Route::get('{ordernumber}/it', 'ServiceController@ordernumber');
 Route::post('quickok', 'ServiceajaxController@quickok');
+Route::post('itemscountajax', 'ServiceajaxController@itemscountajax');
+Route::post('medicinecode', 'ServiceajaxController@medicinecode');
+Route::post('company', 'ServiceajaxController@company');
 //ajax日曆呼叫
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
@@ -70,8 +78,16 @@ Route::get('monitor', function()
 Route::get('access', 'AdminController@access');
 
 
+//沒有AD的使用者註冊
+Route::get('sign', 'MainController@sign');
+Route::post('signok', 'LoginController@signok');
+
 //test
 Route::get('api', 'ExcelController@api');
+Route::get('test', 'LoginController@test');
+
+
+
 
 /*
 測試中間層

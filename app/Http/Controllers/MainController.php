@@ -8,6 +8,9 @@ use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\logistic;
+use App\everymonth;
+use App\boraallaccount;
+use App\boraitem;
 use App\medicinebudgetbypersonal;
 use App\Http\Requests;
 use App\personalmonthbudget;
@@ -33,7 +36,7 @@ class MainController extends Controller {
   public function __construct()
   {   //guest 是原來的
     //$this->middleware('guest');
-    $this->middleware('logincheck', ['except' => ['login','show']]);
+    $this->middleware('logincheck', ['except' => ['login','show','sign']]);
   }
   /**
    * Show the application welcome screen to the user.
@@ -46,7 +49,11 @@ class MainController extends Controller {
         return view('index');
     }
 
-
+    public function sign()
+    {
+      return view('sign');
+    }
+    
     public function boradiary($todaydate)
     {
 
@@ -1368,7 +1375,7 @@ class MainController extends Controller {
         }
         $totalmc = round(($totalma / $totalmb) * 100) ;
         $totalmcc = round(($totalmaa / $totalmbb) * 100) ;
-        $totalml = $totalma / $totalml ;
+        $totalml = 0 ;
         $totalmll = $totalmaa / $totalmll ;
         if ($totalml<1) 
         {
@@ -1985,5 +1992,24 @@ class MainController extends Controller {
                                              'user'=>$userinfo['cname'],
                                              'chardate'=>$chardate
                                             ]);
+    }
+
+    public function itemscount()
+    {
+      $seasons = array('Q1','Q2','Q3','Q4');
+      $boraitems = boraitem::all();
+      $allitems = array();
+      foreach ($boraitems as $boraitem) {
+        array_push($allitems, $boraitem['itemchname'].'|'.$boraitem['itemenname']) ;
+      }
+      $boraallaccount = boraallaccount::all();
+      $allaccounts = array();
+      foreach ($boraallaccount as $allaccount) {
+        array_push($allaccounts, $allaccount['emponame']) ;
+      }
+      return view('itemscount',['allitems'=>$allitems,
+                                'allaccounts'=>$allaccounts,
+                                'seasons'=>$seasons,
+        ]);
     }
 }
