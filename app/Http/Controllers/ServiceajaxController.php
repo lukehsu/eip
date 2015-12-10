@@ -5,6 +5,8 @@ use App\itticket;
 use App\Http\Requests;
 use App\boraitem;
 use App\everymonth;
+use App\itservicerank;
+use App\salesmen;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel5;
@@ -83,11 +85,20 @@ class ServiceajaxController extends Controller {
 			$insertitticket->statue = 'N' ;
 			$insertitticket->process = $level  ;
         	$insertitticket->save();
-        	//填寫收信人信箱  	
-        	$users = User::where('dep','=',$dep)->where('level','=','manager')->get(); 
-			foreach ($users as $user) {
-				$mail = $user['email'];
-			}
+        	//填寫收信人信箱 
+            $levelcheck = User::where('name','=',$enumber)->where('level','=','')->count();  	
+            if ($levelcheck>=1) 
+            {
+                $users = User::where('dep','=',$dep)->where('level','=','manager')->get(); 
+                foreach ($users as $user) {
+                    $mail = $user['email'];
+                }
+            }
+            else
+            {
+                //請改成Bobby的
+                $mail = 'sean1606@gmail.com';
+            }    
         	$todepmanager = $mail;
         	//信件的內容
         	$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
@@ -105,16 +116,16 @@ class ServiceajaxController extends Controller {
     		{
     			$response = Input::get('response');
     			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->update(['process' => 'close','itresponse'=>$response]);
-    			$toit = 'luke.hsu@bora-corp.com';
+    			//$toit = 'luke.hsu@bora-corp.com';
                 $users = User::where('name','=',$enumber)->get(); 
                 foreach ($users as $user) {
                     $mail = $user['email'];
                 }
                 $tomyself = $mail;
     			//信件的內容
-        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>$response);
+        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>$response,'comment'=>'http://127.0.0.1/eip/public/'.Input::get('ordernumber').'/star');
         		//寄出信件
-        		Mail::send('mail.itokmail', $data, function($message) use ($toit,$tomyself) 
+        		Mail::send('mail.itokmail', $data, function($message) use ($tomyself) 
         		{
         			$message->to($toit)->to($tomyself)->subject('資訊需求單(完成)');
         		});
@@ -122,7 +133,7 @@ class ServiceajaxController extends Controller {
     		elseif ($processcheck==1) 
     		{
     			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->update(['process' => 'finish']);
-    			$toit = 'luke.hsu@bora-corp.com';
+    			$toit = 'it@bora-corp.com';
     			//信件的內容
         		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description);
         		//寄出信件
@@ -135,7 +146,7 @@ class ServiceajaxController extends Controller {
     		{	
     			$ordernumber = Input::get('ordernumber');
     			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'GM')->update(['process' => 'finish']);
-    		    $toit = 'luke.hsu@bora-corp.com';
+    		    $toit = 'it@bora-corp.com';
         		//信件的內容
         		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
         		//寄出信件
@@ -188,12 +199,20 @@ class ServiceajaxController extends Controller {
     {
         // $ordernums 是一個陣列
         $ordernums = Input::get('ordernum');
-        /*$users = User::where('name','=',Auth::user()->name)->get();   
+        $users = User::where('name','=',Auth::user()->name)->get();   
+
         foreach ($users as $user) {
-            # code...
-        }*/
-        foreach ($ordernums as $ordernum) {
-            $ticketupdate = itticket::where('ordernumber', '=', $ordernum)->update(['process' => 'finish']);
+            
+        }
+        foreach ($ordernums as $ordernum) 
+        {
+            if ($user['dep']=='資訊部') {
+                $ticketupdate = itticket::where('ordernumber', '=', $ordernum)->update(['process' => 'close']);               
+            }
+            else
+            {    
+                $ticketupdate = itticket::where('ordernumber', '=', $ordernum)->update(['process' => 'finish']);
+            }
             $ticketupdates = itticket::where('ordernumber', '=', $ordernum)->get();
             foreach ($ticketupdates as $ticketupdate) {
                 $dep = $ticketupdate->dep ;
@@ -203,14 +222,29 @@ class ServiceajaxController extends Controller {
                 $items = $ticketupdate->items ;
                 $description = $ticketupdate->description ;
             }
-            $toit = 'luke.hsu@bora-corp.com';
-            //信件的內容
-            $data = array('ordernumber'=>$ordernum,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
-            //寄出信件
-            Mail::send('mail.itmail', $data, function($message) use ($toit) 
+            if ($user['dep']=='資訊部') 
             {
-                $message->to($toit)->subject('資訊需求單(簽核流程已完成)');
-            });
+                $mail = user::where('name','=',$enumber)->get();
+                $tomyself = null;
+                foreach ($mail as $email) {
+                    $tomyself = $email['email'];
+                }
+
+                $data = array('ordernumber'=>$ordernum,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>'','comment'=>'http://127.0.0.1/eip/public/'.$ordernum.'/star');
+                Mail::send('mail.itokmail', $data, function($message) use ($tomyself) 
+                {
+                    $message->to($tomyself)->subject('資訊需求單(完成)');
+                });         
+            }
+            else
+            {    
+                $toit = 'it@bora-corp.com';
+                $data = array('ordernumber'=>$ordernum,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
+                Mail::send('mail.itmail', $data, function($message) use ($toit) 
+                {
+                    $message->to($toit)->subject('資訊需求單(簽核流程已完成)');
+                });
+            }
         }
         if (Request::ajax()) {
             return response()->json(array(
@@ -235,20 +269,20 @@ class ServiceajaxController extends Controller {
         if ($accname=='請選擇業務') {
             $accname = '';
         }
-        if ($season=='請選擇季度') {
+        if ($season=='請選擇年分') {
             $season = '';
         }
         if (  $medicine <> '' and $accname <> '' and $season <> '') 
         {  
-            $reports = everymonth::where('itemno','=',$itemcode)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('itemno','=',$itemcode)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
         } 
         elseif ($accname  <> '' and $season  <> '' ) 
         {
-            $reports = everymonth::where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
         } 
         elseif ($medicine <> '' and $season  <> '' ) 
         {
-            $reports = everymonth::where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
         } 
         elseif ($medicine <> '' and $accname <> '' ) 
         {
@@ -256,7 +290,7 @@ class ServiceajaxController extends Controller {
         } 
         elseif ($season <> '' ) 
         {
-            $reports = everymonth::all();
+            $reports = everymonth::where('years','=',$season)->orderBy('emponame','DESC')->get();
         } 
         elseif ($accname <> '' ) 
         {
@@ -271,62 +305,7 @@ class ServiceajaxController extends Controller {
         $report = null;
         foreach ($reports as $reporttemp) 
         {  
-            switch ($season) {
-                case 'Q1':
-                    $reporttemp['allqty'] = 0 ;
-                    $reporttemp['aprqty'] = '---';
-                    $reporttemp['mayqty'] = '---';
-                    $reporttemp['junqty'] = '---';
-                    $reporttemp['julqty'] = '---';
-                    $reporttemp['augqty'] = '---';
-                    $reporttemp['sepqty'] = '---';
-                    $reporttemp['octqty'] = '---';
-                    $reporttemp['novqty'] = '---';
-                    $reporttemp['decqty'] = '---';                    
-                    break;
 
-                case 'Q2':
-                    $reporttemp['allqty'] = 0 ;
-                    $reporttemp['janqty'] = '---';
-                    $reporttemp['febqty'] = '---';
-                    $reporttemp['marqty'] = '---';
-                    $reporttemp['julqty'] = '---';
-                    $reporttemp['augqty'] = '---';
-                    $reporttemp['sepqty'] = '---';
-                    $reporttemp['octqty'] = '---';
-                    $reporttemp['novqty'] = '---';
-                    $reporttemp['decqty'] = '---';                     
-                    break;
-
-                case 'Q3':
-                    $reporttemp['allqty'] = 0 ;
-                    $reporttemp['janqty'] = '---';
-                    $reporttemp['febqty'] = '---';
-                    $reporttemp['marqty'] = '---';
-                    $reporttemp['aprqty'] = '---';
-                    $reporttemp['mayqty'] = '---';
-                    $reporttemp['junqty'] = '---';
-                    $reporttemp['octqty'] = '---';
-                    $reporttemp['novqty'] = '---';
-                    $reporttemp['decqty'] = '---';                    
-                    break;
-
-                case 'Q4':
-                    $reporttemp['allqty'] = 0 ;
-                    $reporttemp['janqty'] = '---';
-                    $reporttemp['febqty'] = '---';
-                    $reporttemp['marqty'] = '---';
-                    $reporttemp['aprqty'] = '---';
-                    $reporttemp['mayqty'] = '---';
-                    $reporttemp['junqty'] = '---';
-                    $reporttemp['julqty'] = '---';
-                    $reporttemp['augqty'] = '---';
-                    $reporttemp['sepqty'] = '---';                   
-                    break;                
-                default:
-                    
-                    break;
-            }
             $report .= '<tr>';
             $report .= '<td >'.$reporttemp['emponame'].'</td>';
             $report .= '<td >'.$reporttemp['customers'].'</td>';
@@ -367,7 +346,7 @@ class ServiceajaxController extends Controller {
 
     public function transferajax() 
     {
-
+        ini_set('memory_limit', '256M');
         $medicine = Input::get('medicinefrom');
         $accname = Input::get('accnamefrom');
         $season = Input::get('seasonfrom');
@@ -380,20 +359,20 @@ class ServiceajaxController extends Controller {
         if ($accname=='請選擇業務') {
             $accname = '';
         }
-        if ($season=='請選擇季度') {
+        if ($season=='請選擇年分') {
             $season = '';
         }
         if (  $medicine <> '' and $accname <> '' and $season <> '') 
         {  
-            $reports = everymonth::where('itemno','=',$itemcode)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('itemno','=',$itemcode)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
         } 
         elseif ($accname  <> '' and $season  <> '' ) 
         {
-            $reports = everymonth::where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('emponame','=',$accname)->orderBy('emponame','DESC')->get();
         } 
         elseif ($medicine <> '' and $season  <> '' ) 
         {
-            $reports = everymonth::where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
+            $reports = everymonth::where('years','=',$season)->where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
         } 
         elseif ($medicine <> '' and $accname <> '' ) 
         {
@@ -401,7 +380,7 @@ class ServiceajaxController extends Controller {
         } 
         elseif ($season <> '' ) 
         {
-            $reports = everymonth::all();
+            $reports = everymonth::where('years','=',$season)->orderBy('emponame','DESC')->get();
         } 
         elseif ($accname <> '' ) 
         {
@@ -414,57 +393,63 @@ class ServiceajaxController extends Controller {
 
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
-        $objPHPExcel->getActiveSheet()->setCellValue('A1','業務');
-        $objPHPExcel->getActiveSheet()->setCellValue('B1','客戶');
-        $objPHPExcel->getActiveSheet()->setCellValue('C1','合計');
-        $objPHPExcel->getActiveSheet()->setCellValue('D1','1月');
-        $objPHPExcel->getActiveSheet()->setCellValue('E1','2月.');
-        $objPHPExcel->getActiveSheet()->setCellValue('F1','3月');
-        $objPHPExcel->getActiveSheet()->setCellValue('G1','Q1');
-        $objPHPExcel->getActiveSheet()->setCellValue('H1','4月');
-        $objPHPExcel->getActiveSheet()->setCellValue('I1','5月');
-        $objPHPExcel->getActiveSheet()->setCellValue('J1','6月');
-        $objPHPExcel->getActiveSheet()->setCellValue('K1','Q2');
-        $objPHPExcel->getActiveSheet()->setCellValue('L1','7月');
-        $objPHPExcel->getActiveSheet()->setCellValue('M1','8月');
-        $objPHPExcel->getActiveSheet()->setCellValue('N1','9月');
-        $objPHPExcel->getActiveSheet()->setCellValue('O1','Q3');
-        $objPHPExcel->getActiveSheet()->setCellValue('P1','10月');
-        $objPHPExcel->getActiveSheet()->setCellValue('Q1','11月');
-        $objPHPExcel->getActiveSheet()->setCellValue('R1','12月');
-        $objPHPExcel->getActiveSheet()->setCellValue('S1','Q4');
+        $objPHPExcel->getActiveSheet()->setCellValue('A1','年度');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1','業務');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1','客戶');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1','商品中文名稱');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1','商品英文名稱');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1','合計');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1','1月');
+        $objPHPExcel->getActiveSheet()->setCellValue('H1','2月.');
+        $objPHPExcel->getActiveSheet()->setCellValue('I1','3月');
+        $objPHPExcel->getActiveSheet()->setCellValue('J1','Q1');
+        $objPHPExcel->getActiveSheet()->setCellValue('K1','4月');
+        $objPHPExcel->getActiveSheet()->setCellValue('L1','5月');
+        $objPHPExcel->getActiveSheet()->setCellValue('M1','6月');
+        $objPHPExcel->getActiveSheet()->setCellValue('N1','Q2');
+        $objPHPExcel->getActiveSheet()->setCellValue('O1','7月');
+        $objPHPExcel->getActiveSheet()->setCellValue('P1','8月');
+        $objPHPExcel->getActiveSheet()->setCellValue('Q1','9月');
+        $objPHPExcel->getActiveSheet()->setCellValue('R1','Q3');
+        $objPHPExcel->getActiveSheet()->setCellValue('S1','10月');
+        $objPHPExcel->getActiveSheet()->setCellValue('T1','11月');
+        $objPHPExcel->getActiveSheet()->setCellValue('U1','12月');
+        $objPHPExcel->getActiveSheet()->setCellValue('V1','Q4');
         $no = 2 ;
 
         foreach ($reports as $reporttemp)  {
 
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , $reporttemp['emponame'] );  
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $reporttemp['customers'] );  
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , $reporttemp['allqty'] ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , $reporttemp['years'] ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $reporttemp['emponame'] );  
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , $reporttemp['customers'] );
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , $reporttemp['itemchname'] ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , $reporttemp['itemenname'] );  
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['allqty'] ); 
 
 
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , $reporttemp['janqty']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , $reporttemp['febqty']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['marqty'] ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , $reporttemp['janqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $reporttemp['febqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('I'.$no , $reporttemp['marqty'] ); 
             $s1 = $reporttemp['janqty']+$reporttemp['febqty']+$reporttemp['marqty'];
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , $s1  );
+            $objPHPExcel->getActiveSheet()->setCellValue('J'.$no , $s1  );
 
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $reporttemp['aprqty'] );    
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$no , $reporttemp['mayqty']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('J'.$no , $reporttemp['junqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('K'.$no , $reporttemp['aprqty'] );    
+            $objPHPExcel->getActiveSheet()->setCellValue('L'.$no , $reporttemp['mayqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('M'.$no , $reporttemp['junqty']); 
             $s2 = $reporttemp['aprqty']+$reporttemp['mayqty']+$reporttemp['junqty'];
-            $objPHPExcel->getActiveSheet()->setCellValue('K'.$no , $s2 );   
+            $objPHPExcel->getActiveSheet()->setCellValue('N'.$no , $s2 );   
 
-            $objPHPExcel->getActiveSheet()->setCellValue('L'.$no , $reporttemp['julqty'] );    
-            $objPHPExcel->getActiveSheet()->setCellValue('M'.$no , $reporttemp['augqty']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('N'.$no , $reporttemp['sepqty']);
+            $objPHPExcel->getActiveSheet()->setCellValue('O'.$no , $reporttemp['julqty'] );    
+            $objPHPExcel->getActiveSheet()->setCellValue('P'.$no , $reporttemp['augqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('Q'.$no , $reporttemp['sepqty']);
             $s3 = $reporttemp['julqty']+$reporttemp['augqty']+$reporttemp['sepqty'];
-            $objPHPExcel->getActiveSheet()->setCellValue('O'.$no , $s3 ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('R'.$no , $s3 ); 
 
-            $objPHPExcel->getActiveSheet()->setCellValue('P'.$no , $reporttemp['octqty'] );    
-            $objPHPExcel->getActiveSheet()->setCellValue('Q'.$no , $reporttemp['novqty']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('R'.$no , $reporttemp['decqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('S'.$no , $reporttemp['octqty'] );    
+            $objPHPExcel->getActiveSheet()->setCellValue('T'.$no , $reporttemp['novqty']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('U'.$no , $reporttemp['decqty']); 
             $s4 = $reporttemp['octqty']+$reporttemp['novqty']+$reporttemp['decqty'];
-            $objPHPExcel->getActiveSheet()->setCellValue('S'.$no , $s4); 
+            $objPHPExcel->getActiveSheet()->setCellValue('V'.$no , $s4);  
             
             $no = $no + 1;
     
@@ -493,7 +478,8 @@ class ServiceajaxController extends Controller {
     {
 
         $medicine = Input::get('medicine');
-        $allcodes = boraitem::where('itemchname','=',$medicine)->get();
+        $season = Input::get('season');
+        $allcodes = boraitem::where('years','=',$season)->where('itemchname','=',$medicine)->get();
         $codes = array();
 
         foreach ($allcodes as $code) {
@@ -512,7 +498,9 @@ class ServiceajaxController extends Controller {
     {
 
         $company = Input::get('company');
-        $allcodes = boraitem::all();
+        $season = Input::get('season');
+
+        $allcodes = boraitem::where('years','=',$season)->get();
         $codes = array();
         if ($company=='保瑞') 
         {
@@ -554,5 +542,58 @@ class ServiceajaxController extends Controller {
         } 
     }
 
+    public function itservicerank()
+    {
+        $rank = Input::get('rank');
+        $comment = Input::get('comment');  
+        $ordernumber = Input::get('ordernumber');
+        $servicerank = new itservicerank;
+        $servicerank->ordernumber = $ordernumber;
+        $servicerank->enumber = Auth::user()->name;
+        $servicerank->rank = $rank;
+        $servicerank->comment = $comment;
+        $servicerank->save();
+        if (Request::ajax()) 
+        {
+            return response()->json(array(
+                'status'=>'ok',
+            ));
+        } 
+    }
 
+    public function accountreportajax()
+    {
+        $day = Input::get('day');
+        $workon = Input::get('workon');
+        $workoff = Input::get('workoff');
+        $username= Input::get('username');
+        $usernumber = Input::get('usernumber');
+        $allinfos = Input::get('allinfo');
+        foreach ($allinfos as $allinfo) 
+        {
+            $insert = new salesmen;
+            $insert->reportday = $day ;
+            $insert->username = $username ;
+            $insert->usernumber = $usernumber ;
+            $insert->workon = $workon ;
+            $insert->workoff = $workoff ;
+            $insert->visit = $allinfo['0'];
+            $insert->where = $allinfo['1'];
+            $insert->division = $allinfo['2'];
+            $insert->consumer = $allinfo['3'];
+            $insert->who = $allinfo['4'];
+            $insert->medicine = $allinfo['5'];
+            $insert->category = $allinfo['6'];
+            $insert->talk = $allinfo['7'];
+            $insert->other = $allinfo['8'];
+            $insert->save();
+        }
+
+        if (Request::ajax()) 
+        {
+            return response()->json(array(
+                'status'=>'ok',
+            ));
+        } 
+    }
 }

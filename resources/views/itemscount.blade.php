@@ -24,10 +24,32 @@
 </head>
 <body style="font-family:微軟正黑體">
 <div class="container-fluid">
-    @include('includes.navbar')
-    <!--第一區-->    
+    @include('includes.navbar')  
     <div class="row">
-        <div  id="searcha12" class="col-md-offset-1 col-md-3" style="display:block;width:340px"  >
+        <!--頁面上的加號-->  
+        <div  class="col-md-1">
+            <span id="plus1" class="fui-plus-circle" style="padding:28px;"></span>
+            <p id="pp1" class="triangle-border left" style="display:none;position:absolute;z-index:10;top:-32px;left:46px;cursor: pointer;" ><!--<span class="plusc">季度</span><br>--><span class="plusa">藥品</span><br><span class="plusb">業務</span></p>
+        </div>
+        <!--第一區-->
+        <div id="searchc" class="col-md-2" style="display:block;width:230px" >
+            <!--<div style="position:absolute;z-index:9;top:-14px;left:200px;cursor: pointer"><span id="close3" class="fui-cross-circle" ></span></div>-->
+            <div class="wrapper-demo" >
+                <div name="items"  id="dd3" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >
+                    <input type="hidden" name="season" id="season" value="">
+                    <span id="items3">請選擇年分</span>
+                    <ul  class="dropdown utscroll"  >
+                        @foreach($seasons as $season)
+                            <li><a href="#"><i></i>
+                            {!!$season!!}
+                            </a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+       <!--第二區-->  
+        <div  id="searcha12" class="col-md-3" style="display:none;width:340px"  >
             <div style="position:absolute;z-index:9;top:-14px;left:310px;cursor: pointer"><span id="close1" class="fui-cross-circle"></span></div>
             <div class="wrapper-demo" >
                 <div name="items" id="dd12" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >
@@ -47,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <!--第二區-->
+        <!--第三區-->
         <div id="searchb" class="col-md-2" style="display:none;width:230px">
             <div style="position:absolute;z-index:9;top:-14px;left:200px;cursor: pointer"><span id="close2" class="fui-cross-circle" ></span></div>
             <div class="wrapper-demo" >
@@ -64,31 +86,9 @@
                 </div>
             </div>
         </div>
-        <!--第三區-->
-        <div id="searchc" class="col-md-2" style="display:none;width:230px" >
-            <div style="position:absolute;z-index:9;top:-14px;left:200px;cursor: pointer"><span id="close3" class="fui-cross-circle" ></span></div>
-            <div class="wrapper-demo" >
-                <div name="items"  id="dd3" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >
-                    <input type="hidden" name="season" id="season" value="">
-                    <span id="items3">請選擇季度</span>
-                    <ul  class="dropdown utscroll"  >
-                        @foreach($seasons as $season)
-                            <li><a href="#"><i></i>
-                            {!!$season!!}
-                            </a></li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
-    <div class="row" > 
-        <!--頁面上的加號-->   
-        <div  class="col-md-1">
-            <span id="plus1" class="fui-plus-circle" style="padding:28px;"></span>
-            <p id="pp1" class="triangle-border left" style="display:none;position:absolute;z-index:10;top:-32px;left:46px;cursor: pointer;" ><span class="plusa">藥品</span><br><span class="plusb">業務</span><br><span class="plusc">季度</span></p>
-        </div>
-        <div  id="searcha" class="col-md-3" style="display:block;width:340px;margin-top:18px"  >
+    <div class="row" >  
+        <div  id="searcha" class="col-md-offset-3 col-md-3" style="display:none;width:340px;margin-top:18px"  >
             <div class="wrapper-demo" >
                 <div name="items" id="dd1" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >
                     <input type="hidden" name="medicine" id="medicine" value="">
@@ -101,7 +101,7 @@
         </div>
     </div>
     <div class="row">
-        <div  id="searcha1" class="col-md-offset-1 col-md-3" style="display:block;width:340px;margin-top:18px"  >
+        <div  id="searcha1" class="col-md-offset-3 col-md-3" style="display:none;width:340px;margin-top:18px"  >
             <div class="wrapper-demo" >
                 <div name="items" id="dd11" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >
                     <input type="hidden" name="medicinecode" id="medicinecode" value="">
@@ -439,7 +439,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/eip/public/company',
-                    data: {company:$('#items12').text().trim()},
+                    data: {company:$('#items12').text().trim(),season:$('#items3').text().trim()},
                     dataType: 'json',
                     headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
                     success:  function(data){
@@ -463,7 +463,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/eip/public/medicinecode',
-                    data: {medicine:$('#items1').text().trim()},
+                    data: {medicine:$('#items1').text().trim(),season:$('#items3').text().trim()},
                     dataType: 'json',
                     headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
                     success:  function(data){

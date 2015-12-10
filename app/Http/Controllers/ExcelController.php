@@ -582,6 +582,8 @@ class ExcelController extends Controller {
     public function everymonth()
     {
         ini_set('memory_limit', '256M');
+        $year = date('Y');
+        echo $year;
         $objPHPExcel = new \PHPExcel();
         //$inputFileType = 'Excel5';    //這個是讀舊版的 
         $inputFileType = 'Excel2007';   //這個2003以上的 
@@ -600,7 +602,7 @@ class ExcelController extends Controller {
         else
         {  
         //報表是累加的所以每天的資料要先刪除再加入
-        $deldata = everymonth::truncate();  
+        $deldata = everymonth::where('years', '>=', $year)->delete(); 
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
@@ -619,6 +621,7 @@ class ExcelController extends Controller {
         $headtitle=array(); 
         $test = null;
         $a = null;
+
         //代表只要從第八行開始且最後一行不要
         for ($row = 9;$row < $highestRow;$row++) 
         { 
@@ -667,6 +670,7 @@ class ExcelController extends Controller {
                 ); 
                 //寫入資料庫了 
                 $alldatabase = new everymonth ;
+                $alldatabase->years=$year;
                 $alldatabase->zone1=$info['word0'];
                 $alldatabase->zone2=$info['word1'];
                 $alldatabase->empono=$info['word2'];            
@@ -706,7 +710,21 @@ class ExcelController extends Controller {
                 print_r($info); 
                 echo '<br />'; 
         } 
+            //填寫收信人信箱
+            $to = ['luke.hsu@bora-corp.com'];
+            //信件的內容
+            $data = [];
+            //寄出信件
+            Mail::send('mail.mail', [], function($message) use ($to) 
+            {
+                $message->to($to)->subject('今日資料已新增');
+            });
             echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }
+    }
+
+    public function test()
+    {
+        return view('test');
     }
 }

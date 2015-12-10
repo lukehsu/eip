@@ -8,6 +8,8 @@ use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\logistic;
+use App\itticket;
+use App\itservicerank;
 use App\everymonth;
 use App\boraallaccount;
 use App\boraitem;
@@ -1996,7 +1998,7 @@ class MainController extends Controller {
 
     public function itemscount()
     {
-      $seasons = array('Q1','Q2','Q3','Q4');
+      $seasons = array('2014','2015');
       $boraitems = boraitem::all();
       $allitems = array();
       foreach ($boraitems as $boraitem) {
@@ -2011,5 +2013,40 @@ class MainController extends Controller {
                                 'allaccounts'=>$allaccounts,
                                 'seasons'=>$seasons,
         ]);
+    }
+
+    public function star()
+    {
+      $ordernumber = strstr(Request::path(),'/',true);
+      $check1 = itticket::where('enumber','=',Auth::user()->name)->where('ordernumber','=',$ordernumber)->where('process','=','close')->count();
+      $check2 = itservicerank::where('enumber','=',Auth::user()->name)->where('ordernumber','=',$ordernumber)->count();
+      $infos = itticket::where('enumber','=',Auth::user()->name)->where('ordernumber','=',$ordernumber)->where('process','=','close')->get();
+      foreach ($infos as $info) {
+        $date = $info['date'];
+        $items = $info['items'];
+        $description = $info['description'];
+        $response = $info['itresponse'];
+      }
+      //$check1=1 is itticket available and $check2=0 is itservicerank not available 
+      if ($check1==1 and $check2==0 ) {
+        return view('star',['date'=>$date,'items'=>$items,'description'=>$description,'response'=>$response,'ordernumber'=>$ordernumber]);
+      }
+      else
+      {
+        return redirect('dashboard');
+      }  
+    }
+    public function accountreport()
+    {
+        $users = user::where('name','=',Auth::user()->name)->get();
+        $username = null ;
+        $usernumber = Auth::user()->name ;
+        foreach ($users  as $user ) {
+          $username = $user['cname'];    
+        }
+        
+        return view('accountreport',[ 'username'  =>$username,
+                                      'usernumber'=>$usernumber
+                                    ]);
     }
 }

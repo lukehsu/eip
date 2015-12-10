@@ -32,7 +32,8 @@ Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
 Route::get('itemscount' , 'MainController@itemscount');
-
+Route::get('accountreport' , 'MainController@accountreport');
+Route::post('accountreportajax' , 'ServiceajaxController@accountreportajax');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');
@@ -63,6 +64,8 @@ Route::post('quickok', 'ServiceajaxController@quickok');
 Route::post('itemscountajax', 'ServiceajaxController@itemscountajax');
 Route::post('medicinecode', 'ServiceajaxController@medicinecode');
 Route::post('company', 'ServiceajaxController@company');
+Route::post('itservicerank', 'ServiceajaxController@itservicerank');
+Route::get('{ordernumber}/star', 'MainController@star');
 //ajax日曆呼叫
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
@@ -74,6 +77,10 @@ Route::get('monitor', function()
     return redirect('http://192.168.1.34/nagios/');
 });
 
+
+//測試用
+Route::get('test', 'ExcelController@test');
+
 //管理員權限
 Route::get('access', 'AdminController@access');
 
@@ -84,7 +91,7 @@ Route::post('signok', 'LoginController@signok');
 
 //test
 Route::get('api', 'ExcelController@api');
-Route::get('test', 'LoginController@test');
+//Route::get('test', 'LoginController@test');
 
 
 
