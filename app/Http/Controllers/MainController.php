@@ -11,6 +11,7 @@ use App\logistic;
 use App\itticket;
 use App\itservicerank;
 use App\everymonth;
+use App\salesmen;
 use App\boraallaccount;
 use App\boraitem;
 use App\medicinebudgetbypersonal;
@@ -2038,15 +2039,32 @@ class MainController extends Controller {
     }
     public function accountreport()
     {
-        $users = user::where('name','=',Auth::user()->name)->get();
-        $username = null ;
-        $usernumber = Auth::user()->name ;
-        foreach ($users  as $user ) {
-          $username = $user['cname'];    
-        }
+      $users = user::where('name','=',Auth::user()->name)->get();
+      $username = null ;
+      $usernumber = Auth::user()->name ;
+      foreach ($users  as $user ) {
+        $username = $user['cname'];    
+      }
+      $today = date('Y-m-d');
+
+      $ticketnumber = salesmen::where('usernumber','=',$usernumber)->where('reportday','=',$today)->count();
+      $tickets = salesmen::where('usernumber','=',$usernumber)->where('reportday','=',$today)->get();
+      $reportarray = array();
+      $ticketarray = array();
+
+      foreach ($tickets as $ticket) {
+        array_push($reportarray,$ticket['reportday'],$ticket['username'], $ticket['usernumber'], $ticket['workon'], $ticket['workoff'], $ticket['visit'], $ticket['where'],$ticket['division'],$ticket['consumer'],$ticket['who'],$ticket['medicine'],$ticket['category'],$ticket['talk'],$ticket['other']);
+        array_push($ticketarray,$reportarray);
+        $reportarray= [];
+      }
+      $ticketarray = json_encode($ticketarray);
+
+
         
-        return view('accountreport',[ 'username'  =>$username,
-                                      'usernumber'=>$usernumber
+      return view('accountreport',[ 'username'  =>$username,
+                                    'usernumber'=>$usernumber,
+                                    'ticketnumber'=>$ticketnumber,
+                                    'ticketarray'=>$ticketarray
                                     ]);
     }
 }

@@ -569,6 +569,7 @@ class ServiceajaxController extends Controller {
         $username= Input::get('username');
         $usernumber = Input::get('usernumber');
         $allinfos = Input::get('allinfo');
+        $deletetemp = salesmen::where('usernumber', '=', $usernumber)->where('reportday', '=', $day)->delete();
         foreach ($allinfos as $allinfo) 
         {
             $insert = new salesmen;

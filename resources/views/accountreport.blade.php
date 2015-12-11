@@ -151,7 +151,7 @@
             </div>
         </div>
         <!--z1是樣板end-->
-        <div id="z2">
+        <div id="z2" style="display:block">
             <div class="row">
                 <input type="hidden" name="exist" id="exist" value="1">
                 <div class="col-md-6" style="margin-top:10px">
@@ -230,15 +230,48 @@
             </div>
         </div>
         <!--php畫出暫存表格 start-->
-        
         <!--php畫出暫存表格 end-->
         <div class="row" style="margin-top:40px;margin-bottom:40px">
-            <div class="col-md-offset-4 col-md-2"><a id="temp" class="btn btn-block btn-lg btn-danger">暫存</a></div>
-            <div class="col-md-2"><a id="done" class="btn btn-block btn-lg btn-info">送出</a></div>
+            <!--div class="col-md-offset-4 col-md-2"><a id="temp" class="btn btn-block btn-lg btn-danger">暫存</a></div-->
+            <div class="col-md-offset-5 col-md-2"><a id="done" class="btn btn-block btn-lg btn-info">送出</a></div>
         </div>
     </div>
     <script type="text/javascript">
     var cloneCount = 3;
+    if ({!!$ticketnumber!!} > 0) {
+        $("#z2").slideUp("fast");
+        $("#z2 #exist").val("0");
+        $.each({!!$ticketarray!!}, function(key, data) {
+            var v = cloneCount++;
+            $('#countv').val(v);
+            $('#z1').clone(true).attr('id', 'z' + v).css('display', 'block').insertAfter($('[id^=z]:last'));
+            //下拉式選單選擇物件
+            $("#z" + v).find("#medicineul li").on("click", function() {
+                $("#z" + v + " #medicine").html($(this).text() + '<span class="caret"></span>').trim;
+            });
+            $("#z" + v).find("#categoryul li").on("click", function() {
+                $("#z" + v + " #category").html($(this).text() + '<span class="caret"></span>').trim;
+            });
+            $("#z" + v + " #refuse1").on("click", function() {
+                $("#z" + v).slideUp("slow");
+                $("#z" + v + " #exist").val("0");
+            })
+            $("#day").val(data['0']).trim;
+            $("#workon").val(data['3']).trim;
+            $("#workoff").val(data['4']).trim;
+            $("#z" + v + " #atime").val(data['5']).trim;
+            $("#z" + v + " #where").val(data['6']).trim;
+            $("#z" + v + " #division").val(data['7']).trim;
+            $("#z" + v + " #consumer").val(data['8']).trim;
+            $("#z" + v + " #who").val(data['9']).trim;
+            $("#z" + v + " #talk").val(data['12']).trim;
+            $("#z" + v + " #other").val(data['13']).trim;
+            $("#z" + v + " #medicine").html(data['10'] + '<span class="caret"></span>').trim;
+            $("#z" + v + " #category").html(data['11'] + '<span class="caret"></span>').trim;
+        });
+    };
+
+
     $(".plus1").click(function() {
         var v = cloneCount++;
         $('#countv').val(v);
@@ -268,30 +301,48 @@
     </script>
     <script type="text/javascript">
     $("#done").click(function() {
-        var countv = $("#countv").val();
-        var info = [];
-        for (var i = 2; i <= countv; i++) {
-            if ($("#z" + i + " #exist").val() > 0) {
-                var infosub = [];
-                infosub.push($("#z" + i + " #atime").val(), $("#z" + i + " #where").val(), $("#z" + i + " #division").val(), $("#z" + i + " #consumer").val(), $("#z" + i + " #who").val(), $("#z" + i + " #medicine").text(), $("#z" + i + " #category").text(), $("#z" + i + " #talk").val(), $("#z" + i + " #other").val());
-                info.push(infosub);
+        var reportday = new Date($('#day').val());
+        var nowday = new Date();
+        var r = (nowday-reportday) / (1000 * 60 * 60 * 24);
+        if ($('#day').val() == '') {
+            alert('日期尚未填入');
+        } else if (r >= 1) {
+            alert('您已超過當日送單日期');
+        } else {
+            var countv = $("#countv").val();
+            var info = [];
+            for (var i = 2; i <= countv; i++) {
+                if ($("#z" + i + " #exist").val() > 0) {
+                    var infosub = [];
+                    infosub.push($("#z" + i + " #atime").val(), $("#z" + i + " #where").val(), $("#z" + i + " #division").val(), $("#z" + i + " #consumer").val(), $("#z" + i + " #who").val(), $("#z" + i + " #medicine").text(), $("#z" + i + " #category").text(), $("#z" + i + " #talk").val(), $("#z" + i + " #other").val());
+                    info.push(infosub);
+                };
             };
-        };
-        $.ajax({
-            type: 'POST',
-            url: '/eip/public/accountreportajax',
-            data: {allinfo:info,day:$('#day').val(),workon:$('#workon').val(),workoff:$('#workoff').val(),username:$('#username').val(),usernumber:$('#usernumber').val()},
-            dataType: 'json',
-            headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
-            success:  function(data){
-                alert('!!');
-            },
-            error: function(xhr, type){
-                alert('??');                
-            }
-        });
+            $.ajax({
+                type: 'POST',
+                url: '/eip/public/accountreportajax',
+                data: {
+                    allinfo: info,
+                    day: $('#day').val(),
+                    workon: $('#workon').val(),
+                    workoff: $('#workoff').val(),
+                    username: $('#username').val(),
+                    usernumber: $('#usernumber').val()
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                },
+                success: function(data) {
+                    alert('您的日報已送出\n\n提醒您如需有要修改日報的內容請於當天晚間12點前修改完成並送出\n\n謝謝');
+                    document.location.href = "http://127.0.0.1/eip/public/dashboard";
+                },
+                error: function(xhr, type) {
+                    alert('??');
+                }
+            });
+        }
     });
     </script>
 </body>
-
 </html>
