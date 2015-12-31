@@ -7,6 +7,7 @@ use Response;
 use Auth;
 use App\User;
 use App\itticket;
+use App\useracces;
 use Hash;
 use Closure;
 use App\Http\Controllers\FlowController;
@@ -86,6 +87,11 @@ class LoginController extends Controller {
                 $user->dep = $data[0]['department'][0];
                 $user->password = Hash::Make(Input::get('password'));
                 $user->save();
+                $access = new useracces ;
+                $access->user = Input::get('name');
+                $access->access = '1';
+                $access->save();
+
               }
               else
               {

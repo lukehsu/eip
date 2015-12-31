@@ -49,15 +49,15 @@
         <div class="row" style="margin-bottom:10px">
             <form id="form1" name="form1" method="post" action="accountmanagerexcel">
             <input type="hidden" name="_token" value="{!!csrf_token()!!}">
-                <div class="col-md-offset-2 col-md-2">
+                <div class="col-md-offset-2 col-md-2" style="margin-top:30px">
                     <span id="r1" class="fui-calendar"></span>
                     <input id="startday" name="startday" type="text" placeholder="搜尋日期起點" style="border:none;border-bottom:2px green solid;">
                 </div>
-                <div class="col-md-2">
-                    <span id="r1" class="fui-calendar"></span>
+                <div class="col-md-2" style="margin-top:30px">
+                    <span id="r1" class="fui-calendar" ></span>
                     <input id="endday" name="endday"  type="text" placeholder="搜尋日期終點" style="border:none;border-bottom:2px green solid;">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" style="margin-top:30px">
                     <span class="fui-user"></span>
                     <input id="accname" name="accname" type="text" placeholder="業務人員" data-toggle="dropdown" style="border:none;border-bottom:2px green solid;">
                     <ul id="accnameul" role="menu" class="dropdown-menu">

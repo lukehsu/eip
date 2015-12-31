@@ -32,7 +32,7 @@
             <p id="pp1" class="triangle-border left" style="display:none;position:absolute;z-index:10;top:-32px;left:46px;cursor: pointer;" ><!--<span class="plusc">季度</span><br>--><span class="plusa">藥品</span><br><span class="plusb">業務</span></p>
         </div>
         <!--第一區-->
-        <div id="searchc" class="col-md-2" style="display:block;width:230px" >
+        <div id="searchc" class="col-md-2" style="display:block" >
             <!--<div style="position:absolute;z-index:9;top:-14px;left:200px;cursor: pointer"><span id="close3" class="fui-cross-circle" ></span></div>-->
             <div class="wrapper-demo" >
                 <div name="items"  id="dd3" class="wrapper-dropdown-3" tabindex="1" style="padding:3px;" >

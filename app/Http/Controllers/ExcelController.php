@@ -5,6 +5,7 @@ use App\dailyreport;
 use App\hareport;
 use App\boehringer;
 use App\boramonthbudget;
+use App\useraccess;
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\boracustomer;
@@ -725,6 +726,11 @@ class ExcelController extends Controller {
 
     public function test()
     {
+                $access = new useraccess ;
+                $access->user = '23';
+                $access->access = '1';
+                $access->save();
+
         return view('test');
     }
 }
