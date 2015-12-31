@@ -3177,6 +3177,20 @@ fieldset[disabled] .input-group-btn .btn-default.active {
   -webkit-transition: border-color .25s, color .25s;
           transition: border-color .25s, color .25s;
   }
+.caretright {
+  border-top-color: #4b6075;
+  border-bottom-color: #4b6075;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 5px;
+  vertical-align: middle;
+  border-top: 6px  solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid ;
+  -webkit-transition: border-color .25s, color .25s;
+          transition: border-color .25s, color .25s;
+  }
 .dropdown-menu,
 .select2-drop {
   z-index: 1000;

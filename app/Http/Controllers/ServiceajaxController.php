@@ -7,6 +7,7 @@ use App\boraitem;
 use App\everymonth;
 use App\itservicerank;
 use App\salesmen;
+use App\calendar;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel5;
@@ -127,7 +128,7 @@ class ServiceajaxController extends Controller {
         		//寄出信件
         		Mail::send('mail.itokmail', $data, function($message) use ($tomyself) 
         		{
-        			$message->to($toit)->to($tomyself)->subject('資訊需求單(完成)');
+        			$message->to($tomyself)->subject('資訊需求單(完成)');
         		});
     		}
     		elseif ($processcheck==1) 
@@ -563,30 +564,43 @@ class ServiceajaxController extends Controller {
 
     public function accountreportajax()
     {
+        $delay = Input::get('delay');
         $day = Input::get('day');
         $workon = Input::get('workon');
         $workoff = Input::get('workoff');
+        $leave = Input::get('leave');
         $username= Input::get('username');
         $usernumber = Input::get('usernumber');
         $allinfos = Input::get('allinfo');
         $deletetemp = salesmen::where('usernumber', '=', $usernumber)->where('reportday', '=', $day)->delete();
+        if ($delay=='1') {
+
+            $delay = '補單';
+        }
+        else
+        {
+            $delay = '正常';
+        }    
         foreach ($allinfos as $allinfo) 
         {
             $insert = new salesmen;
+            $insert->delay = $delay  ;
             $insert->reportday = $day ;
             $insert->username = $username ;
             $insert->usernumber = $usernumber ;
-            $insert->workon = $workon ;
+            $insert->workon = $workon;
             $insert->workoff = $workoff ;
+            $insert->leave  = $leave  ;
             $insert->visit = $allinfo['0'];
             $insert->where = $allinfo['1'];
             $insert->division = $allinfo['2'];
             $insert->consumer = $allinfo['3'];
             $insert->who = $allinfo['4'];
-            $insert->medicine = $allinfo['5'];
-            $insert->category = $allinfo['6'];
-            $insert->talk = $allinfo['7'];
-            $insert->other = $allinfo['8'];
+            $insert->title = $allinfo['5'];
+            $insert->medicine = $allinfo['6'];
+            $insert->category = $allinfo['7'];
+            $insert->talk = $allinfo['8'];
+            $insert->other = $allinfo['9'];
             $insert->save();
         }
 
@@ -596,5 +610,185 @@ class ServiceajaxController extends Controller {
                 'status'=>'ok',
             ));
         } 
+    }
+
+
+
+
+    public function transferdailycheck() 
+    {
+        ini_set('memory_limit', '256M');
+        $startday = Input::get('startday');
+        $endday = Input::get('endday');
+        
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->setCellValue('A1','日期');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1','星期');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1','人員');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1','上班時間');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1','下班時間');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1','休假');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1','補單');
+        $objPHPExcel->getActiveSheet()->setCellValue('H1','國定假日');
+        $no = 2 ;
+        $calendars = calendar::where('monthdate','>=',$startday)->where('monthdate','<=',$endday)->orderBy('monthdate', 'ASC')->get();
+        foreach ($calendars as $calendar ) {      
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , $calendar['monthdate']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $calendar['weekday']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , '' );
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , '' );  
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $calendar['holiday'] );
+            if ($calendar['weekday']=='星期六' or $calendar['weekday']=='星期日' or $calendar['offday']=='1') {
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->getStartColor()->setARGB('FF808080');
+            }  
+            $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->get();  
+                foreach ($reports as $reporttemp)  {
+                    $no = $no + 1;
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , ''); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , '');  
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , $reporttemp['username'] );
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , $reporttemp['workon'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , $reporttemp['workoff'] );  
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['leave'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , $reporttemp['delay']);         
+                }
+            $no = $no + 1 ;
+        }
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+        //產生header
+        $filename = "dailycheck.xlsx";
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=$filename" );
+        //header('Cache-Control: max-age=0');
+        //header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+        header("Pragma: public");
+        //Export to Excel2007 (.xlsx) 匯出成2007
+        //$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        //$objWriter->save('test.xlsx');
+        //Export to Excel5 (.xls) 匯出成2003
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+
+    }
+
+
+    public function accountmanagerajax() 
+    {
+        $startday = Input::get('startday');
+        $endday = Input::get('endday');
+        $accname = Input::get('accname');
+        $equal = '=';
+        if ($accname=='所有業務人員') {
+            $equal = '<>';
+        }
+        $reports = salesmen::where('reportday','>=',$startday)->where('reportday','<=',$endday)->where('username',$equal,$accname)->orderBy('reportday','desc')->orderBy('username','desc')->get();
+        $main = array();
+        $submain = array();
+        foreach ($reports as $ticket) {
+            array_push($submain,$ticket['reportday'],$ticket['username'], $ticket['usernumber'], $ticket['workon'], $ticket['workoff'], $ticket['visit'], $ticket['where'],$ticket['division'],$ticket['consumer'],$ticket['who'],$ticket['title'],$ticket['medicine'],$ticket['category'],$ticket['talk'],$ticket['other']);
+            array_push($main,$submain);
+            $submain = [];
+        }
+        if (Request::ajax()) 
+        {
+            return response()->json(array(
+                'status'=>'ok',
+                'main'=>$main,
+            ));
+        }    
+    }
+
+    public function accountmanagerexcel() 
+    {
+        ini_set('memory_limit', '256M');
+        $startday = Input::get('startday');
+        $endday = Input::get('endday');
+        $accname = Input::get('accname');
+        $equal = '=';
+        if ($accname=='所有業務人員') {
+            $equal = '<>';
+        }
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $objPHPExcel->getActiveSheet()->setCellValue('A1','日期');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1','星期');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1','人員');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1','上班時間');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1','下班時間');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1','休假');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1','補單');
+        $objPHPExcel->getActiveSheet()->setCellValue('H1','拜訪時間');
+        $objPHPExcel->getActiveSheet()->setCellValue('I1','地區');
+        $objPHPExcel->getActiveSheet()->setCellValue('J1','科別');
+        $objPHPExcel->getActiveSheet()->setCellValue('K1','客戶名稱');
+        $objPHPExcel->getActiveSheet()->setCellValue('L1','拜訪對象');
+        $objPHPExcel->getActiveSheet()->setCellValue('M1','職稱');
+        $objPHPExcel->getActiveSheet()->setCellValue('N1','藥品');
+        $objPHPExcel->getActiveSheet()->setCellValue('O1','類別');
+        $objPHPExcel->getActiveSheet()->setCellValue('P1','拜訪情形');
+        $objPHPExcel->getActiveSheet()->setCellValue('Q1','備註');
+        $no = 2 ;
+        $calendars = calendar::where('monthdate','>=',$startday)->where('monthdate','<=',$endday)->orderBy('monthdate', 'desc')->get();
+        foreach ($calendars as $calendar ) {      
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , $calendar['monthdate']); 
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $calendar['weekday']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , '' );
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , '' );  
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , '' ); 
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $calendar['holiday'] );
+            if ($calendar['weekday']=='星期六' or $calendar['weekday']=='星期日' or $calendar['offday']=='1') {
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'Q'.$no)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'Q'.$no)->getFill()->getStartColor()->setARGB('FF808080');
+            }  
+            $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->where('username',$equal,$accname)->orderBy('username','desc')->get();  
+                foreach ($reports as $reporttemp)  {
+                    $no = $no + 1;
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , ''); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , '');  
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , $reporttemp['username'] );
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , $reporttemp['workon'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , $reporttemp['workoff'] );  
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['leave'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , $reporttemp['delay']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $reporttemp['visit'] );
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$no , $reporttemp['where'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$no , $reporttemp['division'] );  
+                    $objPHPExcel->getActiveSheet()->setCellValue('K'.$no , $reporttemp['consumer'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$no , $reporttemp['who']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('M'.$no , $reporttemp['title']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('N'.$no , $reporttemp['medicine'] );
+                    $objPHPExcel->getActiveSheet()->setCellValue('O'.$no , $reporttemp['category'] ); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('P'.$no , $reporttemp['talk'] );  
+                    $objPHPExcel->getActiveSheet()->setCellValue('Q'.$no , $reporttemp['other'] );        
+                }
+            $no = $no + 1 ;
+        }
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+        //產生header
+        $filename = "dailycheck.xlsx";
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=$filename" );
+        //header('Cache-Control: max-age=0');
+        //header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+        header("Pragma: public");
+        //Export to Excel2007 (.xlsx) 匯出成2007
+        //$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        //$objWriter->save('test.xlsx');
+        //Export to Excel5 (.xls) 匯出成2003
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output'); 
     }
 }

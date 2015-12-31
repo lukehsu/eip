@@ -49,7 +49,10 @@
     <div class="container-fluid">
         @include('includes.navbar')
         <div class="row" style="margin-bottom:10px">
-            <div class="col-md-offset-1 col-md-2">
+            <div class="col-md-1" style="font-size:40px;font-weight:bold;color:red;">
+            補
+            </div>
+            <div class="col-md-2">
                 <span id="r1" class="fui-calendar"></span>&nbsp;&nbsp;
                 <input id="day" type="text" placeholder="日期" style="border:none;border-bottom:2px green solid;">
             </div>
@@ -361,8 +364,6 @@
         var r = (nowday-reportday) / (1000 * 60 * 60 * 24);
         if ($('#day').val() == '') {
             alert('日期尚未填入');
-        } else if (r >= 1) {
-            alert('您已超過當日送單日期');
         } else {
             var countv = $("#countv").val();
             var info = [];
@@ -377,6 +378,7 @@
                 type: 'POST',
                 url: '/eip/public/accountreportajax',
                 data: {
+                    delay:'1',
                     allinfo: info,
                     day: $('#day').val(),
                     workon: $('#workon').val(),
@@ -390,7 +392,7 @@
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 },
                 success: function(data) {
-                    alert('您的日報已送出\n\n提醒您如需有要修改日報的內容請於當天晚間12點前修改完成並送出\n\n謝謝');
+                    alert('您的日報已送出\n謝謝');
                     document.location.href = "http://127.0.0.1/eip/public/dashboard";
                 },
                 error: function(xhr, type) {

@@ -2053,7 +2053,7 @@ class MainController extends Controller {
       $ticketarray = array();
 
       foreach ($tickets as $ticket) {
-        array_push($reportarray,$ticket['reportday'],$ticket['username'], $ticket['usernumber'], $ticket['workon'], $ticket['workoff'], $ticket['visit'], $ticket['where'],$ticket['division'],$ticket['consumer'],$ticket['who'],$ticket['medicine'],$ticket['category'],$ticket['talk'],$ticket['other']);
+        array_push($reportarray,$ticket['reportday'],$ticket['username'], $ticket['usernumber'], $ticket['workon'], $ticket['workoff'], $ticket['visit'], $ticket['where'],$ticket['division'],$ticket['consumer'],$ticket['who'],$ticket['title'],$ticket['medicine'],$ticket['category'],$ticket['talk'],$ticket['other']);
         array_push($ticketarray,$reportarray);
         $reportarray= [];
       }
@@ -2067,4 +2067,52 @@ class MainController extends Controller {
                                     'ticketarray'=>$ticketarray
                                     ]);
     }
+    public function accountreportdelay()
+    {
+      $users = user::where('name','=',Auth::user()->name)->get();
+      $username = null ;
+      $usernumber = Auth::user()->name ;
+      foreach ($users  as $user ) {
+        $username = $user['cname'];    
+      }
+      $today = date('Y-m-d');
+
+      $ticketnumber = salesmen::where('usernumber','=',$usernumber)->where('reportday','=',$today)->count();
+      $tickets = salesmen::where('usernumber','=',$usernumber)->where('reportday','=',$today)->get();
+      $reportarray = array();
+      $ticketarray = array();
+
+      foreach ($tickets as $ticket) {
+        array_push($reportarray,$ticket['reportday'],$ticket['username'], $ticket['usernumber'], $ticket['workon'], $ticket['workoff'], $ticket['visit'], $ticket['where'],$ticket['division'],$ticket['consumer'],$ticket['who'],$ticket['title'],$ticket['medicine'],$ticket['category'],$ticket['talk'],$ticket['other']);
+        array_push($ticketarray,$reportarray);
+        $reportarray= [];
+      }
+      $ticketarray = json_encode($ticketarray);
+
+
+        
+      return view('accountreportdelay',[ 'username'  =>$username,
+                                    'usernumber'=>$usernumber,
+                                    'ticketnumber'=>$ticketnumber,
+                                    'ticketarray'=>$ticketarray
+                                    ]);
+    }
+
+  public function daycheck()
+  {
+    return view('daycheck');
+  }
+
+  public function accountmanager()
+  {
+    $personals = salesmen::distinct()->select('username')->get();
+    $personalarr = [];
+    foreach ($personals as $personal) {
+
+      array_push($personalarr,str_replace(" ", "",$personal['username']));
+    }
+    return view('accountmanager',['personalarrs'=>$personalarr]);
+  }  
+
+
 }

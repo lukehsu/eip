@@ -48,7 +48,7 @@
 li.ui-timepicker-selected,
 .ui-timepicker-list li:hover,
 .ui-timepicker-list .ui-timepicker-selected:hover {
-	background: #BDC3C7;
+	background-color: rgba(202, 206, 209, .5);
 }
 
 

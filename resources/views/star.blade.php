@@ -69,7 +69,8 @@
         dataType: 'json',
         headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         success:  function(data){
-
+          alert('資料已送出，感謝您的填寫');
+          document.location.href = "http://127.0.0.1/eip/public/dashboard";
         },
         error: function(xhr, type){
           alert('??');

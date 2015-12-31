@@ -33,7 +33,13 @@ Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
 Route::get('itemscount' , 'MainController@itemscount');
 Route::get('accountreport' , 'MainController@accountreport');
+Route::get('accountreportdelay' , 'MainController@accountreportdelay');
 Route::post('accountreportajax' , 'ServiceajaxController@accountreportajax');
+Route::get('daycheck' , 'MainController@daycheck');
+Route::post('transferdailycheck' , 'ServiceajaxController@transferdailycheck');
+Route::get('accountmanager' , 'MainController@accountmanager');
+Route::post('accountmanagerajax' , 'ServiceajaxController@accountmanagerajax');
+Route::post('accountmanagerexcel' , 'ServiceajaxController@accountmanagerexcel');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');
