@@ -7,6 +7,9 @@ use App\dailyreport;//bora 每日業績
 use App\boramonthbudget;//bora每月預算
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
+use App\salesmen;
+use App\useracces;
+use App\calendar;
 use App\logistic;
 use App\medicinebudgetbypersonal;
 use App\Http\Requests;
@@ -217,6 +220,9 @@ class AutosendController extends Controller {
         foreach ($dailyreportstable as $dailyreport) {
             $amount = $dailyreport->Amount;
             $qty = $dailyreport->QTY;
+            if ($dailyreport['SaleType']=='R2') {
+              $amount = 0 - $amount;
+            }
             $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount;
             $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ;
         }     
@@ -320,6 +326,9 @@ class AutosendController extends Controller {
         $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $amount = $dailyreport->Amount;
+            if ($dailyreport['SaleType']=='R2') {
+              $amount = 0 - $amount;
+            }
             $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
         }   
         //每月目標業績
@@ -1597,15 +1606,17 @@ class AutosendController extends Controller {
       $todaydate = strtotime($todaydate) - 3600*24;
       $todaydate = date('Y-m-d',$todaydate);
       //Windows
-      $bora  = 'C:\\pic\\'.$todaydate.'bora.jpg';
-      $union = 'C:\\pic\\'.$todaydate.'union.jpg';
+      //$bora  = 'C:\\pic\\'.$todaydate.'bora.jpg';
+      //$union = 'C:\\pic\\'.$todaydate.'union.jpg';
       //Linux
-      //$bora = dirname(__FILE__).'/sendreport/'.$todaydate.'bora.jpg';
-      //$union = dirname(__FILE__).'/sendreport/'.$todaydate.'union.jpg';
-      $to = ['luke.hsu@bora-corp.com','sean1606@gmail.com'];
+      $bora = dirname(__FILE__).'/sendreport/'.$todaydate.'bora.jpg';
+      $union = dirname(__FILE__).'/sendreport/'.$todaydate.'union.jpg';
+      //$bora = dirname(__FILE__).'/sendreport/2015-11-02bora.jpg';
+      //$union = dirname(__FILE__).'/sendreport/2015-11-02union.jpg';
+      //$to = ['luke.hsu@bora-corp.com','sean1606@gmail.com'];
       //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
-      //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','sean1606@gmail.com'];
-      //$to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
+      //$to = ['luke.hsu@bora-corp.com'];
+      $to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
       //信件的內容
       $data = ['borapic'=>$bora,'unionpic'=>$union];
       //寄出信件
@@ -1614,5 +1625,43 @@ class AutosendController extends Controller {
          $message->to($to)->subject($todaydate.'業績日報表')->attach($bora)->attach($union);
       });
       echo  "<script type='text/javascript'>setTimeout(self.close(),15000);</script>"; 
+    }
+
+    public function accountreminder()
+    {
+        $today = date('Y-m-d');
+        $today = strtotime($today) - 3600*24;
+        $today = date('Y-m-d',$today);
+        $arr = [];
+        $checkholiday = calendar::where('monthdate','=',$today)->where('offday','=','1')->count();
+        if ($checkholiday==0) 
+        {
+          $users = useracces::where('access','=','業務日報表')->get();
+          foreach ($users as $user) 
+          {
+            $checks = salesmen::where('reportday','=',$today)->where('usernumber','=',$user['user'])->count();
+            if ($checks==0) {
+              $mails = user::where('name','=',$user['user'])->get();
+              foreach ($mails as $mail) {
+                array_push($arr, $mail['email']);
+              }
+            }
+          }
+          array_push($arr, 'vincent.liao@bora-corp.com');
+          array_push($arr, 'daisy.teng@bora-corp.com');
+          $to = $arr;
+          //信件的內容
+          $data = [];
+          //寄出信件
+          Mail::send('mail.mail', [], function($message) use ($to) 
+          {
+            $message->to($to)->subject('昨日並未收到您的日報表，請記得補單，謝謝');
+          });
+          echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        }       
+    }
+    public function autoacbudget()
+    {
+      return view('autoacbudget');   
     }
 }

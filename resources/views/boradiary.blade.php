@@ -58,6 +58,9 @@
             name: "Brands",
             colorByPoint: true,
             data: [{
+                name: "Mobic",
+                y: {!!$MC['Mobic']!!},
+            },{
                 name: "Pitavol",
                 y: {!!$MC['Pitavol']!!},
             }, {
@@ -147,6 +150,29 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td style="display:none">
+              Mobic
+            </td>
+            <td>
+              Mobic
+            </td>
+            <td class='text-right'>
+              {!!number_format($qtys['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($Mobic)!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MA['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Mobic']!!} %
+            </td>
+          </tr>
           <tr>
             <td style="display:none">
               Pitavol

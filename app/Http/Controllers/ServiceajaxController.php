@@ -98,8 +98,21 @@ class ServiceajaxController extends Controller {
             else
             {
                 //請改成Bobby的
-                $mail = 'sean1606@gmail.com';
-            }    
+                $mail = 'bobby.sheng@gmail.com';
+            }  
+            switch ($dep) {
+                  case '採購部':
+                      $mail = 'simon@bora-corp.com';
+                      break;            
+                  default:
+                      # code...
+                      break;
+              } 
+            if ($enumber=='b0164') {
+                   $mail = 'b0035.yang@bora-corp.com';
+                   $level = 'manager';
+                   
+               }   
         	$todepmanager = $mail;
         	//信件的內容
         	$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
@@ -309,7 +322,7 @@ class ServiceajaxController extends Controller {
 
             $report .= '<tr>';
             $report .= '<td >'.$reporttemp['emponame'].'</td>';
-            $report .= '<td >'.$reporttemp['customers'].'</td>';
+            $report .= '<td >'.mb_substr($reporttemp['customers'],0,8,"utf-8").'</td>';
             $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['allqty'].'</td>';
             $report .= '<td class="text-center">'.$reporttemp['janqty'].'</td>';
             $report .= '<td class="text-center">'.$reporttemp['febqty'].'</td>';
@@ -507,11 +520,11 @@ class ServiceajaxController extends Controller {
         {
             foreach ($allcodes as $code) 
             {
-                if ($code['itemno'] =='68PTV001'|| $code['itemno']=='68DEN001' || $code['itemno']=='68LEP002' || $code['itemno']=='68LEP001' || $code['itemno']=='68LXP001' || $code['itemno']=='68EBP001' || $code['itemno']=='68DEP001' || $code['itemno']=='68LMP002' ) 
+                if ($code['itemno'] =='68PTV001'|| $code['itemno']=='68DEN001' || $code['itemno']=='68LEP002' || $code['itemno']=='68LEP001' || $code['itemno']=='68LXP001' || $code['itemno']=='68EBP001' || $code['itemno']=='68DEP001' || $code['itemno']=='68LMP002' || $code['itemno']=='A0022' || $code['itemno']=='A0024' || $code['itemno']=='A0076' || $code['itemno']=='A0210' ) 
                 {
                     array_push($codes, $code['itemchname']) ;
                 }
-            }            
+            }        
         }
         elseif ($company=='聯邦') 
         {    
@@ -647,7 +660,7 @@ class ServiceajaxController extends Controller {
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
                 $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->getStartColor()->setARGB('FF808080');
             }  
-            $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->get();  
+            $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->groupBy('username')->get();  
                 foreach ($reports as $reporttemp)  {
                     $no = $no + 1;
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , ''); 

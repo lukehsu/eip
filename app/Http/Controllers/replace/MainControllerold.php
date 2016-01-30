@@ -1,6 +1,6 @@
 <?php 
 namespace App\Http\Controllers;
-use App\user;
+use App\User;
 use App\hareport;
 use App\boehringer;
 use App\dailyreport;//bora 每日業績
@@ -11,7 +11,6 @@ use App\logistic;
 use App\itticket;
 use App\itservicerank;
 use App\everymonth;
-use App\calendar;
 use App\salesmen;
 use App\boraallaccount;
 use App\boraitem;
@@ -292,7 +291,7 @@ class MainController extends Controller {
                 break;
                 case '68MOB002':
                 if ($BORACustomerNo<>'10824' ) {
-                  $MA['Mobic'] = $MA['Mobic'] + $MonthTotal;
+                  $MA['Mobic1'] = $MA['Mobic'] + $MonthTotal;
                 }      
                 break;
                 case '68MOB003':
@@ -2169,9 +2168,8 @@ class MainController extends Controller {
     foreach ($users as $user) {
       $level = $user['level'];
       $name = $user['cname'];
-      $dep = $user['dep'];
     }
-    if ($level=='' and $dep == '藥品事業部' ) {
+    if ($level=='') {
       $personalarr = [];
         array_push($personalarr,str_replace(" ", "",$name));
     }
@@ -2190,46 +2188,10 @@ class MainController extends Controller {
   {
     return redirect('http://mail.bora-corp.com:8080/webmail-cgi/XwebMail?_task=login');
   }  
+
   public function acbudget()
   {
-    $thisyear = date("Y");
-    $thismonth = date("m");
-    $thismonday = date("t");
-    $weekday = date("D");
-    $monthstart = $thisyear.'-'.$thismonth.'-01';
-    $monthend = $thisyear.'-'.$thismonth.'-'.$thismonday;
-    $lastyeart = date("Y-m-d", strtotime('-1 month'));
-    $lastyear = date("Y", strtotime($lastyeart));
-    $lastmonth = date("m", strtotime($lastyeart));
-    $lastmonday = date("t", strtotime($lastyeart));
-    $lastmonthstart = $lastyear.'-'.$lastmonth.'-01';
-    $lastmonthend = $lastyear.'-'.$lastmonth.'-'.$lastmonday;
+    return view('acbudget');
+  }  
 
-    $countweeks = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->orderBy('monthdate','asc')->get();
-    $i = 1;
-    $weekarrs = [1];
-    foreach ($countweeks as $countweek ) {
-      if ($countweek['weekday']=='星期日') {
-        $i = $i + 1 ;
-        array_push($weekarrs, $i);
-      }
-    }
-
-    $countweeks = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->orderBy('monthdate','asc')->get();
-    $i = 1;
-    $weekarrs = [1];
-    foreach ($countweeks as $countweek ) {
-      if ($countweek['weekday']=='星期日') {
-        $i = $i + 1 ;
-        array_push($weekarrs, $i);
-      }
-    }
-
-
-    return view('acbudget',['thismonth'=>$thismonth,
-                            'thismonday'=>$thismonday,
-                            'lastmonth'=>$lastmonth,
-                            'weekarrs'=>$weekarrs
-                          ]);
-  }
 }

@@ -128,7 +128,7 @@
       <div class="col-md-12" style="border-bottom:#1ABC9C 5px double;"></div>
     </div>
     <div class="row" id="tablezone">
-        <div class="col-md-12">
+        <div class="col-xs-12">
             <table class="table table-condensed">
                 <thead id='tabhead'>
                 </thead>

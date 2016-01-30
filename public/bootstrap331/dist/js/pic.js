@@ -13,8 +13,13 @@
         if (b<=9) {
             c = 0;
         };
+        var d = (Today.getMonth() +1 );
+        var e = '';
+        if (d<=9) {
+            e = 0;
+        };
         a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
-        a.download = Today.getFullYear()+'-'+(Today.getMonth()+1)+'-'+ c +(Today.getDate()-1)+'.jpg';
+        a.download = Today.getFullYear()+'-'+ e + (Today.getMonth()+1)+'-'+ c +(Today.getDate()-1)+'.jpg';
         a.click();
         }
     });

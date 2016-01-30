@@ -81,15 +81,21 @@ class LoginController extends Controller {
               {
                 $user = new User ;
                 $user->name = Input::get('name');
+                $user->level = '';
                 //這邊的陣列是AD資訊別搞錯
                 $user->cname = $data[0]['name'][0];
                 $user->email = $data[0]['mail'][0];
                 $user->dep = $data[0]['department'][0];
                 $user->password = Hash::Make(Input::get('password'));
                 $user->save();
+                
                 $access = new useracces ;
                 $access->user = Input::get('name');
-                $access->access = '1';
+                $access->access = '資訊需求單';
+                $access->save();
+                $access = new useracces ;
+                $access->user = Input::get('name');
+                $access->access = 'E-mail';
                 $access->save();
 
               }
@@ -141,7 +147,13 @@ class LoginController extends Controller {
       if (Auth::user()->name == 'b0001') {
         $level = 'GM';
         $itservice = null;
-        $ittickets = itticket::where('process','=',$level)->get();
+        $ittickets = itticket::where('process','=',$level)->orwhere('process','=','manager')->where('dep','=',$dep)->get();
+      }
+      elseif (Auth::user()->name=='b0002') 
+      {
+        $level = 'finish';
+        $itservice = null;
+        $ittickets = itticket::where('process','=','manager')->where('dep','=','採購部')->get();
       }
       elseif ($dep=='資訊部' and $level == 'manager' ) 
       {

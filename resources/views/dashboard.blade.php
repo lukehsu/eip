@@ -269,73 +269,73 @@ table tbody tr td{
 <div class="container-fluid">
   @include('includes.navbar')
 	<div class="row">
-    	<div class="col-md-9" >
+    	<div class="col-xs-9" >
       		<div class="tabset0">
-         	  <div id='t1' data-pws-tab="tab1" data-pws-tab-name="資訊需求單" class="col-md-12" >
+         	  <div id='t1' data-pws-tab="tab1" data-pws-tab-name="資訊需求單" class="col-xs-12" >
 					     <div class="row" style="height:30px">
-    					   <div class="col-md-1">
+    					   <div class="col-xs-1" style="padding:0px 10px;">
 							     <h2>項目</h2>
     					   </div>
-    					   <div class="col-md-2">
+    					   <div class="col-xs-2">
 							     <h2>日期</h2>
     					   </div>
-    					   <div class="col-md-2">
+    					   <div class="col-xs-2">
 							     <h2>部門</h2>
     					   </div>	
-    					   <div class="col-md-2">
+    					   <div class="col-xs-2">
 							     <h2>姓名</h2>
     					   </div>	
-    					   <div class="col-md-2">
+    					   <div class="col-xs-2">
 							     <h2>需求</h2>
     					   </div>	
-    					   <div class="col-md-3">
+    					   <div class="col-xs-3">
 							     <h2>說明</h2>
     					   </div>			
 					     </div>
 					     <div class="row">
-    					   <div class="col-md-12" style="height:2px;background-color:#95A5A6"></div>			
+    					   <div class="col-xs-12" style="height:2px;background-color:#95A5A6"></div>			
 					     </div>
                {!!$itservice!!}
 						   <div class="row">
-    					   <div class="col-md-12" style="height:2px;margin-top:8px;background-color:#95A5A6"></div>			
+    					   <div class="col-xs-12" style="height:2px;margin-top:8px;background-color:#95A5A6"></div>			
 					     </div>
                <div class="row" style="margin-top:8px">
-                 <div class="col-md-2" ><a id="selectall"  class="btn btn-info">全選</a></div>  
-                 <div class="col-md-offset-7 col-md-2"><a id="submitall"  class="btn btn-info">送出</a></div>     
+                 <div class="col-xs-2" ><a id="selectall"  class="btn btn-info">全選</a></div>  
+                 <div class="col-xs-offset-7 col-xs-2"><a id="submitall"  class="btn btn-info">送出</a></div>     
                </div>
          		</div>
-            <div id='t2'  data-pws-tab="tab2" data-pws-tab-name="資訊" class="col-md-12" >
+            <div id='t2'  data-pws-tab="tab2" data-pws-tab-name="資訊" class="col-xs-12" >
                <div class="row" style="height:30px">
-                 <div class="col-md-1">
+                 <div class="col-xs-1">
                    <h2>項目</h2>
                  </div>
-                 <div class="col-md-2">
+                 <div class="col-xs-2">
                    <h2>日期</h2>
                  </div>
-                 <div class="col-md-2">
+                 <div class="col-xs-2">
                    <h2>部門</h2>
                  </div> 
-                 <div class="col-md-2">
+                 <div class="col-xs-2">
                    <h2>姓名</h2>
                  </div> 
-                 <div class="col-md-2">
+                 <div class="col-xs-2">
                    <h2>需求</h2>
                  </div> 
-                 <div class="col-md-3">
+                 <div class="col-xs-3">
                    <h2>說明</h2>
                  </div>     
                </div>
                <div class="row">
-                 <div class="col-md-12" style="height:2px;background-color:#95A5A6"></div>      
+                 <div class="col-xs-12" style="height:2px;background-color:#95A5A6"></div>      
                </div>
                
                <div class="row">
-                 <div class="col-md-12" style="height:2px;margin-top:8px;background-color:#95A5A6"></div>     
+                 <div class="col-xs-12" style="height:2px;margin-top:8px;background-color:#95A5A6"></div>     
                </div>
             </div>
           </div>
 		</div>
-		<div class="col-md-3" >
+		<div class="col-xs-3" >
 
 		</div>
 	</div>		

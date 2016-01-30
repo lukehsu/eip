@@ -61,9 +61,6 @@
                     <span class="fui-user"></span>
                     <input id="accname" name="accname" type="text" placeholder="業務人員" data-toggle="dropdown" style="border:none;border-bottom:2px green solid;">
                     <ul id="accnameul" role="menu" class="dropdown-menu">
-                        <li style="cursor: pointer;"><a>
-                        所有業務人員
-                    </a></li>
                         @foreach ($personalarrs as $personalarr)
                         <li style="cursor: pointer;"><a>
                         {!!$personalarr!!}

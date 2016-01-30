@@ -5,11 +5,13 @@ use App\dailyreport;
 use App\hareport;
 use App\boehringer;
 use App\boramonthbudget;
-use App\useraccess;
+use App\useracces;
+use App\salesmen;
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\boracustomer;
 use App\everymonth;
+use App\calendar;
 //use App\mainmenudisplay;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
@@ -724,12 +726,20 @@ class ExcelController extends Controller {
         }
     }
 
+
+
+
     public function test()
     {
-                $access = new useraccess ;
-                $access->user = '23';
-                $access->access = '1';
+
+        $alluser = useracces::where('user','<>','')->distinct()->get(array('user'));
+        foreach ($alluser as $user) {
+                $access = new useracces ;
+                $access->user = $user['user'];
+                $access->access = 'E-mail';
                 $access->save();
+        }
+
 
         return view('test');
     }

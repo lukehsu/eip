@@ -40,10 +40,13 @@ Route::post('transferdailycheck' , 'ServiceajaxController@transferdailycheck');
 Route::get('accountmanager' , 'MainController@accountmanager');
 Route::post('accountmanagerajax' , 'ServiceajaxController@accountmanagerajax');
 Route::post('accountmanagerexcel' , 'ServiceajaxController@accountmanagerexcel');
+Route::get('acbudget' , 'MainController@acbudget');
+Route::get('autoacbudget' , 'AutosendController@autoacbudget');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');
 Route::get('sendreport' , 'AutosendController@sendreport');
+Route::get('accountreminder' , 'AutosendController@accountreminder');
 //自動寄報表手動
 Route::get('nonesendboradiary/{todaydate}', 'AutosendController@nonesendboradiary');
 Route::get('nonesendunidiary/{todaydate}' , 'AutosendController@nonesendunidiary');
@@ -55,7 +58,8 @@ Route::get('haexcel', 'ExcelController@haexcel');
 Route::get('boehringer', 'ExcelController@boehringer');
 Route::get('boracm', 'ExcelController@boracm');
 Route::get('everymonth' , 'ExcelController@everymonth');
-
+//服務頁面
+Route::get('webmail', 'MainController@webmail');
 //頁面轉出excel
 Route::post('transferajax' , 'ServiceajaxController@transferajax');
 //TV

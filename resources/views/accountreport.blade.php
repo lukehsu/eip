@@ -18,7 +18,7 @@
     <script type="text/javascript" src="./bootstrap331/dist/locales/bootstrap-datepicker.zh-TW.min.js" charset="UTF-8"></script>
     <script>
     $(function() {
-        $('.timep').timepicker({
+        /*$('.timep').timepicker({
             'scrollDefault': 'now'
         });
         $('#workon').timepicker({
@@ -26,7 +26,7 @@
         });
         $('#workoff').timepicker({
             'scrollDefault': 'now'
-        });
+        });*/
         $('#day').datepicker({
             format: "yyyy-mm-dd",
             todayBtn: "linked",
@@ -49,24 +49,26 @@
     <div class="container-fluid">
         @include('includes.navbar')
         <div class="row" style="margin-bottom:10px">
-            <div class="col-md-offset-1 col-md-2">
+            <div class="col-xs-offset-1 col-xs-2">
                 <span id="r1" class="fui-calendar"></span>&nbsp;&nbsp;
                 <input id="day" type="text" placeholder="日期" style="border:none;border-bottom:2px green solid;">
             </div>
-            <div class="col-md-2">
+            <div class="col-xs-2">
                 <span class="fui-time"></span>&nbsp;&nbsp;
-                <input id="workon" type="text" placeholder="上班時間" style="border:none;border-bottom:2px green solid;">
+                <input id="workon" type="text" placeholder="上班時間(24小時制)" style="border:none;border-bottom:2px green solid;">
             </div>
-            <div class="col-md-2">
+            <div class="col-xs-2">
                 <span class="fui-time"></span>&nbsp;&nbsp;
-                <input id="workoff" type="text" placeholder="下班時間" style="border:none;border-bottom:2px green solid;">
+                <input id="workoff" type="text" placeholder="下班時間(24小時制)" style="border:none;border-bottom:2px green solid;">
             </div>
-            <div class="col-md-2">
+            <div class="col-xs-2">
                 <span class="fui-home"></span>&nbsp;&nbsp;
                 <input id="leave" type="text" placeholder="休假" data-toggle="dropdown" style="border:none;border-bottom:2px green solid;">
                 <ul id="leaveul" role="menu" class="dropdown-menu">
                     <li><a>整天</a></li>
                     <li><a>半天</a></li>
+                    <li><a>會議整天</a></li>
+                    <li><a>會議半天</a></li>
                 </ul>
                 <input id="countv" type="hidden" value="2">
                 <input id="username" type="hidden" value="{!!$username!!}">
@@ -74,42 +76,42 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12" style="border-bottom:#1ABC9C 2px solid;"></div>
+            <div class="col-xs-12" style="border-bottom:#1ABC9C 2px solid;"></div>
         </div>
         <!--z1是樣板start-->
         <div id="z1" style="display:none">
             <div class="row">
                 <input type="hidden" name="exist" id="exist" value="1">
-                <div class="col-md-6" style="margin-top:10px">
+                <div class="col-xs-6" style="margin-top:10px">
                     <div class="row" style="margin-top:10px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-4">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-4">
                                 <input id="atime" type="text" id="n1" value="" placeholder="時間" class="timep form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <input id="where" type="text" value="" placeholder="地區" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="division" type="text" value="" placeholder="科別" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row" style="margin-top:14px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-5">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-5">
                                 <input id="consumer" type="text" value="" placeholder="客戶名稱" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="who" type="text" value="" placeholder="拜訪對象" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="title" type="text" value="" placeholder="職稱" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row" style="margin-top:14px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-5">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-5">
                                 <div class="btn-group">
                                     <button id="medicine" data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">請選擇藥品<span class="caret"></span></button>
                                     <ul id="medicineul" role="menu" class="dropdown-menu">
@@ -127,12 +129,14 @@
                                 </div>
                                 <!-- /btn-group -->
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-xs-5">
                                 <div class="btn-group">
                                     <button id="category" data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">請選擇類別<span class="caret"></span></button>
                                     <ul id="categoryul" role="menu" class="dropdown-menu">
                                         <li><a>寄款</a></li>
                                         <li><a>收單</a></li>
+                                        <li><a>產品說明</a></li>
+                                        <li><a>其他</a></li>
                                     </ul>
                                 </div>
                                 <!-- /btn-group -->
@@ -140,15 +144,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6" style="margin-top:10px">
+                <div class="col-xs-6" style="margin-top:10px">
                     <div class="row">
-                        <div class="col-md-6" style="margin-top:10px">
+                        <div class="col-xs-6" style="margin-top:10px">
                             <textarea id="talk" placeholder="拜訪情形" rows="6" cols="60" class="form-control"></textarea>
                         </div>
-                        <div class="col-md-4" style="margin-top:10px">
+                        <div class="col-xs-4" style="margin-top:10px">
                             <textarea id="other" placeholder="備註" rows="6" cols="20" class="form-control"></textarea>
                         </div>
-                        <div class="col-md-2" style="margin-top:50px">
+                        <div class="col-xs-2" style="margin-top:50px">
                             <span id="plus1" class="plus1 fui-plus-circle"></span>
                             <br>
                             <span id="refuse1" class="refuse1 fui-cross-circle"></span>
@@ -157,43 +161,43 @@
                 </div>
             </div>
             <div class="row" style="margin-top:10px;">
-                <div class="col-md-12" style="border-bottom:#1ABC9C 2px solid;"></div>
+                <div class="col-xs-12" style="border-bottom:#1ABC9C 2px solid;"></div>
             </div>
         </div>
         <!--z1是樣板end-->
         <div id="z2" style="display:block">
             <div class="row">
                 <input type="hidden" name="exist" id="exist" value="1">
-                <div class="col-md-6" style="margin-top:10px">
+                <div class="col-xs-6" style="margin-top:10px">
                     <div class="row" style="margin-top:10px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-4">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-4">
                                 <input id="atime" type="text" id="n1" value="" placeholder="時間" class="timep form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-xs-4">
                                 <input id="where" type="text" value="" placeholder="地區" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="division" type="text" value="" placeholder="科別" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row" style="margin-top:14px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-5">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-5">
                                 <input id="consumer" type="text" value="" placeholder="客戶名稱" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="who" type="text" value="" placeholder="拜訪對象" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-xs-3">
                                 <input id="title" type="text" value="" placeholder="職稱" class="form-control" />
                             </div>
                         </div>
                     </div>
                     <div class="row" style="margin-top:14px">
-                        <div class="col-md-offset-3">
-                            <div class="col-md-5">
+                        <div class="col-xs-offset-3">
+                            <div class="col-xs-5">
                                 <div class="btn-group">
                                     <button id="medicine" data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">請選擇藥品<span class="caret"></span></button>
                                     <ul id="medicineul" role="menu" class="dropdown-menu">
@@ -211,12 +215,13 @@
                                 </div>
                                 <!-- /btn-group -->
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-xs-5">
                                 <div class="btn-group">
                                     <button id="category" data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">請選擇類別<span class="caret"></span></button>
                                     <ul id="categoryul" role="menu" class="dropdown-menu">
                                         <li><a>寄款</a></li>
-                                        <li><a>收款</a></li>
+                                        <li><a>收單</a></li>
+                                        <li><a>產品說明</a></li>
                                         <li><a>其他</a></li>
                                     </ul>
                                 </div>
@@ -225,29 +230,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6" style="margin-top:10px">
+                <div class="col-xs-6" style="margin-top:10px">
                     <div class="row">
-                        <div class="col-md-6" style="margin-top:10px">
+                        <div class="col-xs-6" style="margin-top:10px">
                             <textarea id="talk" placeholder="拜訪情形" rows="6" cols="60" class="form-control"></textarea>
                         </div>
-                        <div class="col-md-4" style="margin-top:10px">
+                        <div class="col-xs-4" style="margin-top:10px">
                             <textarea id="other" placeholder="備註" rows="6" cols="20" class="form-control"></textarea>
                         </div>
-                        <div class="col-md-2" style="margin-top:50px">
+                        <div class="col-xs-2" style="margin-top:50px">
                             <span id="plus1" class="plus1 fui-plus-circle"></span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row" style="margin-top:10px;">
-                <div class="col-md-12" style="border-bottom:#1ABC9C 2px solid;"></div>
+                <div class="col-xs-12" style="border-bottom:#1ABC9C 2px solid;"></div>
             </div>
         </div>
         <!--php畫出暫存表格 start-->
         <!--php畫出暫存表格 end-->
         <div class="row" style="margin-top:40px;margin-bottom:40px">
-            <!--div class="col-md-offset-4 col-md-2"><a id="temp" class="btn btn-block btn-lg btn-danger">暫存</a></div-->
-            <div class="col-md-offset-5 col-md-2"><a id="done" class="btn btn-block btn-lg btn-info">送出</a></div>
+            <!--div class="col-xs-offset-4 col-xs-2"><a id="temp" class="btn btn-block btn-lg btn-danger">暫存</a></div-->
+            <div class="col-xs-offset-5 col-xs-2"><a id="done" class="btn btn-block btn-lg btn-info">送出</a></div>
         </div>
     </div>
     <script type="text/javascript">
