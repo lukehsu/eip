@@ -121,7 +121,7 @@
             <div class="col-xs-3" style="margin-top:30px"><u>銷售分析表:</u></div>
         </div>
         <div class="row">
-            <div class="col-xs-offset-1 col-xs-8" style="margin-top:30px">
+            <div class="col-xs-offset-1 col-xs-9" style="margin-top:30px">
                 <table class="table table-condensed">
                     <thead>
                         <tr>
@@ -131,10 +131,10 @@
                             <th class="text-center">
                                 {!!$thismonth!!}
                             </th>
-                            <th class="text-center" colspan="4">
-                               {!!$lastmonth!!}
+                            <th class="text-center" colspan="{!!$i!!}">
+                                {!!$lastmonth!!}
                             </th>
-                            <th class="text-center" colspan="4">
+                            <th class="text-center" colspan="{!!$j!!}">
                                 {!!$thismonth!!}
                             </th>
                         </tr>
@@ -147,19 +147,11 @@
                             <td class='text-left'>
                                 中國醫藥大學附屬醫院
                             </td>
+                            @foreach($lastweekarrs as $lastweekarr)
                             <td class='text-center'>
-                                第一周
+                                第{!!$lastweekarr!!}週
                             </td>
-                            <td class='text-center'>
-                                第二周
-                            </td>
-                            <td class='text-center'>
-                                第三周
-                            </td>
-
-                            <td class='text-center'>
-                                第四周
-                            </td>
+                            @endforeach
                             @foreach($weekarrs as $weekarr)
                             <td class='text-center'>
                                 第{!!$weekarr!!}週
@@ -235,32 +227,18 @@
                                 當月實際銷售量
                             </td>
                             <td class='text-center'>
-                                5
+                                V
                             </td>
+                            @foreach($lastqtyinfos as $lastqtyinfo)
                             <td class='text-center'>
-                                4
+                                {!!$lastqtyinfo!!}
                             </td>
+                            @endforeach  
+                            @foreach($thisqtyinfos as $thisqtyinfo)
                             <td class='text-center'>
-                                3
+                                {!!$thisqtyinfo!!}
                             </td>
-                            <td class='text-center'>
-                                2
-                            </td>
-                            <td class='text-center'>
-                                1
-                            </td>
-                            <td class='text-center'>
-                                1
-                            </td>
-                            <td class='text-center'>
-                                1
-                            </td>
-                            <td class='text-center'>
-                                1
-                            </td>
-                            <td class='text-center'>
-                                1
-                            </td>
+                            @endforeach                             
                         </tr>
                         <tr>
                             <td class='text-left'>

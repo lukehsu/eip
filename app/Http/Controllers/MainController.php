@@ -250,17 +250,35 @@ class MainController extends Controller {
                     break;
             }    
         }   
-        //百靈佳戀多眠另外再算一次
+        //百靈佳戀多眠MOBIC另外再算一次
         $dailyreportstable = boehringer::where('Date','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $amount = $dailyreport->Amount;
             $qty = $dailyreport->QTY;
-            if ($dailyreport['SaleType']=='R2') {
-              $amount = 0 - $amount;
-            }
-            $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount;
-            $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ;
+            $boehringerItemNo = $dailyreport->ItemNo;
+            switch ($boehringerItemNo) {
+                case 'A0195':
+                  if ($dailyreport['SaleType']=='R2') {
+                    $amount = 0 - $amount;
+                  }
+                  $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount ;
+                  $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ; 
+                break;
+                case 'A0076':
+                case 'A0210':
+                case 'A0211':
+                  if ($dailyreport['SaleType']=='R2') {
+                    $amount = 0 - $amount;
+                  }
+                  $medicine['Mobic'] = $medicine['Mobic'] + $amount ;
+                  $medicine['Mobic'] = $medicine['Mobic'] + $qty ; 
+                break;
+                default:
+
+                break;
+            }  
         }    
+
            
         //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
@@ -374,14 +392,30 @@ class MainController extends Controller {
                  break;
             }    
         }  
-        //百靈佳戀多眠另外再算一次
+        //百靈佳戀多眠MOBIC另外再算一次
         $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
-            $amount = $dailyreport->Amount;
-            if ($dailyreport['SaleType']=='R2') {
-              $amount = 0 - $amount;
-            }
-            $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
+          $amount = $dailyreport->Amount;
+          $boehringerItemNo = $dailyreport->ItemNo;
+          switch ($boehringerItemNo) {
+            case 'A0195':
+              if ($dailyreport['SaleType']=='R2') {
+                $amount = 0 - $amount;
+              }
+              $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
+            break;
+            case 'A0076':
+            case 'A0210':
+            case 'A0211':
+              if ($dailyreport['SaleType']=='R2') {
+                $amount = 0 - $amount;
+              }
+              $MA['Mobic'] = $MA['Mobic'] + $amount ;
+            break;
+            default:
+
+            break;
+          }  
         }    
         //每月目標業績
         $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
@@ -2203,33 +2237,75 @@ class MainController extends Controller {
     $lastmonth = date("m", strtotime($lastyeart));
     $lastmonday = date("t", strtotime($lastyeart));
     $lastmonthstart = $lastyear.'-'.$lastmonth.'-01';
-    $lastmonthend = $lastyear.'-'.$lastmonth.'-'.$lastmonday;
-
-    $countweeks = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->orderBy('monthdate','asc')->get();
+    $lastmonthend = $lastyear.'-'.$lastmonth.'-'.$lastmonday; 
+    $qty = 0;
     $i = 1;
-    $weekarrs = [1];
+    $j = 1;
+    $weekarrs = [];
+    $lastweekarrs = [];
+    $thisqtyinfo = [];
+    $lastqtyinfo = [];
+    $countweeks = calendar::where('monthdate','>=',$lastmonthstart)->where('monthdate','<=',$lastmonthend)->orderBy('monthdate','asc')->get();
     foreach ($countweeks as $countweek ) {
+      $lastqtys = dailyreport::where('InvDate','=',$countweek['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->get(); 
+      foreach ($lastqtys as $lastqty) {
+        if ($lastqty['SalesType']=='R2') {
+          $lastqty['OrderQty'] = 0 - $lastqty['OrderQty'];
+        }
+        $qty = $qty + $lastqty['OrderQty'];
+      }
+      if ($countweek['weekday']<>'星期日' and count($lastweekarrs)==0 and count($lastqtyinfo)==0 ) {
+        array_push($lastweekarrs, '1');
+        array_push($lastqtyinfo, $qty);
+        $qty = 0;
+      }
       if ($countweek['weekday']=='星期日') {
         $i = $i + 1 ;
-        array_push($weekarrs, $i);
+        array_push($lastweekarrs, $i);
+        array_push($lastqtyinfo, $qty);
+        $qty = 0;
       }
     }
-
+    $lastsum = array_sum($lastqtyinfo);
+    $qty = 0;
+    $qtyone = 0;
+    $firstweekend = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->where('weekday','=','星期日')->orderBy('monthdate','asc')->first();
+    $checkthismonthstartqty = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$firstweekend['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->count(); 
+    $qtyfirsts = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$firstweekend['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->get(); 
+    foreach ($qtyfirsts as $qtyfirst) {
+      $qtyone = $qtyone + $qtyfirst['OrderQty'];
+    }
+    if ($countweek['weekday']<>'星期日' and count($weekarrs) == 0 and count($thisqtyinfo) == 0 ) {
+        array_push($weekarrs, '1');
+        if ($checkthismonthstartqty==1) {
+          array_push($thisqtyinfo, $qtyone);
+          $qtyone = 0;
+        }
+      }
     $countweeks = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->orderBy('monthdate','asc')->get();
-    $i = 1;
-    $weekarrs = [1];
     foreach ($countweeks as $countweek ) {
+      $thisqtys = dailyreport::where('InvDate','=',$countweek['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->get(); 
+      foreach ($thisqtys as $thisqty) {
+        if ($thisqty['SalesType']=='R2') {
+          $thisqty['OrderQty'] = 0 - $thisqty['OrderQty'];
+        }
+        $qty = $qty + $thisqty['OrderQty'];
+      }
       if ($countweek['weekday']=='星期日') {
-        $i = $i + 1 ;
-        array_push($weekarrs, $i);
+        $j = $j + 1 ;
+        array_push($weekarrs, $j);
+        array_push($thisqtyinfo, $qty);
+        $qty = 0;
       }
     }
-
-
     return view('acbudget',['thismonth'=>$thismonth,
-                            'thismonday'=>$thismonday,
                             'lastmonth'=>$lastmonth,
-                            'weekarrs'=>$weekarrs
+                            'lastweekarrs'=>$lastweekarrs,
+                            'weekarrs'=>$weekarrs,
+                            'lastqtyinfos'=>$lastqtyinfo,
+                            'thisqtyinfos'=>$thisqtyinfo,
+                            'i'=>$i,
+                            'j'=>$j
                           ]);
   }
 }
