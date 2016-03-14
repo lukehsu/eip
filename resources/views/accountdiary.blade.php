@@ -58,6 +58,10 @@
             name: "Brands",
             colorByPoint: true,
             data: [{
+            name: "Mobic",
+                y: {!!$MC['Mobic']!!},
+            },
+            {
                 name: "Pitavol",
                 y: {!!$MC['Pitavol']!!},
             }, {
@@ -76,8 +80,8 @@
                 name: "Ebixa",
                 y: {!!$MC['Ebixa']!!},
             }, {
-                name: "Denset",
-                y: {!!$MC['Denset']!!},
+                name: "Deanxit",
+                y: {!!$MC['Deanxit']!!},
             }, {
                 name: "Lendormin",
                 y: {!!$MC['LendorminBora']!!},
@@ -90,6 +94,12 @@
       $("#chart").highcharts(options);
     });
   </script>
+  <style type="text/css">
+  .endcolor{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+  }
+  </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -114,16 +124,16 @@
             <th class="text-center" style="display:none">
 
             </th>
-            <th class="text-center" style="border:#FFFFFF 1px solid; ">
-             
-            </th>
             <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
-              Diary
+             <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$todaydate!!}&nbsp;&nbsp;
             </th>
-            <th class="text-center" colspan="4" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
+            <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
+              Diary
+            </th-->
+            <th class="text-center" colspan="3" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
               MTD
             </th>
-            <th class="text-center" colspan="4" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
+            <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
               YTD
             </th>
           </tr>
@@ -134,36 +144,71 @@
             <th class="text-center">
               Product
             </th>
-            <th class="text-center">
+            <!--th class="text-center">
               Amount
+            </th-->
+            <th class="text-center">
+              Actual
             </th>
             <th class="text-center">
-              Month Actual
-            </th>
-            <th class="text-center">
-              Month Budget
-            </th>
-            <th class="text-center">
-              A / B
-            </th>
-            <th class="text-center">
-              A / L
-            </th>
-            <th class="text-center">
-              Month Actual
-            </th>
-            <th class="text-center">
-              Month Budget
+              Budget
             </th>
             <th class="text-center">
               A / B
             </th>
-            <th class="text-center">
+            <!--th class="text-center">
               A / L
+            </th-->
+            <th class="text-center">
+              Actual
             </th>
+            <th class="text-center">
+              Budget
+            </th>
+            <th class="text-center">
+              A / B
+            </th>
+            <!--th class="text-center">
+              A / L
+            </th-->
           </tr>
         </thead>
         <tbody>
+          <tr class="">
+            <td style="display:none">
+              Mobic
+            </td>
+            <td>
+              Mobic
+            </td>
+            <!--td class='text-right'>
+              {!!number_format($medicine['Mobic'])!!}
+            </td-->
+            <td class='text-right'>
+              {!!number_format($MA['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MB['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MC['Mobic']!!} %
+            </td>
+            <!--td class='text-right'>
+              {!!$ML['Pitavol']!!} %
+            </td-->
+            <td class='text-right'>
+              {!!number_format($MAA['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!number_format($MBB['Mobic'])!!}
+            </td>
+            <td class='text-right'>
+              {!!$MCC['Mobic']!!} %
+            </td>
+            <!--td class='text-right'>
+              {!!$MLL['Pitavol']!!} %
+            </td-->
+          </tr>
           <tr>
             <td style="display:none">
               Pitavol
@@ -171,9 +216,9 @@
             <td>
               Pitavol
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Pitavol'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Pitavol'])!!}
             </td>
@@ -183,9 +228,9 @@
             <td class='text-right'>
               {!!$MC['Pitavol']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Pitavol']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Pitavol'])!!}
             </td>
@@ -195,20 +240,20 @@
             <td class='text-right'>
               {!!$MCC['Pitavol']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Pitavol']!!} %
-            </td>
+            </td-->
           </tr>
-          <tr class="active">
+          <tr class="">
             <td style="display:none">
               Denset
             </td>
             <td>
               Denset
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Denset'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Denset'])!!}
             </td>
@@ -218,9 +263,9 @@
               <td class='text-right'>
               {!!$MC['Denset']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Denset']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Denset'])!!}
             </td>
@@ -230,9 +275,9 @@
             <td class='text-right'>
               {!!$MCC['Denset']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Denset']!!} %
-            </td>
+            </td-->
           </tr>
           <tr>
             <td style="display:none">
@@ -241,9 +286,9 @@
             <td>
               Lepax 10mg
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Lepax10'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Lepax10'])!!}
             </td>
@@ -253,9 +298,9 @@
             <td class='text-right'>
               {!!$MC['Lepax10']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Lepax10']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Lepax10'])!!}
             </td>
@@ -265,20 +310,20 @@
             <td class='text-right'>
               {!!$MCC['Lepax10']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Lepax10']!!} %
-            </td>
+            </td-->
           </tr>
-          <tr class="active">
+          <tr class="">
             <td style="display:none">
               Lepax5
             </td>
             <td>
               Lepax 5mg
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Lepax5'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Lepax5'])!!}
             </td>
@@ -288,9 +333,9 @@
             <td class='text-right'>
               {!!$MC['Lepax5']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Lepax5']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Lepax5'])!!}
             </td>
@@ -300,9 +345,9 @@
             <td class='text-right'>
               {!!$MCC['Lepax5']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Lepax5']!!} %
-            </td>
+            </td-->
           </tr>
           <tr>
             <td style="display:none">
@@ -311,9 +356,9 @@
             <td>
               Lexapro
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Lexapro'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Lexapro'])!!}
             </td>
@@ -323,9 +368,9 @@
             <td class='text-right'>
               {!!$MC['Lexapro']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Lexapro']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Lexapro'])!!}
             </td>
@@ -335,20 +380,20 @@
             <td class='text-right'>
               {!!$MCC['Lexapro']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Lexapro']!!} %
-            </td>
+            </td-->
           </tr>
-          <tr class="active">
+          <tr class="">
             <td style="display:none">
               Ebixa
             </td>
             <td>
               Ebixa
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Ebixa'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Ebixa'])!!}
             </td>
@@ -358,9 +403,9 @@
               <td class='text-right'>
               {!!$MC['Ebixa']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Ebixa']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Ebixa'])!!}
             </td>
@@ -370,9 +415,9 @@
             <td class='text-right'>
               {!!$MCC['Ebixa']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Ebixa']!!} %
-            </td>
+            </td-->
           </tr>
           <tr>
             <td style="display:none">
@@ -381,9 +426,9 @@
             <td>
               Deanxit
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Deanxit'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Deanxit'])!!}
             </td>
@@ -393,9 +438,9 @@
               <td class='text-right'>
               {!!$MC['Deanxit']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Deanxit']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Deanxit'])!!}
             </td>
@@ -405,20 +450,20 @@
             <td class='text-right'>
               {!!$MCC['Deanxit']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Deanxit']!!} %
-            </td>
+            </td-->
           </tr>
-          <tr  class="active">
+          <tr  class="">
             <td style="display:none">
               LendorminBora
             </td>
             <td>
               Lendormin
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['LendorminBora'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['LendorminBora'])!!}
             </td>
@@ -428,9 +473,9 @@
             <td class='text-right'>
               {!!$MC['LendorminBora']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['LendorminBora']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['LendorminBora'])!!}
             </td>
@@ -440,9 +485,9 @@
             <td class='text-right'>
               {!!$MCC['LendorminBora']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['LendorminBora']!!} %
-            </td>
+            </td-->
           </tr>
           <tr >
             <td style="display:none">
@@ -451,9 +496,9 @@
             <td>
               Others
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($medicine['Others'])!!}
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MA['Others'])!!}
             </td>
@@ -463,9 +508,9 @@
             <td class='text-right'>
               {!!$MC['Others']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$ML['Others']!!} %
-            </td>
+            </td-->
             <td class='text-right'>
               {!!number_format($MAA['Others'])!!}
             </td>
@@ -475,44 +520,44 @@
             <td class='text-right'>
               {!!$MCC['Others']!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!$MLL['Others']!!} %
-            </td>
+            </td-->
           </tr>
-          <tr class="active">
+          <tr class="">
             <td style="display:none">
               Total
             </td>
-            <td>
+            <td class='endcolor'>
               Total
             </td>
-            <td class='text-right'>
+            <!--td class='text-right endcolor'>
               {!!number_format($totalsell)!!}
-            </td>
-            <td class='text-right'>
+            </td-->
+            <td class='text-right endcolor'>
               {!!number_format($totalma,0)!!}
             </td>
-            <td class='text-right'>
+            <td class='text-right endcolor'>
               {!!number_format($totalmb,0)!!}
             </td>
-            <td class='text-right'>
+            <td class='text-right endcolor'>
               {!!$totalmc!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($totalml)!!} %
-            </td>
-            <td class='text-right'>
+            </td-->
+            <td class='text-right endcolor'>
               {!!number_format($totalmaa)!!}
             </td>
-            <td class='text-right'>
+            <td class='text-right endcolor'>
               {!!number_format($totalmbb)!!}
             </td>
-            <td class='text-right'>
+            <td class='text-right endcolor'>
               {!!$totalmcc!!} %
             </td>
-            <td class='text-right'>
+            <!--td class='text-right'>
               {!!number_format($totalmll)!!} %
-            </td>
+            </td-->
           </tr>
         </tbody>
       </table>

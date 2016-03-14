@@ -58,7 +58,10 @@ class ServiceajaxController extends Controller {
 		else
 		{
 			$level = 'GM';
-		}	    	
+		}	    
+        if ($enumber=='b0164' or $enumber=='b0129' or $enumber=='b0068' or $enumber=='b0071' or $enumber=='b0029' or $enumber=='b0037') {
+            $level = 'nanGM';      
+        }  	
     	$ordercheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->count() ; 
  		if ($ordercheck == 0) {
  			$today = date('Y-m-d');
@@ -90,9 +93,20 @@ class ServiceajaxController extends Controller {
             $levelcheck = User::where('name','=',$enumber)->where('level','=','')->count();  	
             if ($levelcheck>=1) 
             {
-                $users = User::where('dep','=',$dep)->where('level','=','manager')->get(); 
+                $users = User::where('dep','=',$dep)->get(); 
                 foreach ($users as $user) {
-                    $mail = $user['email'];
+                    if ($user['name']==$enumber) {
+                        if (is_null($user['spprocess']) or empty($user['spprocess'])) {
+                            $targetusers = User::where('dep','=',$dep)->where('spprocess','=','')->where('level','=','manager')->get(); 
+                        }
+                        else
+                        {        
+                            $targetusers = User::where('dep','=',$dep)->where('spprocess','=',$user['spprocess'])->where('level','=','manager')->get(); 
+                        }
+                        foreach ($targetusers  as $targetuser) {
+                            $mail = $targetuser['email'];
+                        }
+                    }
                 }
             }
             else
@@ -105,14 +119,13 @@ class ServiceajaxController extends Controller {
                       $mail = 'simon@bora-corp.com';
                       break;            
                   default:
-                      # code...
+
                       break;
               } 
-            if ($enumber=='b0164') {
-                   $mail = 'b0035.yang@bora-corp.com';
-                   $level = 'manager';
-                   
-               }   
+            if ($enumber=='b0164' or $enumber=='b0129' or $enumber=='b0068' or $enumber=='b0071' or $enumber=='b0029' or $enumber=='b0037') {
+                $mail = 'homer.fang@bora-corp.com';
+                $level = 'manager';      
+            }   
         	$todepmanager = $mail;
         	//信件的內容
         	$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
@@ -160,6 +173,7 @@ class ServiceajaxController extends Controller {
     		{	
     			$ordernumber = Input::get('ordernumber');
     			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'GM')->update(['process' => 'finish']);
+                $ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'nanGM')->update(['process' => 'finish']);
     		    $toit = 'it@bora-corp.com';
         		//信件的內容
         		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );

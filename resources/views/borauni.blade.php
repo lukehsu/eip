@@ -4,9 +4,13 @@
   <meta charset="UTF-8">
   <meta name="_token" content="{{ csrf_token() }}"/>
   <title>業務部日報表</title>
-  @include('head.bootstrapcss')
-  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap.css">
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/flat-ui.css">
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/placeholdercolor.css">
   <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
+  <script type="text/javascript" src="../bootstrap331/dist/js/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="../bootstrap331/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -24,7 +28,7 @@
             text: '銷售達成率'
         },
         subtitle: {
-            text: {!!$chardate!!} + '業績表'
+            text: '業績表'
         },
         xAxis: {
             type: 'category'
@@ -57,30 +61,19 @@
         series: [{
             name: "Brands",
             colorByPoint: true,
-            data: [{
-                name: "何俊昇",
-                y: {!!$MC[0]!!},
+            data: [
+            {
+                name: "胃爾康",
+                y:  {!!$MC['Wilcon']!!},
             },{
-                name: "陳昱均",
-                y: {!!$MC[1]!!},
-            }, {
-                name: "唐維澤",
-                y: {!!$MC[2]!!},
-            }, {
-                name: "江隆昌",
-                y: {!!$MC[3]!!},
-            }, {
-                name: "鄒子健",
-                y: {!!$MC[4]!!},
-            }, {
-                name: "陳瑛旼",
-                y: {!!$MC[5]!!},
-            }, {
-                name: "商士英",
-                y: {!!$MC[6]!!},
-            }, {
-                name: "物流",
-                y: {!!$MC[7]!!},
+               name: "氯四環素",
+                y: {!!$MC['Kso']!!},
+            },{
+                name: "帕金寧",
+                y: {!!$MC['Bpn']!!},
+            },{
+                name: "Others",
+                y: {!!$MC['others']!!},
             }]
           }]
       };
@@ -92,9 +85,6 @@
     background-color:#7F8C8D;
     color: #FFFFFF;
   }
-  .subcolor{
-    background-color:#E0E0E0;
-    }
   </style>
 </head>
 <body>
@@ -120,8 +110,8 @@
             <th class="text-center" style="display:none">
 
             </th>
-            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
-             <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$today!!}&nbsp;&nbsp;
+            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid; ">
+              <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$todaydate!!}&nbsp;&nbsp;
             </th>
             <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
               Diary
@@ -134,11 +124,11 @@
             </th>
           </tr>
           <tr>
-            <th class="text-center" style="display:none">
-              Itemno
+            <th class="text-center" id='username' style="display:none">
+   
             </th>
             <th class="text-center">
-              Name
+              Product
             </th>
             <!--th class="text-center">
               Amount
@@ -170,7 +160,7 @@
           </tr>
         </thead>
         <tbody>
-            {!!$form!!}
+          {!!$form!!}
         </tbody>
       </table>
     </div>
@@ -196,13 +186,13 @@
         if (system.win || system.mac || system.xll||system.ipad) 
         { 
           $("#datetimepicker").change(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personaldiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
           }); 
         } 
         else 
         { 
           $("#datetimepicker").blur(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personaldiary/" + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
           }); 
         } 
 --> 

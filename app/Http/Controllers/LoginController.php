@@ -149,6 +149,12 @@ class LoginController extends Controller {
         $itservice = null;
         $ittickets = itticket::where('process','=',$level)->orwhere('process','=','manager')->where('dep','=',$dep)->get();
       }
+      elseif (Auth::user()->name=='b0026') 
+      {      
+        $level = 'nanGM';
+        $itservice = null;
+        $ittickets = itticket::where('process','=',$level)->get();      
+      }
       elseif (Auth::user()->name=='b0002') 
       {
         $level = 'finish';

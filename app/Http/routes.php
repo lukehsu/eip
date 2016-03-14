@@ -30,6 +30,7 @@ Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
 Route::get('personaldiary/{todaydate}' , 'MainController@personaldiary');
+Route::get('personalhp/{todaydate}', 'MainController@personaldiary');
 Route::get('personalmedicinediary/{user}/{todaydate}' , 'MainController@personalmedicinediary');
 Route::get('itemscount' , 'MainController@itemscount');
 Route::get('accountreport' , 'MainController@accountreport');
@@ -42,6 +43,9 @@ Route::post('accountmanagerajax' , 'ServiceajaxController@accountmanagerajax');
 Route::post('accountmanagerexcel' , 'ServiceajaxController@accountmanagerexcel');
 Route::get('acbudget' , 'MainController@acbudget');
 Route::get('autoacbudget' , 'AutosendController@autoacbudget');
+Route::get('borauni/{todaydate}' , 'MainController@borauni');
+Route::get('uniuni/{todaydate}' , 'MainController@uniuni');
+Route::get('agents/{todaydate}' , 'MainController@agents');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');

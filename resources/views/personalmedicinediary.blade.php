@@ -61,7 +61,11 @@
         series: [{
             name: "Brands",
             colorByPoint: true,
-            data: [{
+            data: [
+            {
+                name: "Mobic",
+                y: {!!$MC['Mobic']!!},
+            }, {
                 name: "Pitavol",
                 y: {!!$MC['Pitavol']!!},
             }, {
@@ -80,8 +84,8 @@
                 name: "Ebixa",
                 y: {!!$MC['Ebixa']!!},
             }, {
-                name: "Denset",
-                y: {!!$MC['Denset']!!},
+                name: "Deanxit",
+                y: {!!$MC['Deanxit']!!},
             }, {
                 name: "Lendormin",
                 y: {!!$MC['LendorminBora']!!},
@@ -94,6 +98,12 @@
       $("#chart").highcharts(options);
     });
   </script>
+  <style type="text/css">
+  .endcolor{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+  }
+  </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -118,16 +128,16 @@
             <th class="text-center" style="display:none">
 
             </th>
-            <th class="text-center" style="border:#FFFFFF 1px solid; ">
-             
+            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid; ">
+             <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$today!!}&nbsp;&nbsp;<span class="fui-user"></span>&nbsp;&nbsp;{!!$user!!}
             </th>
-            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
+            <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
               Diary
-            </th>
-            <th class="text-center" colspan="4" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
+            </th-->
+            <th class="text-center" colspan="3" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
               MTD
             </th>
-            <th class="text-center" colspan="4" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
+            <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
               YTD
             </th>
           </tr>
@@ -138,33 +148,33 @@
             <th class="text-center">
               Product
             </th>
-            <th class="text-center">
+            <!--th class="text-center">
               Amount
+            </th-->
+            <th class="text-center">
+              Actual
             </th>
             <th class="text-center">
-              Month Actual
-            </th>
-            <th class="text-center">
-              Month Budget
-            </th>
-            <th class="text-center">
-              A / B
-            </th>
-            <th class="text-center">
-              A / L
-            </th>
-            <th class="text-center">
-              Month Actual
-            </th>
-            <th class="text-center">
-              Month Budget
+              Budget
             </th>
             <th class="text-center">
               A / B
             </th>
-            <th class="text-center">
+            <!--th class="text-center">
               A / L
+            </th-->
+            <th class="text-center">
+              Actual
             </th>
+            <th class="text-center">
+              Budget
+            </th>
+            <th class="text-center">
+              A / B
+            </th>
+            <!--th class="text-center">
+              A / L
+            </th-->
           </tr>
         </thead>
         <tbody>

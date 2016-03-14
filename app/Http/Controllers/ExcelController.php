@@ -258,20 +258,22 @@ class ExcelController extends Controller {
                 'word7'=>"$strs[7]", 
                 'word8'=>"$strs[8]", 
                 'word9'=>"$strs[9]",
+                'word10'=>"$strs[10]",
                 ); 
                 //寫入資料庫了 
                 $wordchange = substr($info['word0'], 0,3);
                 $wordchangec = $wordchange + 1911;
                 $info['word0'] = str_replace($wordchange, $wordchangec, $info['word0']);
                 $alldatabase = new unidiaryreport ;
-                $alldatabase->BORACustomerName = $info['word2'];
+                $alldatabase->BORACustomerno = $info['word2'];
+                $alldatabase->BORACustomerName = $info['word3'];
                 $alldatabase->InvDate=$info['word0'];
                 $alldatabase->Ordernuber=$info['word1'];            
-                $alldatabase->OrderQty=$info['word6'];
-                $alldatabase->Unitprice=$info['word8'];
-                $alldatabase->InoviceAmt=$info['word9'];
-                $alldatabase->BORAItemNo=$info['word3'];
-                $alldatabase->BORAItemTCHIName=$info['word4'];//
+                $alldatabase->OrderQty=$info['word7'];
+                $alldatabase->Unitprice=$info['word9'];
+                $alldatabase->InoviceAmt=$info['word10'];
+                $alldatabase->BORAItemNo=$info['word4'];
+                $alldatabase->BORAItemTCHIName=$info['word5'];//
                 $alldatabase->save();
                 print_r($info); 
                 echo '<br />'; 

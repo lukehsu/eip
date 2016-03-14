@@ -15,74 +15,39 @@
       $("#tablezone").css("display","none");
       $("#tablezone").fadeIn(2000);
       var options = 
-      {    
+      {
         chart: {
-            renderTo: 'chart',
-            type: 'column'
+            type: 'line'
         },
         title: {
-            text: '銷售達成率'
+            text: 'Monthly Average Temperature'
         },
         subtitle: {
-            text: {!!$chardate!!} + '業績表'
+            text: 'Source: WorldClimate.com'
         },
         xAxis: {
-            type: 'category'
-        },
-        credits:{
-              //隱藏官方連結
-             enabled: false
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         },
         yAxis: {
             title: {
-                text: '百分比'
+                text: 'Temperature (%)'
             }
-        },
-        legend: {
-            enabled: false
         },
         plotOptions: {
-            series: {
-                borderWidth: 0,
+            line: {
                 dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%'
-                }
+                    enabled: true
+                },
+                enableMouseTracking: true
             }
         },
-        tooltip: {
-            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
-        },
         series: [{
-            name: "Brands",
-            colorByPoint: true,
-            data: [{
-                name: "何俊昇",
-                y: {!!$MC[0]!!},
-            },{
-                name: "陳昱均",
-                y: {!!$MC[1]!!},
-            }, {
-                name: "唐維澤",
-                y: {!!$MC[2]!!},
-            }, {
-                name: "江隆昌",
-                y: {!!$MC[3]!!},
-            }, {
-                name: "鄒子健",
-                y: {!!$MC[4]!!},
-            }, {
-                name: "陳瑛旼",
-                y: {!!$MC[5]!!},
-            }, {
-                name: "商士英",
-                y: {!!$MC[6]!!},
-            }, {
-                name: "物流",
-                y: {!!$MC[7]!!},
-            }]
-          }]
+            name: {!!$allname!!},
+            data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 0, 0, 0, 0]
+        }, {
+            name: 'London',
+            data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 0, 0, 0, 0]
+        }]
       };
       $("#chart").highcharts(options);
     });
@@ -123,9 +88,9 @@
             <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
              <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$today!!}&nbsp;&nbsp;
             </th>
-            <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
+            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
               Diary
-            </th-->
+            </th>
             <th class="text-center" colspan="3" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
               MTD
             </th>
@@ -140,9 +105,9 @@
             <th class="text-center">
               Name
             </th>
-            <!--th class="text-center">
+            <th class="text-center">
               Amount
-            </th-->
+            </th>
             <th class="text-center">
               Actual
             </th>

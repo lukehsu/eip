@@ -1616,7 +1616,7 @@ class AutosendController extends Controller {
       //$to = ['luke.hsu@bora-corp.com','sean1606@gmail.com'];
       //$to = ['luke.hsu@bora-corp.com','sam.wu@bora-corp.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
       //$to = ['luke.hsu@bora-corp.com'];
-      $to = ['bobby.sheng@gmail.com','whitney.huang@bora-corp.com','demi.tai@bora-corp.com'];
+      $to = ['bobby.sheng@gmail.com','christie.hsu@bora-corp.com','demi.tai@bora-corp.com'];
       //信件的內容
       $data = ['borapic'=>$bora,'unionpic'=>$union];
       //寄出信件
