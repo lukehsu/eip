@@ -4,8 +4,11 @@ use App\User;
 use App\itticket;
 use App\Http\Requests;
 use App\boraitem;
+use DB;
+use App\boehringer;
 use App\everymonth;
 use App\itservicerank;
+use App\mobicmappingdata;
 use App\salesmen;
 use App\calendar;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
@@ -329,7 +332,6 @@ class ServiceajaxController extends Controller {
             $reports = everymonth::where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
         }
 
-        
         $report = null;
         foreach ($reports as $reporttemp) 
         {  
@@ -361,6 +363,118 @@ class ServiceajaxController extends Controller {
             $report .= '</tr>';
             //$report .='<br>';
         }
+        if (substr(date('m'),0,1)==0) {
+            $j=substr(date('m'),1,1);
+        }
+        else
+        {
+            $j=substr(date('m'),0,2);   
+        }  
+        if ($season=='2016' and $itemcode=='68MOB001') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $report .= '<tr>';
+                $report .= '<td >'.$reporttemp['salename'].'-裕利</td>';
+                $report .= '<td >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
+                $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['qty'].'</td>';
+                for ($i=1; $i <=12 ; $i++) {
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {          
+                        $report .= '<td class="text-center">'.$reporttemp['qty'].'</td>';
+                    }
+                    if ($checkreports==0) {
+                        $report .= '<td class="text-center">0</td>';
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $report .= '<td class="text-center" style="background-color: #FCB941;" >'.$reporttemp['qty'].'</td>';
+                        }
+                        if ($checkreports==0) {
+                            $report .= '<td class="text-center" style="background-color: #FCB941;">0</td>';
+                        }
+                    }
+                }     
+                $report .= '</tr>'; 
+            }
+        }
+        if ($season=='2016' and $itemcode=='68MOB002') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $report .= '<tr>';
+                $report .= '<td >'.$reporttemp['salename'].'-裕利</td>';
+                $report .= '<td >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
+                $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['qty'].'</td>';
+                for ($i=1; $i <=12 ; $i++) {
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {          
+                        $report .= '<td class="text-center">'.$reporttemp['qty'].'</td>';
+                    }
+                    if ($checkreports==0) {
+                        $report .= '<td class="text-center">0</td>';
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $report .= '<td class="text-center" style="background-color: #FCB941;" >'.$reporttemp['qty'].'</td>';
+                        }
+                        if ($checkreports==0) {
+                            $report .= '<td class="text-center" style="background-color: #FCB941;">0</td>';
+                        }
+                    }
+                }     
+                $report .= '</tr>'; 
+            }
+        }    
+        if ($season=='2016' and $itemcode=='68MOB003') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $report .= '<tr>';
+                $report .= '<td >'.$reporttemp['salename'].'-裕利</td>';
+                $report .= '<td >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
+                $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['qty'].'</td>';
+                for ($i=1; $i <=12 ; $i++) {
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {          
+                        $report .= '<td class="text-center">'.$reporttemp['qty'].'</td>';
+                    }
+                    if ($checkreports==0) {
+                        $report .= '<td class="text-center">0</td>';
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $report .= '<td class="text-center" style="background-color: #FCB941;" >'.$reporttemp['qty'].'</td>';
+                        }
+                        if ($checkreports==0) {
+                            $report .= '<td class="text-center" style="background-color: #FCB941;">0</td>';
+                        }
+                    }
+                }     
+                $report .= '</tr>'; 
+            }
+        }    
         if (Request::ajax()) 
         {
             return response()->json(array(
@@ -478,11 +592,139 @@ class ServiceajaxController extends Controller {
             $objPHPExcel->getActiveSheet()->setCellValue('U'.$no , $reporttemp['decqty']); 
             $s4 = $reporttemp['octqty']+$reporttemp['novqty']+$reporttemp['decqty'];
             $objPHPExcel->getActiveSheet()->setCellValue('V'.$no , $s4);  
-            
+
             $no = $no + 1;
-    
         }
 
+        if ($season=='2016' and $itemcode=='68MOB001') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $col = 6;
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , date('Y') );
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $reporttemp['salename'].'-裕利' );
+                $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , mb_substr($reporttemp['cusname'],0,8,"utf-8"));
+                $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '骨敏捷(R)錠7.5毫克(希臘廠)' ); 
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , 'MOBIC (R) TABLETS 7.5MG' );  
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['qty'] ); 
+                for ($i=1; $i <=12 ; $i++) {
+
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {       
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col ,$no , $reporttemp['qty'] ); 
+                        $col = $col + 1;
+                    }
+                    if ($checkreports==0) {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                        $col = $col + 1;
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , $reporttemp['qty'] );
+                            $col = $col + 1;
+                        }
+                        if ($checkreports==0) {
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                            $col = $col + 1;
+                        }
+                    }
+                }     
+                $no = $no + 1; 
+            }
+        }
+        if ($season=='2016' and $itemcode=='68MOB002') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $col = 6;
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , date('Y') );
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $reporttemp['salename'].'-裕利' );
+                $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , mb_substr($reporttemp['cusname'],0,8,"utf-8"));
+                $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '骨敏捷(R)錠15毫克(希臘廠)' ); 
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , 'MOBIC (R) TABLETS 15MG' );  
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['qty'] ); 
+                for ($i=1; $i <=12 ; $i++) {
+
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {       
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col ,$no , $reporttemp['qty'] ); 
+                        $col = $col + 1;
+                    }
+                    if ($checkreports==0) {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                        $col = $col + 1;
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , $reporttemp['qty'] );
+                            $col = $col + 1;
+                        }
+                        if ($checkreports==0) {
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                            $col = $col + 1;
+                        }
+                    }
+                }     
+                $no = $no + 1; 
+            }
+        }
+        if ($season=='2016' and $itemcode=='68MOB003') {
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            foreach ($reports as $reporttemp) {
+                $col = 6;
+                $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , date('Y') );
+                $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $reporttemp['salename'].'-裕利' );
+                $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , mb_substr($reporttemp['cusname'],0,8,"utf-8"));
+                $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '骨敏捷(R)針劑(希臘廠)' ); 
+                $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , 'MOBIC (R)AMG' );  
+                $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['qty'] ); 
+                for ($i=1; $i <=12 ; $i++) {
+
+                    $monstart = date('Y').'-'.$i.'-1';
+                    $monend =   date("t",strtotime($monstart));
+                    $monend =  date('Y').'-'.$i.'-'.$monend; 
+                    $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                    $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$monstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                    foreach ($reports as $reporttemp) {       
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col ,$no , $reporttemp['qty'] ); 
+                        $col = $col + 1;
+                    }
+                    if ($checkreports==0) {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                        $col = $col + 1;
+                    }
+                    if ($i==3 or $i==6 or $i==9 or $i==12 ) {
+                        $start = $i-2 ;
+                        $submonstart = date('Y').'-'.$start.'-1';
+                        $checkreports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->count();
+                        $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('cusname', '=',$reporttemp['cusname'])->where('salename', '=',$reporttemp['salename'])->where('date', '>=',$submonstart)->where('date', '<=',$monend)->where('ItemNo', '=','A0076')->where('SaleType', '=','A2')->GroupBy('cusname')->get();
+                        foreach ($reports as $reporttemp) {          
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , $reporttemp['qty'] );
+                            $col = $col + 1;
+                        }
+                        if ($checkreports==0) {
+                            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$no , '0' );
+                            $col = $col + 1;
+                        }
+                    }
+                }     
+                $no = $no + 1; 
+            }
+        }
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
         //產生header
@@ -528,13 +770,13 @@ class ServiceajaxController extends Controller {
         $company = Input::get('company');
         $season = Input::get('season');
 
-        $allcodes = boraitem::where('years','=',$season)->get();
+        $allcodes = boraitem::where('years','=',$season)->orderBy('itemchname', 'DESC')->get();
         $codes = array();
         if ($company=='保瑞') 
         {
             foreach ($allcodes as $code) 
             {
-                if ($code['itemno'] =='68PTV001'|| $code['itemno']=='68DEN001' || $code['itemno']=='68LEP002' || $code['itemno']=='68LEP001' || $code['itemno']=='68LXP001' || $code['itemno']=='68EBP001' || $code['itemno']=='68DEP001' || $code['itemno']=='68LMP002' || $code['itemno']=='A0022' || $code['itemno']=='A0024' || $code['itemno']=='A0076' || $code['itemno']=='A0210' ) 
+                if ($code['itemno'] =='68PTV001'|| $code['itemno']=='68DEN001' || $code['itemno']=='68LEP002' || $code['itemno']=='68LEP001' || $code['itemno']=='68LXP001' || $code['itemno']=='68EBP001' || $code['itemno']=='68DEP001' || $code['itemno']=='68LMP002' || $code['itemno']=='A0022' || $code['itemno']=='A0024' || $code['itemno']=='A0076' || $code['itemno']=='A0210' || $code['itemno']=='68MOB001' || $code['itemno']=='68MOB002' || $code['itemno']=='68MOB003' ) 
                 {
                     array_push($codes, $code['itemchname']) ;
                 }

@@ -125,6 +125,7 @@ class LoginController extends Controller {
         ldap_close($ldapconn);
         if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
         {
+
           //return redirect()->intended('dashboard');
           return  response()->json(array('good'));
         }

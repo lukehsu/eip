@@ -16,7 +16,10 @@
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video
 {margin:0;padding:0;border:0;font-size:100%;font-family:'微軟正黑體',arial,helvetica,sans-serif;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1;background-color:#fff}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 /*#129793,;font-family:'Roboto Condensed',arial,helvetica,sans-serif*/
-
+.main {
+  width: 1366px;
+  margin: 0 auto; 
+}
 .header{
    width: 100%;
    display: block;
@@ -266,7 +269,7 @@ table tbody tr td{
     </script>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid main">
   @include('includes.navbar')
 	<div class="row">
     	<div class="col-xs-9" >

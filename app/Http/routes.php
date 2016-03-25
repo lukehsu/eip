@@ -46,6 +46,9 @@ Route::get('autoacbudget' , 'AutosendController@autoacbudget');
 Route::get('borauni/{todaydate}' , 'MainController@borauni');
 Route::get('uniuni/{todaydate}' , 'MainController@uniuni');
 Route::get('agents/{todaydate}' , 'MainController@agents');
+Route::get('allborauni/{todaydate}' , 'MainController@allborauni');
+Route::get('imborauni/{todaydate}' , 'MainController@imborauni');
+Route::get('neww' , 'MainController@neww');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');

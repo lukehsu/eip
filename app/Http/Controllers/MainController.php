@@ -58,7 +58,6 @@ class MainController extends Controller {
    */  
     public function login()
     {
-        
         return view('index');
     }
 
@@ -2873,7 +2872,8 @@ class MainController extends Controller {
             }
           }
           $MC[$itemname] = round((array_sum($MAtarget[$medicine['itemno']]) / $MB[$itemname]) * 100 );
-          $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.array_sum($MAtarget[$medicine['itemno']]) .'</td><td class="text-right">'.$MB[$itemname] .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.array_sum($MAAtarget[$medicine['itemno']]).'</td><td class="text-right">'.$MBB[$itemname].'</td><td class="text-right">'.$MC[$itemname].'%</td></tr>';   
+          $MCC[$itemname] = round((array_sum($MAAtarget[$medicine['itemno']]) / $MBB[$itemname]) * 100 );
+          $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.array_sum($MAtarget[$medicine['itemno']]) .'</td><td class="text-right">'.$MB[$itemname] .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.array_sum($MAAtarget[$medicine['itemno']]).'</td><td class="text-right">'.$MBB[$itemname].'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';   
           $totalma = $totalma + array_sum($MAtarget[$medicine['itemno']]);
           $totalmaa = $totalmaa + array_sum($MAAtarget[$medicine['itemno']]);
         }  
@@ -2887,5 +2887,632 @@ class MainController extends Controller {
                                 'todaydate'=>$todaydate,
                                 'chardate'=>$chardate,
                               ]);
+  }
+
+  public function allborauni($todaydate)
+  {
+    $uri = Request::path();
+    $uris = strstr($uri,'/',true);
+    $style = 0;
+    $i = 0;
+    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
+    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
+    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
+    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
+    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
+    $chardate =  str_replace('-','',$todaydate); 
+    $MC = array();
+    $MCC = array();
+    $outcounts = array();
+    $alltargets = array();
+    $alltargetnames = array();
+    $allach = array();
+    $shippingd = 0;//物流每日業績
+    $totaldairy = 0;
+    $totalMA = 0;
+    $totalMB = 0;
+    $totalMAA = 0;
+    $totalMBB = 0;
+    $FMC =  array();
+    $targetps = importantboraunip::all();
+    foreach ($targetps as $targetp) {
+      $alltargets[] = $targetp['itemno'];
+      $MA[$targetp['importantproduct']] = 0 ;
+      $MAA[$targetp['importantproduct']] = 0 ;
+      $MB[$targetp['importantproduct']] = 0; 
+      $MBB[$targetp['importantproduct']] = 0;
+      $MC[$targetp['importantproduct']] = 0 ;
+      $MCC[$targetp['importantproduct']] = 0 ;
+      $formtemp[$targetp['importantproduct']] = null;
+    }
+    $formtemp['others'] = null;
+    $MA['others'] = 0 ;
+    $MAA['others'] = 0 ;
+    $MB['others'] = 0; 
+    $MBB['others'] = 0;
+    $MC['others'] = 0 ;
+    $MCC['others'] = 0 ;
+    //程式起點利用資料庫撈取
+    $products = dailyreport::where('Invdate','>=',$monthstart)->where('Invdate','<=',$todaydate)->get();
+    foreach ($products as $product) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($product['BORAItemNo']==$alltarget) 
+        {
+          if ($itemname=='Bpn' and $product['BORACustomerNo'] <> 'UCS05' ) {
+            $product['InoviceAmt'] = 0;
+          }
+          $MA[$itemname] = $MA[$itemname] + $product['InoviceAmt'];
+        } 
+        else
+        {
+          $check = 0;
+          foreach ($alltargets as $alltargetother) {
+            if ($product['BORAItemNo']==$alltargetother) {
+              $check = 1;
+            }
+          }      
+        }  
+      }
+      if ($check == 0 and substr($product['BORAItemNo'], 0,2)=='67' ) 
+      { 
+        $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+      }
+    }
+    $unimonthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+    foreach ($unimonthbudgets as $unimonthbudget) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($unimonthbudget['BORAItemNo']==$alltarget) 
+        {
+          $MB[$itemname] = $unimonthbudget['budget'];
+        } 
+      } 
+      if ($unimonthbudget['BORAItemNo']=='borauni') {
+        $MB['others']=$unimonthbudget['budget'];
+      }        
+    }
+    foreach ($alltargets as $alltarget) {
+      $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+      $itemname = $itemnames->importantproduct;
+      $MC[$itemname] = round(($MA[$itemname] / $MB[$itemname]) * 100);
+    }
+    $MC['others'] = round(($MA['others'] / $MB['others']) * 100);
+    $products = dailyreport::where('Invdate','>=',$yearstart)->where('Invdate','<=',$todaydate)->get();
+    foreach ($products as $product) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($product['BORAItemNo']==$alltarget) 
+        {
+          if ($itemname=='Bpn' and $product['BORACustomerNo'] <> 'UCS05' ) {
+            $product['InoviceAmt'] = 0;
+          }
+          $MAA[$itemname] = $MAA[$itemname] + $product['InoviceAmt'];
+        } 
+        else
+        {
+          $check = 0;
+          foreach ($alltargets as $alltargetother) {
+            if ($product['BORAItemNo']==$alltargetother) {
+              $check = 1;
+            }
+          }      
+        }  
+      }
+      if ($check == 0 and substr($product['BORAItemNo'], 0,2)=='67' ) 
+      { 
+        $MAA['others'] = $MAA['others'] + $product['InoviceAmt'];
+      }
+    }
+    $unimonthbudgets = boramonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+    foreach ($unimonthbudgets as $unimonthbudget) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($unimonthbudget['BORAItemNo']==$alltarget) 
+        {
+          $MBB[$itemname] = $MBB[$itemname] + $unimonthbudget['budget'];
+        } 
+      } 
+      if ($unimonthbudget['BORAItemNo']=='borauni') {
+        $MBB['others']= $MBB['others'] + $unimonthbudget['budget'];
+      } 
+    }
+    foreach ($alltargets as $alltarget) {
+      $itemnames = importantboraunip::where('itemno','=',$alltarget)->first();
+      $itemname = $itemnames->importantproduct;
+      $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+    }
+    $MCC['others'] = round(($MAA['others'] / $MBB['others']) * 100);
+    $totalborama   = array_sum($MA); 
+    $totalboramb   = array_sum($MB);
+    $totalboramc   = round(($totalborama/$totalboramb)* 100);
+    $totalboramaa  = array_sum($MAA);
+    $totalborambb  = array_sum($MBB);
+    $totalboramcc  = round(($totalboramaa/$totalborambb)* 100);
+    $finals = importantboraunip::select('importantproduct')->distinct()->get();
+    foreach ($finals as $final) 
+    { 
+      $itemnames = importantboraunip::where('importantproduct','=',$final['importantproduct'])->first();
+      $itemname = $itemnames->importantproductchname;
+      $formtemp[$final['importantproduct']]  = '<tr><td>'.$itemname.'-保瑞</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
+    }
+    $formtemp['others']  = '<tr><td>Others-保瑞</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>' ;  
+    foreach ($MC as $key => $value) {
+      $FMC[] = $value ; 
+    }
+    /////////////////////////
+    $uri = Request::path();
+    $uris = strstr($uri,'/',true);
+    $form = null;
+    $style = 0 ;
+    $i = 0;
+    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
+    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
+    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
+    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
+    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
+    $chardate =  str_replace('-','',$todaydate); 
+    $MC = array();
+    $MCC = array();
+    $outcounts = array();
+    $alltargets = array();
+    $alltargetnames = array();
+    $allach = array();
+    $shippingd = 0;//物流每日業績
+    $totaldairy = 0;
+    $totalMA = 0;
+    $totalMB = 0;
+    $totalMAA = 0;
+    $totalMBB = 0;
+    $MA = array(); 
+    $MAA = array() ;
+    $MB = array(); 
+    $MBB = array();
+    $MC = array() ;
+    $MCC = array() ;
+    $targetps = importantuniunip::all();
+    foreach ($targetps as $targetp) {
+      $alltargets[] = $targetp['itemno'];
+      $MA[$targetp['importantproduct']] = 0 ;
+      $MAA[$targetp['importantproduct']] = 0 ;
+      $MB[$targetp['importantproduct']] = 0; 
+      $MBB[$targetp['importantproduct']] = 0;
+      $MC[$targetp['importantproduct']] = 0 ;
+      $MCC[$targetp['importantproduct']] = 0 ;
+    }
+    $MA['others'] = 0 ;
+    $MAA['others'] = 0 ;
+    $MB['others'] = 0; 
+    $MBB['others'] = 0;
+    $MC['others'] = 0 ;
+    $MCC['others'] = 0 ;
+    //程式起點利用資料庫撈取
+    $products = unidiaryreport::where('Invdate','>=',$monthstart)->where('Invdate','<=',$todaydate)->get();
+    foreach ($products as $product) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($product['BORAItemNo']==$alltarget) 
+        {
+          $MA[$itemname] = $MA[$itemname] + $product['InoviceAmt'];
+        } 
+        else
+        {
+          $check = 0;
+          foreach ($alltargets as $alltargetother) {
+            if ($product['BORAItemNo']==$alltargetother) {
+              $check = 1;
+            }
+          }      
+        }  
+      }
+      if ($check == 0) 
+      { 
+        $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+      }
+    }
+    $unimonthbudgets = unimonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+    foreach ($unimonthbudgets as $unimonthbudget) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($unimonthbudget['BORAItemNo']==$alltarget) 
+        {
+          $MB[$itemname] = $unimonthbudget['budget'];
+        } 
+      } 
+      if ($unimonthbudget['BORAItemNo']=='others') {
+        $MB['others']=$unimonthbudget['budget'];
+      }        
+    }
+    foreach ($alltargets as $alltarget) {
+      $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+      $itemname = $itemnames->importantproduct;
+      if ($MB[$itemname]==0) {
+        $MC[$itemname]=0;
+      }
+      else
+      {
+        $MC[$itemname] = round(($MA[$itemname] / $MB[$itemname]) * 100);
+      }
+    }
+    if ($MB['others']==0) {
+      $MC['others']=0;
+    }
+    else
+    {
+      $MC['others'] = round(($MA['others'] / $MB['others']) * 100);
+    }  
+    $products = unidiaryreport::where('Invdate','>=',$yearstart)->where('Invdate','<=',$todaydate)->get();
+    foreach ($products as $product) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($product['BORAItemNo']==$alltarget) 
+        {
+
+          $MAA[$itemname] = $MAA[$itemname] + $product['InoviceAmt'];
+        } 
+        else
+        {
+          $check = 0;
+          foreach ($alltargets as $alltargetother) {
+            if ($product['BORAItemNo']==$alltargetother) {
+              $check = 1;
+            }
+          }      
+        }  
+      }
+      if ($check == 0 ) 
+      { 
+        $MAA['others'] = $MAA['others'] + $product['InoviceAmt'];
+      }
+    }
+    $unimonthbudgets = unimonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+    foreach ($unimonthbudgets as $unimonthbudget) {
+      foreach ($alltargets as $alltarget) {
+        $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+        $itemname = $itemnames->importantproduct;
+        if ($unimonthbudget['BORAItemNo']==$alltarget) 
+        {
+          $MBB[$itemname] = $MBB[$itemname] + $unimonthbudget['budget'];
+        } 
+      } 
+      if ($unimonthbudget['BORAItemNo']=='others') {
+        $MBB['others']= $MBB['others'] + $unimonthbudget['budget'];
+      } 
+    }
+    foreach ($alltargets as $alltarget) {
+      $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
+      $itemname = $itemnames->importantproduct;
+      $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+    }
+    $MCC['others'] = round(($MAA['others'] / $MBB['others']) * 100);
+    $totalma   = array_sum($MA); 
+    $totalmb   = array_sum($MB);
+    $totalmc   = round(($totalma/$totalmb)* 100);
+    $totalmaa  = array_sum($MAA);
+    $totalmbb  = array_sum($MBB);
+    $totalmcc  = round(($totalmaa/$totalmbb)* 100);
+    $checkarray = 1 ;
+    $finals = importantuniunip::select('importantproduct')->distinct()->get();
+    foreach ($finals as $final) 
+    { 
+      $itemnames = importantuniunip::where('importantproduct','=',$final['importantproduct'])->first();
+      $itemname = $itemnames->importantproductchname;
+      if (array_key_exists($final['importantproduct'], $formtemp)) {
+        $form  .= $formtemp[$final['importantproduct']].'<tr><td>'.$itemname.'-聯邦</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;
+      }
+      else
+      { 
+        if ($checkarray==1) {
+          $form  .= $formtemp['Bpn'];
+          $checkarray = 0 ;
+        } 
+        $form  .= '<tr><td>'.$itemname.'-聯邦</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;          
+      }  
+    }   
+    $form .= $formtemp['others'];
+    $form .= '<tr><td>Others-聯邦</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>'; 
+    $totalma = $totalborama + $totalma ;
+    $totalmb = $totalboramb + $totalmb;
+    $totalmc = round(($totalma/$totalmb)* 100);
+    $totalmaa = $totalboramaa + $totalmaa;
+    $totalmbb = $totalborambb + $totalmbb;
+    $totalmcc = round(($totalmaa/$totalmbb)* 100);
+    $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalma).'</td><td class="text-right endcolor">'.number_format($totalmb).'</td><td class="text-right endcolor">'.$totalmc.'%</td><td class="text-right endcolor">'.number_format($totalmaa).'</td><td class="text-right endcolor">'.number_format($totalmbb).'</td><td class="text-right endcolor">'.$totalmcc.'%</td></tr>' ; 
+    foreach ($MC as $key => $value) {
+      $FMC[] = $value ; 
+    }
+    //////////////////////////////////////////////////////////////////////////////
+    return view('allborauni',['form'=>$form,
+                           'todaydate'=>$todaydate,
+                           'FMC'=>$FMC
+                          ]);
+  }
+  public function imborauni($todaydate)
+  {
+        $total = 0; 
+        $totalMA = 0;
+        $totalMB = 0;
+        $totalMAA = 0;
+        $totalMBB = 0;
+        $form = null;
+        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
+        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
+        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
+        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
+        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
+        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
+        $chardate =  str_replace('-','',$todaydate);
+        $iteminfo = array();
+        $outs = bigsangent::all();//提取所有要的廠商
+        foreach ($outs as $out) 
+        {
+          $outcounts[] = $out['customercode'];
+        }
+        $medicines = importantagentsp::all();
+        foreach ($medicines as $medicinep) 
+        {
+          $iteminfo[] = $medicinep['itemno'];
+          $outs = bigsangent::all();
+          foreach ($outs as $out) 
+          {          
+            $MAtarget[$medicinep['itemno']][$out['customercode']]=0;
+            $MAAtarget[$medicinep['itemno']][$out['customercode']]=0;  
+          }  
+          $MB[$medicinep['importantproduct']] = 0; 
+          $MBB[$medicinep['importantproduct']] = 0; 
+          $MC[$medicinep['importantproduct']] = 0; 
+          $MCC[$medicinep['importantproduct']] = 0; 
+        } 
+        //這一大段只是為了跑出pitavol起點
+        //月初至當日
+        foreach ($outcounts as $outcount) {
+          $dailyreports = dailyreport::where('BORACustomerNo','=',$outcount)->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            foreach ($iteminfo as $itemno) {
+              if ($dailyreport['BORAItemNo']==$itemno) { 
+                $MAtarget[$itemno][$outcount] = $MAtarget[$itemno][$outcount] + $dailyreport['InoviceAmt'];
+              }              
+            } 
+          }
+          $dailyreports = unidiaryreport::where('BORACustomerno','=',$outcount)->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            foreach ($iteminfo as $itemno) {
+              if ($dailyreport['BORAItemNo']==$itemno) { 
+                $MAtarget[$itemno][$outcount] = $MAtarget[$itemno][$outcount] + $dailyreport['InoviceAmt'];
+              }              
+            } 
+          }
+        //年初至當日
+          $dailyreports = dailyreport::where('BORACustomerNo','=',$outcount)->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            foreach ($iteminfo as $itemno) {
+              if ($dailyreport['BORAItemNo']==$itemno) { 
+                $MAAtarget[$itemno][$outcount] = $MAAtarget[$itemno][$outcount] + $dailyreport['InoviceAmt'];
+              }
+            }
+          }
+          $dailyreports = unidiaryreport::where('BORACustomerno','=',$outcount)->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            foreach ($iteminfo as $itemno) {
+              if ($dailyreport['BORAItemNo']==$itemno) { 
+                $MAAtarget[$itemno][$outcount] = $MAAtarget[$itemno][$outcount] + $dailyreport['InoviceAmt'];
+              }              
+            } 
+          }
+        }
+        //撈每月目標業績
+        $monthbudgets = agentsmonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+        foreach ($monthbudgets as $monthbudget) {
+          foreach ($iteminfo as $itemno) {
+            if ($monthbudget['BORAItemNo']==$itemno) {
+              $itemnames = importantagentsp::where('itemno','=',$itemno)->first();
+              $itemname = $itemnames->importantproduct;
+              $MB[$itemname] = $monthbudget['budget'];
+            }
+          }  
+        }
+        //撈年初至當月每月目標業績
+        $monthbudgets = agentsmonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+        foreach ($monthbudgets as $monthbudget) {
+          foreach ($iteminfo as$itemno) {
+            if ($monthbudget['BORAItemNo']==$itemno) {
+              $itemnames = importantagentsp::where('itemno','=',$itemno)->first();
+              $itemname = $itemnames->importantproduct;
+              $MBB[$itemname] = $MBB[$itemname] + $monthbudget['budget'];
+            } 
+          }
+        }
+        $medicines = importantagentsp::select('itemno')->distinct()->get();
+        foreach ($medicines as $medicine) 
+        { 
+          if ($medicine['itemno']=='57PTV001') {        
+            $itemnames = importantagentsp::where('itemno','=',$medicine['itemno'])->first();
+            $itemname = $itemnames->importantproduct;
+            $form  .= '<tr><td class="subcolor">'.$itemname.'</td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td></tr>';
+            foreach ($MAtarget[$medicine['itemno']] as $subkey => $submedicine) {
+              if ($submedicine<>0) {
+                $comnames = bigsangent::where('customercode','=',$subkey)->first();
+                $comname = $comnames->customerchname;
+                $form  .= '<tr><td>&nbsp;&nbsp;&nbsp;'.$comname.'</td><td class="text-right">'.number_format($submedicine).'</td><td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td><td class="text-right">-</td></tr>' ; 
+              }
+            }
+            $MC[$itemname] = round((array_sum($MAtarget[$medicine['itemno']]) / $MB[$itemname]) * 100 );
+            $MCC[$itemname] = round((array_sum($MAAtarget[$medicine['itemno']]) / $MBB[$itemname]) * 100 );
+            $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format(array_sum($MAtarget[$medicine['itemno']])) .'</td><td class="text-right">'.number_format($MB[$itemname]) .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.number_format(array_sum($MAAtarget[$medicine['itemno']])).'</td><td class="text-right">'.number_format($MBB[$itemname]).'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';
+            $totalMA = array_sum($MAtarget[$medicine['itemno']]);
+            $totalMB = $MB[$itemname];
+            $totalMAA = $totalMAA + array_sum($MAAtarget[$medicine['itemno']]);
+            $totalMBB = $totalMBB + $MBB[$itemname];
+            $char1 = $MC[$itemname];
+          }
+        }  
+        //這一大段只是為了跑出pitavol終點
+        //這一大段只是為了跑出mobic起點
+        $form  .= '<tr><td class="subcolor">Mobic</td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td></tr>';
+        $i = 0;
+        $MA = 0;
+        $MAA = 0;
+        $MMA = 0;
+        $MMAA = 0;
+        $MMB = 0;
+        $MMBB = 0;
+        $outs = big::where('income','=','SP')->get();
+        foreach ($outs as $out) 
+        {
+          //計算當日業績醫院組金容平廷只會出現在裕利表單所以這邊給中文沒差
+          //計算由月初累計至當日業績
+          //計算當月業績醫院組金容平廷只會出現在裕利表單所以這邊給中文
+          $MA = 0;
+          $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$out['customercode'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$out['customercode'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$out['customercode'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
+              $MA = $MA + $dailyreport['Amount'];
+          } 
+          //提取每月目標
+          $monthbudgets = personalmonthbudget::where('zone','=',$out['customercode'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+          foreach ($monthbudgets as $monthbudget) {
+            $MB = $monthbudget['budget'];
+          } 
+          //結至當日達成率
+          $MC[$i] = round(($MA/$MB) * 100) ;
+          //計算年累計由年初至當日
+          $MAA = 0;
+          $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
+              $MAA = $MAA + $dailyreport['Amount'];
+          } 
+          //計算年累計目標由年初至當月因為$out['customercode']為編號因無物流代號故使用中文
+          $monthbudgets = personalmonthbudget::where('zone','=',$out['customercode'])->where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+          $MBB = 0 ;
+          foreach ($monthbudgets as $monthbudget) {
+            $MBB = $MBB +  $monthbudget['budget'];
+          }
+          // MCC  A/B
+          if ($MBB<>0) {
+            $MCC[$i] = round(($MAA/$MBB) * 100) ;
+          }
+          $MMA = $MMA + $MA ;
+          $MMAA = $MMAA + $MAA;
+          $MMB = $MMB + $MB ;
+          $MMBB = $MMBB + $MBB;
+          $form .= '<tr ><td>&nbsp;&nbsp;&nbsp;'.$out['customercode'].'</td>';
+          $form .= '<td class="text-right">'.number_format($MA).'</td>';
+          $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].'%</td>';
+          $form .= '<td class="text-right">'.number_format($MAA).'</td>';
+          $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC[$i].'%</td>';   
+          $i= $i+1;
+        }  
+        $MMC = round(($MMA/$MMB) * 100) ;
+        $MMCC = round(($MMAA/$MMBB) * 100) ;
+        $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MMB) .'</td><td class="text-right">'.$MMC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MMBB) .'</td><td class="text-right">'.$MMCC.'%</td></tr>';
+        $totalMA = $totalMA +  $MMA;
+        $totalMB = $totalMB + $MMB;
+        $totalMAA = $totalMAA +  $MMAA;
+        $totalMBB = $totalMBB + $MMBB;
+        $char2 = $MMC;
+        //這一大段只是為了跑出mobic終點  
+        $form  .= '<tr><td class="subcolor">Lendormin</td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td><td class="subcolor"></td></tr>';     
+        $i = 0;
+        $MA = 0;
+        $MAA = 0;
+        $MMA = 0;
+        $MMAA = 0;
+        $MMB = 0;
+        $MMBB = 0;
+        //這一大段只是為了跑出lendormin起點 
+        //和安戀多眠 
+        $dailyreportstable = hareport::where('INVDT','>=',$monthstart)->where('INVDT','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+          if ($dailyreport['HAITMNO']=='LEN25100') {
+            $MA = $MA + $dailyreport['INVAM'] - $dailyreport['CDAMT'];
+          }
+        }  
+        $dailyreportstable = hareport::where('INVDT','>=',$yearstart)->where('INVDT','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+          if ($dailyreport['HAITMNO']=='LEN25100') {
+            $MAA = $MAA + $dailyreport['INVAM'] - $dailyreport['CDAMT'];
+          }
+        }
+        $MMA = $MMA + $MA ;
+        $MMAA = $MMAA + $MAA;   
+        $form .= '<tr ><td>&nbsp;&nbsp;&nbsp;和安</td>';
+        $form .= '<td class="text-right">'.number_format($MA).'</td>';
+        $form .= '<td class="text-right">-</td><td class="text-right">-</td>';
+        $form .= '<td class="text-right">'.number_format($MAA).'</td>';
+        $form .= '<td class="text-right">-</td><td class="text-right">-</td>';   
+        $MA = 0;
+        $MAA = 0;
+        //裕利戀多眠
+        $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+          if ($dailyreport['ItemNo']=='A0195') {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
+            $MA = $MA + $dailyreport['Amount'] - $dailyreport['CDAMT'];
+          }
+        }  
+        $dailyreportstable = boehringer::where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
+        foreach ($dailyreportstable as $dailyreport) {
+          if ($dailyreport['ItemNo']=='A0195') {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
+            $MAA = $MAA + $dailyreport['Amount'] - $dailyreport['CDAMT'];
+          }
+        }  
+        $MMA = $MMA + $MA ;
+        $MMAA = $MMAA + $MAA; 
+        $form .= '<tr ><td>&nbsp;&nbsp;&nbsp;裕利</td>';
+        $form .= '<td class="text-right">'.number_format($MA).'</td>';
+        $form .= '<td class="text-right">-</td><td class="text-right">-</td>';
+        $form .= '<td class="text-right">'.number_format($MAA).'</td>';
+        $form .= '<td class="text-right">-</td><td class="text-right">-</td>';   
+        $monthbudgets = boramonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->where('BORAItemNo','=','68PTV001123')->get();
+        foreach ($monthbudgets  as $monthbudget) {
+          $MB = $monthbudget['budget'];
+        }
+        $monthbudgets = boramonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->where('BORAItemNo','=','68PTV001123')->get();
+        foreach ($monthbudgets  as $monthbudget) {
+          $MBB = $MBB + $monthbudget['budget'];
+        }
+        $MC = round(($MMA/$MB)* 100);
+        $MCC = round(($MMAA/$MBB)* 100);
+        $form .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MB) .'</td><td class="text-right">'.$MC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MBB) .'</td><td class="text-right">'.$MCC.'%</td></tr>';   
+        $char3 = $MC;
+        //這一大段只是為了跑出lendormin終點 
+        $totalMA = $totalMA + $MMA;
+        $totalMB = $totalMB + $MB;
+        $totalMAA = $totalMAA + $MMAA;
+        $totalMBB = $totalMBB + $MBB;
+        $totalMC = round(($totalMA/$totalMB)* 100);
+        $totalMCC = round(($totalMAA/$totalMBB)* 100);
+        $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalMA).'</td><td class="text-right endcolor">'.number_format($totalMB).'</td><td class="text-right endcolor">'.$totalMC.'%</td><td class="text-right endcolor">'.number_format($totalMAA).'</td><td class="text-right endcolor">'.number_format($totalMBB).'</td><td class="text-right endcolor">'.$totalMCC.'%</td></tr>' ; 
+        return view('imborauni',['form'=>$form,
+                                'MC'=>$MC,
+                                'todaydate'=>$todaydate,
+                                'chardate'=>$chardate,
+                                'char1'=>$char1,
+                                'char2'=>$char2,
+                                'char3'=>$char3,
+                              ]);
+  }
+  public function neww ()
+  {
+    return view('new');
   }
 }

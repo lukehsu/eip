@@ -18,7 +18,7 @@ foreach ($mainitems as $mainitem)
     $subitem2ss = '<ul  class="ul2 ul4">';
     $subitem2s = mainmenudisplay::where('user','=',Auth::user()->name)->where('subitem','=',$subitem['subitem'])->orderBy('subitemid', 'ASC')->orderBy('subitem2id', 'ASC')->get();
     foreach ($subitem2s as $subitem2) {   
-      if ($subitem2['subitem2'] <> '保瑞' and $subitem2['subitem2'] <> '聯邦' and $subitem2['subitem2'] <> '業務部每日業績表' and $subitem2['subitem2'] <> '個人業績表(藥品)' and $subitem2['subitem2'] <> '個人業績表(醫院)' and $subitem2['subitem2'] <> '保瑞聯邦' and $subitem2['subitem2'] <> '聯邦聯邦' and $subitem2['subitem2'] <> '經銷商') {
+      if ($subitem2['subitem2'] <> '保瑞' and $subitem2['subitem2'] <> '聯邦' and $subitem2['subitem2'] <> '業務部每日業績表' and $subitem2['subitem2'] <> '個人業績表(藥品)' and $subitem2['subitem2'] <> '個人業績表(醫院)' and $subitem2['subitem2'] <> '保瑞聯邦' and $subitem2['subitem2'] <> '聯邦聯邦' and $subitem2['subitem2'] <> '經銷商' and $subitem2['subitem2'] <> '保瑞聯邦合計' and $subitem2['subitem2'] <> '重點產品') {
         $subitem2ss .= '<li class="ul3" ><a  href="http://127.0.0.1/eip/public/'.$subitem2['url'].'">'.$subitem2['subitem2'].'</a></li>';
       }
       else

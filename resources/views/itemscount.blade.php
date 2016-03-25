@@ -404,6 +404,7 @@
                         });
                         $('#tabhead').append('</tr>'); 
                         $('#tabbody').append(data.report);
+                 
 
                     },
                     error: function(xhr, type){
