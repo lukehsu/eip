@@ -150,7 +150,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr class="active">
             <td style="display:none">
               Mobic
             </td>

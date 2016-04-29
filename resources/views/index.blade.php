@@ -40,7 +40,6 @@
         dataType: 'json',
         headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         success:  function(data){
-          //alert(data);
           window.location.replace("http://127.0.0.1/eip/public/dashboard" );
         },
         error: function(xhr, type){

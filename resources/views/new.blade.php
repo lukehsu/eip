@@ -12,70 +12,7 @@
   <script type="text/javascript" src="./bootstrap331/dist/js/bootstrap.min.js"></script>
   <link rel="stylesheet"  href="./bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <script src="./bootstrap331/dist/js/highcharts.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("#chart").css("display","none");
-      $("#chart").fadeIn(2000);
-      $("#tablezone").css("display","none");
-      $("#tablezone").fadeIn(2000);
-      var options = 
-      {    
-        chart: {
-            renderTo: 'chart',
-            type: 'column'
-        },
-        title: {
-            text: '銷售達成率'
-        },
-        subtitle: {
-            text: '業績表'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        credits:{
-              //隱藏官方連結
-             enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '百分比'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%'
-                }
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
-        },
-        series: [{
-            name: "Brands",
-            colorByPoint: true,
-            data: [
-            {
-                name: "胃爾康",
-                y:  0,
-            }]
-          }]
-      };
-      $("#chart").highcharts(options);
-    });
-  </script>
   <style type="text/css">
-  .endcolor{
-    background-color:#7F8C8D;
-    color: #FFFFFF;
-  }
   #mwt_mwt_slider_scroll
   {
     top: 30px;
@@ -85,8 +22,16 @@
     z-index:9999;
   }
   #mwt_slider_content{
-    background:#3c5a98;
+    background:#FFFFFF;
     text-align:center;
+    height:550px; 
+    -moz-border-radius-topright:10px;
+    -moz-border-radius-bottomright:10px;
+    -webkit-border-top-right-radius:10px;
+    -webkit-border-bottom-right-radius:10px; 
+    -webkit-box-shadow: 4px 4px 12px 4px rgba(20%,20%,40%,0.5);
+    -moz-box-shadow: 4px 4px 12px 4px rgba(20%,20%,40%,0.5);
+    box-shadow: 4px 4px 12px 4px rgba(20%,20%,40%,0.5);
     padding-top:20px;
   }
   #mwt_fb_tab {
@@ -94,7 +39,7 @@
     top:20px;
     right:-24px;
     width:24px;
-    background:#3c5a98;
+    background:#95A5A6;
     color:#ffffff;
     font-family:Arial, Helvetica, sans-serif; 
     text-align:center;
@@ -117,116 +62,10 @@
 <body>
 <div class="container-fluid">
   @include('includes.navbar')
-  <br> 
   <div class="row">
-  <div id="mwt_mwt_slider_scroll">
-     <div id="mwt_fb_tab">
-      <span> > </span>
-    </div>
-    <div id="mwt_slider_content">
-      <button id="ff">123</button>
-      
-    </div>
-</div>
-    <div class="col-md-12" id='chart'></div>
+  
   </div>
-  <br>
-  <br>
-  <div class="row">
-    <div class="col-md-12" id="tablezone">
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th class="text-center" style="display:none">
-
-            </th>
-            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid; ">
-              
-            </th>
-            <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
-              Diary
-            </th-->
-            <th class="text-center" colspan="3" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
-              MTD
-            </th>
-            <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
-            </th>
-          </tr>
-          <tr>
-            <th class="text-center" id='username' style="display:none">
-   
-            </th>
-            <th class="text-center">
-              Product
-            </th>
-            <!--th class="text-center">
-              Amount
-            </th-->
-            <th class="text-center">
-              Actual
-            </th>
-            <th class="text-center">
-              Budget
-            </th>
-            <th class="text-center">
-              A / B
-            </th>
-            <!--th class="text-center">
-              A / L
-            </th-->
-            <th class="text-center">
-              Actual
-            </th>
-            <th class="text-center">
-              Budget
-            </th>
-            <th class="text-center">
-              A / B
-            </th>
-            <!--th class="text-center">
-              A / L
-            </th-->
-          </tr>
-        </thead>
-        <tbody>
-          
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<!--javascript-->
-<script type="text/javascript"> 
-<!-- 
-        //平台操作系统 
-        var system = { 
-            win: false, 
-            mac: false, 
-            xll: false, 
-            ipad:false 
-        }; 
-        //平台 
-        var p = navigator.platform; 
-        system.win = p.indexOf("Win") == 0; 
-        system.mac = p.indexOf("Mac") == 0; 
-        system.x11 = (p == "X11") || (p.indexOf("Linux") == 0); 
-        system.ipad = (navigator.userAgent.match(/iPad/i) != null)?true:false; 
-
-        if (system.win || system.mac || system.xll||system.ipad) 
-        { 
-          $("#datetimepicker").change(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
-          }); 
-        } 
-        else 
-        { 
-          $("#datetimepicker").blur(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
-          }); 
-        } 
---> 
-</script> 
+</div> 
 <script type="text/javascript">
   $(function() {
     var check = 0;

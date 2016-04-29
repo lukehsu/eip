@@ -8,6 +8,12 @@
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
+  <script src="../bootstrap331/dist/js/jquery.sticky.js"></script>
+  <script>
+    $(window).load(function(){
+      $("#chart").sticky({ topSpacing: 0 });
+    });
+  </script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#chart").css("display","none");
@@ -58,29 +64,26 @@
             name: "Brands",
             colorByPoint: true,
             data: [{
-                name: "何俊昇",
+                name: "鄒子健",
                 y: {!!$MC[0]!!},
             },{
-                name: "陳昱均",
+                name: "商士英",
                 y: {!!$MC[1]!!},
             }, {
-                name: "唐維澤",
+                name: "江隆昌",
                 y: {!!$MC[2]!!},
             }, {
-                name: "江隆昌",
+                name: "何俊昇",
                 y: {!!$MC[3]!!},
             }, {
-                name: "鄒子健",
+                name: "陳昱均",
                 y: {!!$MC[4]!!},
             }, {
-                name: "陳瑛旼",
+                name: "唐維澤",
                 y: {!!$MC[5]!!},
             }, {
-                name: "商士英",
-                y: {!!$MC[6]!!},
-            }, {
                 name: "物流",
-                y: {!!$MC[7]!!},
+                y: {!!$MC[6]!!},
             }]
           }]
       };
@@ -95,6 +98,9 @@
   .subcolor{
     background-color:#E0E0E0;
     }
+  #chart{
+    z-index: 999;
+  }
   </style>
 </head>
 <body>
@@ -130,7 +136,7 @@
               MTD
             </th>
             <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
+              {!!$season!!}
             </th>
           </tr>
           <tr>

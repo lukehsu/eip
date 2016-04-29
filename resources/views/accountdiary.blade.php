@@ -134,7 +134,7 @@
               MTD
             </th>
             <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
+              {!!$season!!}
             </th>
           </tr>
           <tr>

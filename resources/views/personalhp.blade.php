@@ -8,6 +8,12 @@
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <link rel="stylesheet"  href="../bootstrap331/dist/css/datepickerplacehold.css">
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
+  <script src="../bootstrap331/dist/js/jquery.sticky.js"></script>
+  <script>
+    $(window).load(function(){
+      $("#chart").sticky({ topSpacing: 0 });
+    });
+  </script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#chart").css("display","none");
@@ -15,39 +21,68 @@
       $("#tablezone").css("display","none");
       $("#tablezone").fadeIn(2000);
       var options = 
-      {
+      {    
         chart: {
-            type: 'line'
+            renderTo: 'chart',
+            type: 'column'
         },
         title: {
-            text: 'Monthly Average Temperature'
+            text: {!!$chardate!!} + '業績表'
         },
         subtitle: {
-            text: 'Source: WorldClimate.com'
+            text: {!!$chardate!!} + '業績表'
         },
         xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            type: 'category'
+        },
+        credits:{
+              //隱藏官方連結
+             enabled: false
         },
         yAxis: {
             title: {
-                text: 'Temperature (%)'
+                text: '百分比'
             }
+        },
+        legend: {
+            enabled: false
         },
         plotOptions: {
-            line: {
+            series: {
+                borderWidth: 0,
                 dataLabels: {
-                    enabled: true
-                },
-                enableMouseTracking: true
+                    enabled: true,
+                    format: '{point.y:.1f}%'
+                }
             }
         },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>:<b>{point.y:.2f}%</b><br/>'
+        },
         series: [{
-            name: {!!$allname!!},
-            data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 0, 0, 0, 0]
-        }, {
-            name: 'London',
-            data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 0, 0, 0, 0]
-        }]
+            name: "Brands",
+            colorByPoint: true,
+            data: [{
+                name: "劉經翊",
+                y: {!!$MC[0]!!},
+            },{
+                name: "陳瑛旼",
+                y: {!!$MC[1]!!},
+            },{
+                name: "李琪芬",
+                y: {!!$MC[2]!!},
+            },{
+                name: "許峻哲",
+                y: {!!$MC[3]!!},
+            },{
+                name: "金容",
+                y: {!!$MC[4]!!},
+            },{
+                name: "平廷",
+                y: {!!$MC[5]!!},
+            }]
+          }]
       };
       $("#chart").highcharts(options);
     });
@@ -60,6 +95,9 @@
   .subcolor{
     background-color:#E0E0E0;
     }
+  #chart{
+    z-index: 999;
+  }
   </style>
 </head>
 <body>
@@ -88,14 +126,14 @@
             <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
              <span class="fui-calendar"></span>&nbsp;&nbsp;{!!$today!!}&nbsp;&nbsp;
             </th>
-            <th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
+            <!--th class="text-center" style="background-color:#ECF0F1;border:#FFFFFF 3px solid">
               Diary
-            </th>
+            </th-->
             <th class="text-center" colspan="3" style="background-color:#E0E0E0;border:#FFFFFF 3px solid">
               MTD
             </th>
             <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
+              {!!$season!!}
             </th>
           </tr>
           <tr>
@@ -105,9 +143,9 @@
             <th class="text-center">
               Name
             </th>
-            <th class="text-center">
+            <!--th class="text-center">
               Amount
-            </th>
+            </th-->
             <th class="text-center">
               Actual
             </th>

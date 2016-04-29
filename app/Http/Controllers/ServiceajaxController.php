@@ -4,13 +4,12 @@ use App\User;
 use App\itticket;
 use App\Http\Requests;
 use App\boraitem;
-use DB;
-use App\boehringer;
 use App\everymonth;
 use App\itservicerank;
-use App\mobicmappingdata;
+use App\useracces;
 use App\salesmen;
 use App\calendar;
+use App\mobicmappingdata;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel5;
@@ -42,58 +41,58 @@ class ServiceajaxController extends Controller {
 	 */    
     public function itreceive()
     {
-    	$dep = Input::get('dep');
-    	$date = Input::get('date');
-		$ordernumber = Input::get('ordernumber');
-    	$enumber = Input::get('enumber');
-    	$name = Input::get('name');
-    	$items = Input::get('items');
-    	$description = Input::get('description');
-		$users = User::where('name','=',$enumber)->get();
-		foreach ($users as $user) {
-			$level = $user['level'];
-		}
-		// 如果level是空就打上manager 不然就打 GM 主要是判斷流程
-		if (empty($level)) 
-		{
-			$level = 'manager';
-		}
-		else
-		{
-			$level = 'GM';
-		}	    
+        $dep = Input::get('dep');
+        $date = Input::get('date');
+        $ordernumber = Input::get('ordernumber');
+        $enumber = Input::get('enumber');
+        $name = Input::get('name');
+        $items = Input::get('items');
+        $description = Input::get('description');
+        $users = User::where('name','=',$enumber)->get();
+        foreach ($users as $user) {
+            $level = $user['level'];
+        }
+        // 如果level是空就打上manager 不然就打 GM 主要是判斷流程
+        if (empty($level)) 
+        {
+            $level = 'manager';
+        }
+        else
+        {
+            $level = 'GM';
+        }          
         if ($enumber=='b0164' or $enumber=='b0129' or $enumber=='b0068' or $enumber=='b0071' or $enumber=='b0029' or $enumber=='b0037') {
             $level = 'nanGM';      
-        }  	
-    	$ordercheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->count() ; 
- 		if ($ordercheck == 0) {
- 			$today = date('Y-m-d');
-	    	$ordernumber = itticket::where('date','=',$today)->get()->max('ordernumber');
-			if ($ordernumber=='') 
-			{
-				$ordernumber = $today.'001';
-				$ordernumber = 'it'.str_replace('-','',$ordernumber);
-			}
-			else
-			{
-				$ordernumber = str_replace('it','',$ordernumber);
-				$ordernumber = str_replace('-','',$ordernumber);
-				$ordernumber = $ordernumber + 1;
-				$ordernumber = 'it'.$ordernumber;
-			}
-			$insertitticket = new itticket;
-			$insertitticket->ordernumber = $ordernumber ;
-			$insertitticket->dep = $dep ;
-			$insertitticket->date = $date ;
-			$insertitticket->enumber = $enumber ;
-			$insertitticket->name = $name ;
-			$insertitticket->items = $items ;
-			$insertitticket->description = $description ;
-			$insertitticket->statue = 'N' ;
-			$insertitticket->process = $level  ;
-        	$insertitticket->save();
-        	//填寫收信人信箱 
-            $levelcheck = User::where('name','=',$enumber)->where('level','=','')->count();  	
+        }    
+        $ordercheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->count() ; 
+        if ($ordercheck == 0) {
+            $today = date('Y-m-d');
+            $ordernumber = itticket::where('date','=',$today)->get()->max('ordernumber');
+            if ($ordernumber=='') 
+            {
+                $ordernumber = $today.'001';
+                $ordernumber = 'it'.str_replace('-','',$ordernumber);
+            }
+            else
+            {
+                $ordernumber = str_replace('it','',$ordernumber);
+                $ordernumber = str_replace('-','',$ordernumber);
+                $ordernumber = $ordernumber + 1;
+                $ordernumber = 'it'.$ordernumber;
+            }
+            $insertitticket = new itticket;
+            $insertitticket->ordernumber = $ordernumber ;
+            $insertitticket->dep = $dep ;
+            $insertitticket->date = $date ;
+            $insertitticket->enumber = $enumber ;
+            $insertitticket->name = $name ;
+            $insertitticket->items = $items ;
+            $insertitticket->description = $description ;
+            $insertitticket->statue = 'N' ;
+            $insertitticket->process = $level  ;
+            $insertitticket->save();
+            //填寫收信人信箱 
+            $levelcheck = User::where('name','=',$enumber)->where('level','=','')->count();     
             if ($levelcheck>=1) 
             {
                 $users = User::where('dep','=',$dep)->get(); 
@@ -116,78 +115,78 @@ class ServiceajaxController extends Controller {
             {
                 //請改成Bobby的
                 $mail = 'bobby.sheng@gmail.com';
-            }  
+            }    
             switch ($dep) {
                   case '採購部':
                       $mail = 'simon@bora-corp.com';
                       break;            
                   default:
-
+                      # code...
                       break;
-              } 
+            } 
             if ($enumber=='b0164' or $enumber=='b0129' or $enumber=='b0068' or $enumber=='b0071' or $enumber=='b0029' or $enumber=='b0037') {
                 $mail = 'homer.fang@bora-corp.com';
                 $level = 'manager';      
-            }   
-        	$todepmanager = $mail;
-        	//信件的內容
-        	$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
-        	//寄出信件
-        	Mail::send('mail.itmail', $data, function($message) use ($todepmanager) 
-        	{
-        		$message->to($todepmanager)->subject('資訊需求單');
-        	});
-    	}
-    	else
-    	{
-    		$processcheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->count();
-    		$processcheckf = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->count();
-    		if ($processcheckf==1) 
-    		{
-    			$response = Input::get('response');
-    			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->update(['process' => 'close','itresponse'=>$response]);
-    			//$toit = 'luke.hsu@bora-corp.com';
+            }  
+            $todepmanager = $mail;
+            //信件的內容
+            $data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
+            //寄出信件
+            Mail::send('mail.itmail', $data, function($message) use ($todepmanager) 
+            {
+                $message->to($todepmanager)->subject('資訊需求單');
+            });
+        }
+        else
+        {
+            $processcheck = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->count();
+            $processcheckf = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->count();
+            if ($processcheckf==1) 
+            {
+                $response = Input::get('response');
+                $ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'finish')->update(['process' => 'close','itresponse'=>$response]);
+                //$toit = 'luke.hsu@bora-corp.com';
                 $users = User::where('name','=',$enumber)->get(); 
                 foreach ($users as $user) {
                     $mail = $user['email'];
                 }
                 $tomyself = $mail;
-    			//信件的內容
-        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>$response,'comment'=>'http://127.0.0.1/eip/public/'.Input::get('ordernumber').'/star');
-        		//寄出信件
-        		Mail::send('mail.itokmail', $data, function($message) use ($tomyself) 
-        		{
-        			$message->to($tomyself)->subject('資訊需求單(完成)');
-        		});
-    		}
-    		elseif ($processcheck==1) 
-    		{
-    			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->update(['process' => 'finish']);
-    			$toit = 'it@bora-corp.com';
-    			//信件的內容
-        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description);
-        		//寄出信件
-        		Mail::send('mail.itmail', $data, function($message) use ($toit) 
-        		{
-        			$message->to($toit)->subject('資訊需求單(簽核流程已完成)');
-        		});    			
-    		}
-    		else
-    		{	
-    			$ordernumber = Input::get('ordernumber');
-    			$ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'GM')->update(['process' => 'finish']);
+                //信件的內容
+                $data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description,'response'=>$response,'comment'=>'http://127.0.0.1/eip/public/'.Input::get('ordernumber').'/star');
+                //寄出信件
+                Mail::send('mail.itokmail', $data, function($message) use ($tomyself) 
+                {
+                    $message->to($tomyself)->subject('資訊需求單(完成)');
+                });
+            }
+            elseif ($processcheck==1) 
+            {
+                $ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'manager')->update(['process' => 'finish']);
+                $toit = 'it@bora-corp.com';
+                //信件的內容
+                $data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description);
+                //寄出信件
+                Mail::send('mail.itmail', $data, function($message) use ($toit) 
+                {
+                    $message->to($toit)->subject('資訊需求單(簽核流程已完成)');
+                });             
+            }
+            else
+            {   
+                $ordernumber = Input::get('ordernumber');
+                $ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'GM')->update(['process' => 'finish']);
                 $ticketupdate = itticket::where('ordernumber', '=', Input::get('ordernumber'))->where('process', '=', 'nanGM')->update(['process' => 'finish']);
-    		    $toit = 'it@bora-corp.com';
-        		//信件的內容
-        		$data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
-        		//寄出信件
-        		Mail::send('mail.itmail', $data, function($message) use ($toit) 
-        		{
-        			$message->to($toit)->subject('資訊需求單(簽核流程已完成)');
-        		});
-    		}	
-    	}
-    	
+                $toit = 'it@bora-corp.com';
+                //信件的內容
+                $data = array('ordernumber'=>$ordernumber,'dep'=>$dep,'date'=>$date,'enumber'=>$enumber,'name'=>$name,'items'=>$items,'description'=>$description );
+                //寄出信件
+                Mail::send('mail.itmail', $data, function($message) use ($toit) 
+                {
+                    $message->to($toit)->subject('資訊需求單(簽核流程已完成)');
+                });
+            }   
+        }
+        
         if (Request::ajax()) {
             return response()->json(array(
                 'ordernumber' => 'ok'
@@ -332,6 +331,7 @@ class ServiceajaxController extends Controller {
             $reports = everymonth::where('itemno','=',$itemcode)->orderBy('emponame','DESC')->get();
         }
 
+        
         $report = null;
         foreach ($reports as $reporttemp) 
         {  
@@ -474,7 +474,7 @@ class ServiceajaxController extends Controller {
                 }     
                 $report .= '</tr>'; 
             }
-        }    
+        }  
         if (Request::ajax()) 
         {
             return response()->json(array(
@@ -592,10 +592,10 @@ class ServiceajaxController extends Controller {
             $objPHPExcel->getActiveSheet()->setCellValue('U'.$no , $reporttemp['decqty']); 
             $s4 = $reporttemp['octqty']+$reporttemp['novqty']+$reporttemp['decqty'];
             $objPHPExcel->getActiveSheet()->setCellValue('V'.$no , $s4);  
-
+            
             $no = $no + 1;
+    
         }
-
         if ($season=='2016' and $itemcode=='68MOB001') {
             $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0210')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
             foreach ($reports as $reporttemp) {
@@ -725,6 +725,7 @@ class ServiceajaxController extends Controller {
                 $no = $no + 1; 
             }
         }
+
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
         //產生header
@@ -770,7 +771,7 @@ class ServiceajaxController extends Controller {
         $company = Input::get('company');
         $season = Input::get('season');
 
-        $allcodes = boraitem::where('years','=',$season)->orderBy('itemchname', 'DESC')->get();
+        $allcodes = boraitem::where('years','=',$season)->get();
         $codes = array();
         if ($company=='保瑞') 
         {
@@ -780,7 +781,7 @@ class ServiceajaxController extends Controller {
                 {
                     array_push($codes, $code['itemchname']) ;
                 }
-            }        
+            }            
         }
         elseif ($company=='聯邦') 
         {    
@@ -892,7 +893,7 @@ class ServiceajaxController extends Controller {
         
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
-
+        /*
         $objPHPExcel->getActiveSheet()->setCellValue('A1','日期');
         $objPHPExcel->getActiveSheet()->setCellValue('B1','星期');
         $objPHPExcel->getActiveSheet()->setCellValue('C1','人員');
@@ -901,34 +902,45 @@ class ServiceajaxController extends Controller {
         $objPHPExcel->getActiveSheet()->setCellValue('F1','休假');
         $objPHPExcel->getActiveSheet()->setCellValue('G1','補單');
         $objPHPExcel->getActiveSheet()->setCellValue('H1','國定假日');
-        $no = 2 ;
-        $calendars = calendar::where('monthdate','>=',$startday)->where('monthdate','<=',$endday)->orderBy('monthdate', 'ASC')->get();
-        foreach ($calendars as $calendar ) {      
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , $calendar['monthdate']); 
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , $calendar['weekday']);
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , '' );
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , '' ); 
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , '' );  
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , '' ); 
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , '' ); 
-            $objPHPExcel->getActiveSheet()->setCellValue('H'.$no , $calendar['holiday'] );
-            if ($calendar['weekday']=='星期六' or $calendar['weekday']=='星期日' or $calendar['offday']=='1') {
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$no.':'.'H'.$no)->getFill()->getStartColor()->setARGB('FF808080');
-            }  
-            $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->groupBy('username')->get();  
-                foreach ($reports as $reporttemp)  {
-                    $no = $no + 1;
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$no , ''); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$no , '');  
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$no , $reporttemp['username'] );
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$no , $reporttemp['workon'] ); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$no , $reporttemp['workoff'] );  
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$no , $reporttemp['leave'] ); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$no , $reporttemp['delay']);         
+        */
+        $daterow = 2;
+        $col = 2;
+        $row = 2;
+        $users = useracces::where('access','=','業務日報表')->get();
+        foreach ($users as $user) 
+        {
+            $userch = user::where('name','=',$user['user'])->first();
+            $calendars = calendar::where('monthdate','>=',$startday)->where('monthdate','<=',$endday)->orderBy('monthdate', 'ASC')->get();
+            foreach ($calendars as $calendar) {      
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow('0',$daterow , $calendar['monthdate']); 
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow('1',$daterow , $calendar['weekday']); 
+                $daterow = $daterow + 1 ;
+                $checkreports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->where('usernumber','=',$user['user'])->count();  
+                if ($calendar['weekday']=='星期六' or $calendar['weekday']=='星期日') {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,'1' ,$userch['cname']);  
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row , ''); 
+                    $row = $row  + 1;   
                 }
-            $no = $no + 1 ;
-        }
+                elseif ($checkreports==0) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,'1' ,$userch['cname']);  
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row , '缺'); 
+                    $row = $row  + 1;
+                }
+                else
+                {    
+                    $reports = salesmen::where('reportday','>=',$calendar['monthdate'])->where('reportday','<=',$calendar['monthdate'])->where('usernumber','=',$user['user'])->get();  
+                    foreach ($reports as $reporttemp)  {
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,'1' , $reporttemp['username']);  
+                        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col,$row , $reporttemp['delay']); 
+                        $row = $row  + 1;  
+                        break;
+                    } 
+                }
+            }
+            $col = $col +1; 
+            $daterow = 2; 
+            $row = 2;
+        }  
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
         //產生header

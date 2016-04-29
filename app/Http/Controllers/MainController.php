@@ -6,10 +6,11 @@ use App\calendar;
 use App\boehringer;
 use App\big;
 use App\monthach;
+use App\mobicmappingdata;
 use App\agentsmonthbudget;
 use App\bigsangent;
+use App\userstate;
 use App\importantagentsp;
-use App\mobicmappingdata;
 use App\importantp;
 use App\importantuniunip;
 use App\importantboraunip;
@@ -27,6 +28,7 @@ use App\boraitem;
 use App\medicinebudgetbypersonal;
 use App\Http\Requests;
 use App\personalmonthbudget;
+use App\Http\Controllers\ReferenceController;
 use Hash,Input,Request,Response,Auth,Redirect,Log;
 class MainController extends Controller {
 
@@ -58,6 +60,7 @@ class MainController extends Controller {
    */  
     public function login()
     {
+        
         return view('index');
     }
 
@@ -980,17 +983,8 @@ class MainController extends Controller {
                           'LendorminBora' => 0 , 
                           'Others' => 0,
                     );
-        $total = 0; 
-        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初 
-        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日 
-        $chardate =  str_replace('-','',$todaydate);
-        $dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
+        include(app_path().'/Http/Controllers/ReferenceController.php');
+        /*$dailyreportstable = dailyreport::where('InvDate','=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
             $BORAItemNo = $dailyreport->BORAItemNo;
             $dailysell = $dailyreport->InoviceAmt;
@@ -1001,21 +995,21 @@ class MainController extends Controller {
             //{                   
               switch ($BORAItemNo) {
                 case '68MOB001':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                     $medicine['Mobic'] = $medicine['Mobic'] + $dailysell;
                     $qtys['Mobic'] = $qtys['Mobic'] + $qty ; 
                     $itemno['Mobic'] = $BORAItemNo; 
                 }
                     break;
                 case '68MOB002':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                     $medicine['Mobic'] = $medicine['Mobic'] + $dailysell;
                     $qtys['Mobic'] = $qtys['Mobic'] + $qty ; 
                     $itemno['Mobic'] = $BORAItemNo;
                 }
                     break;
                 case '68MOB003':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                     $medicine['Mobic'] = $medicine['Mobic'] + $dailysell;
                     $qtys['Mobic'] = $qtys['Mobic'] + $qty ;  
                 } 
@@ -1071,7 +1065,13 @@ class MainController extends Controller {
                     break;
               }
             //}
-        } 
+        }*/ 
+        $change1 = 'B0181';
+        $change2 = '陳瑛旼';
+        if ($todaydate<'2016-04-01') {
+          $change1 = 'ww';
+          $change2 = 'ww';
+        }
         //and寫法註記一下單月銷售累加
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Mobic' => 0 ,
@@ -1093,17 +1093,17 @@ class MainController extends Controller {
             //{                   
               switch ($BORAItemNo) {
                 case '68MOB001':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MA['Mobic'] = $MA['Mobic'] + $MonthTotal;   
                 }   
                 break;
                 case '68MOB002':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MA['Mobic'] = $MA['Mobic'] + $MonthTotal;   
                 }   
                 break;
                 case '68MOB003':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MA['Mobic'] = $MA['Mobic'] + $MonthTotal;
                 }  
                 break;
@@ -1145,7 +1145,7 @@ class MainController extends Controller {
               }
             //} 
         }
-        //百靈佳戀多眠MOBIC另外再算一次
+        //百靈佳MOBIC另外再算一次
         $dailyreportstable = mobicmappingdata::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
           $amount = $dailyreport->Amount;
@@ -1154,7 +1154,7 @@ class MainController extends Controller {
             case 'A0076':
             case 'A0210':
             case 'A0211':
-            if ($dailyreport['salename']<>'李琪芬' and $dailyreport['salename']<>'劉經翊' and $dailyreport['cusno']<>'030049' and $dailyreport['cusno']<>'094487' and $dailyreport['cusno']<>'050694' and $dailyreport['cusno']<>'010015' and $dailyreport['cusno']<>'030021' and $dailyreport['cusno']<>'030007' and $dailyreport['cusno']<>'060020' and $dailyreport['cusno']<>'010005' and $dailyreport['cusno']<>'020069' ) {
+            if ($dailyreport['salename']<>'許峻哲' and $dailyreport['salename']<>$change2 and $dailyreport['salename']<>'李琪芬' and $dailyreport['salename']<>'劉經翊' and $dailyreport['cusno']<>'030049' and $dailyreport['cusno']<>'094487' and $dailyreport['cusno']<>'050694' and $dailyreport['cusno']<>'010015' and $dailyreport['cusno']<>'030021' and $dailyreport['cusno']<>'030007' and $dailyreport['cusno']<>'060020' and $dailyreport['cusno']<>'010005' and $dailyreport['cusno']<>'020069' ) {
               if ($dailyreport['SaleType']=='R2') {
                 $amount = 0 - $amount;
               }
@@ -1184,20 +1184,21 @@ class MainController extends Controller {
             $qty  = $dailyreport->OrderQty;  
             $BORACustomerNo = $dailyreport->BORACustomerNo;  
             //if (substr($dailyreport['BORAItemNo'],0,2)<>'67' and $dailyreport['BORACustomerNo']<>'UCS05' and $dailyreport['BORACustomerNo']<>'10824' and $dailyreport['BORACustomerNo']<>'10973' and $dailyreport['BORACustomerNo']<>'11032' and $dailyreport['$BORAItemNo'] <>'57ARZTPG' and $dailyreport['BORACustomerNo'] <>'10103'  and $dailyreport['BORACustomerNo'] <>'10080' and $dailyreport['BORACustomerNo'] <>'10149' and $dailyreport['BORACustomerNo'] <>'10152' and $dailyreport['BORACustomerNo'] <>'10167' and $dailyreport['BORACustomerNo'] <>'10179' and $dailyreport['BORACustomerNo'] <>'10234' and $dailyreport['BORACustomerNo'] <>'10242'and $dailyreport['BORACustomerNo'] <>'10249' and $dailyreport['BORACustomerNo'] <>'11014'and $dailyreport['BORACustomerNo'] <>'20017' and $dailyreport['BORACustomerNo'] <>'20046' and $dailyreport['BORACustomerNo'] <>'20131' and $dailyreport['BORACustomerNo'] <>'20674' and $dailyreport['BORACustomerNo'] <>'20769' and $dailyreport['BORACustomerNo'] <>'30120' and $dailyreport['BORACustomerNo'] <>'30180' and $dailyreport['BORACustomerNo'] <>'30195' and $dailyreport['BORACustomerNo'] <>'30201' and $dailyreport['BORACustomerNo'] <>'30221' and $dailyreport['BORACustomerNo'] <>'30225') 
-            //{          
+            //{ 
+            if ($dailyreport['SalesRepresentativeNo']<>$change1 ){        
               switch ($BORAItemNo) {
                 case '68MOB001':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MAA['Mobic'] = $MAA['Mobic'] + $dailysell;  
                 }    
                 break;
                 case '68MOB002':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MAA['Mobic'] = $MAA['Mobic'] + $dailysell;  
                 }    
                 break;
                 case '68MOB003':
-                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' ) {
+                if ($dailyreport['SalesRepresentativeNo']<>'B0171' and $dailyreport['SalesRepresentativeNo']<>'B0182' and $dailyreport['SalesRepresentativeNo']<>$change1 and $dailyreport['SalesRepresentativeNo']<>'B0195' ) {
                   $MAA['Mobic'] = $MAA['Mobic'] + $dailysell;
                 }  
                 break;
@@ -1237,7 +1238,7 @@ class MainController extends Controller {
                 }    
                 break;
               }
-            //}
+            }
         }
         $dailyreportstable = mobicmappingdata::where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
@@ -1247,7 +1248,7 @@ class MainController extends Controller {
             case 'A0076':
             case 'A0210':
             case 'A0211':
-            if ($dailyreport['salename']<>'李琪芬' and $dailyreport['salename']<>'劉經翊' and $dailyreport['cusno']<>'030049' and $dailyreport['cusno']<>'094487' and $dailyreport['cusno']<>'050694' and $dailyreport['cusno']<>'010015' and $dailyreport['cusno']<>'030021' and $dailyreport['cusno']<>'030007' and $dailyreport['cusno']<>'060020' and $dailyreport['cusno']<>'010005' and $dailyreport['cusno']<>'020069' ) {
+            if ($dailyreport['salename']<>'許峻哲' and $dailyreport['salename']<>$change2 and $dailyreport['salename']<>'李琪芬' and $dailyreport['salename']<>'劉經翊' and $dailyreport['cusno']<>'030049' and $dailyreport['cusno']<>'094487' and $dailyreport['cusno']<>'050694' and $dailyreport['cusno']<>'010015' and $dailyreport['cusno']<>'030021' and $dailyreport['cusno']<>'030007' and $dailyreport['cusno']<>'060020' and $dailyreport['cusno']<>'010005' and $dailyreport['cusno']<>'020069' ) {
               if ($dailyreport['SaleType']=='R2') {
                 $amount = 0 - $amount;
               }
@@ -1643,34 +1644,13 @@ class MainController extends Controller {
                                     'totalmcc'=>$totalmcc,
                                     'totalml'=>$totalml,
                                     'totalmll'=>$totalmll,
+                                    'season'=>$season,
                                   ]);
     }
 
     public function personaldiary($todaydate)
     {
-      $uri = Request::path();
-      $uris = strstr($uri,'/',true);
-      $form = null;
-      $style = 0 ;
-      $i = 0;
-      $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-      $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-      $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-      $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-      $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-      $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-      $chardate =  str_replace('-','',$todaydate); 
-      $MC = array();
-      $MCC = array();
-      $outcounts = array();
-      $allname = array();
-      $allach = array();
-      $shippingd = 0;//物流每日業績
-      $totaldairy = 0;
-      $totalMA = 0;
-      $totalMB = 0;
-      $totalMAA = 0;
-      $totalMBB = 0;
+      include(app_path().'/Http/Controllers/ReferenceController.php');
       //用網址判斷是否為藥品或醫院人員差異在於撈取的對象不同
       if ($uris=='personaldiary') {
         $office = '藥品';
@@ -1686,123 +1666,126 @@ class MainController extends Controller {
         array_push($outcounts, $out['customercode']);
       }
       //程式起點提取人名
-      $users = User::where('dep','=','藥品事業部')->where('office','=',$office)->where('location','=','外勤')->orderBy('sorts', 'ASC')->get();
+      $users = User::where('dep','=','藥品事業部')->where('location','=','外勤')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) 
       {
-        //計算當日業績 
-        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
-        $dailyreportaday = 0 ;
-        foreach ($dailyreports as $dailyreport) 
-        {  
-          foreach ($outcounts as $outcount) {
-            if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
-              $dailyreport['InoviceAmt'] = 0 ;
-            }
-          } 
-          $dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt']; 
-        }
-        $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->get();
-        foreach ($dailyreports as $dailyreport) {
-          if ($dailyreport['SaleType']=='R2') {
-            $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+        $userdate =  substr($todaydate,0,8).'01';
+        $userstates = userstate::where('cname','=',$user['cname'])->where('userdate','=',$userdate)->first();
+        if ($userstates['userstatus']==$office) {
+          //計算當日業績 
+          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
+          $dailyreportaday = 0 ;
+          foreach ($dailyreports as $dailyreport) 
+          {  
+            foreach ($outcounts as $outcount) {
+              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+                $dailyreport['InoviceAmt'] = 0 ;
+              }
+            } 
+            $dailyreportaday = $dailyreportaday + $dailyreport['InoviceAmt']; 
           }
+          $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
             $dailyreportaday = $dailyreportaday + $dailyreport['Amount'];
-        } 
-        //計算由月初累計至當日業績
-        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
-        $MA = 0 ;
-        foreach ($dailyreports as $dailyreport) 
-        {
-          foreach ($outcounts as $outcount) {
-            if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
-              $dailyreport['InoviceAmt'] = 0 ;
+          } 
+          //計算由月初累計至當日業績
+          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
+          $MA = 0 ;
+          foreach ($dailyreports as $dailyreport) 
+          {
+            foreach ($outcounts as $outcount) {
+              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+                $dailyreport['InoviceAmt'] = 0 ;
+              }
             }
+            $MA = $MA + $dailyreport['InoviceAmt'];  
           }
-          $MA = $MA + $dailyreport['InoviceAmt'];  
-        }
-        $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
-        foreach ($dailyreports as $dailyreport) {
-          if ($dailyreport['SaleType']=='R2') {
-            $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
-          }
+          $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
             $MA = $MA + $dailyreport['Amount'];
-        }  
-        //提取每月目標
-        $monthbudgets = personalmonthbudget::where('zone','=',$user['cname'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
-        foreach ($monthbudgets as $monthbudget) {
-          $MB = $monthbudget['budget'];
-        } 
-        //結至當日達成率
-        $MC[$i] = round(($MA/$MB) * 100) ;
+          }  
+          //提取每月目標
+          $monthbudgets = personalmonthbudget::where('zone','=',$user['cname'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
+          foreach ($monthbudgets as $monthbudget) {
+            $MB = $monthbudget['budget'];
+          } 
+          //結至當日達成率
+          $MC[$i] = round(($MA/$MB) * 100) ;
 
-        //計算年累計由年初至當日
-        $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
-        $MAA = 0 ;
-        foreach ($dailyreports as $dailyreport) 
-        {
-          foreach ($outcounts as $outcount) {
-            if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
-              $dailyreport['InoviceAmt'] = 0 ;
+          //計算季累計由年初至當日
+          $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
+          $MAA = 0 ;
+          foreach ($dailyreports as $dailyreport) 
+          { 
+            foreach ($outcounts as $outcount) {
+              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+                $dailyreport['InoviceAmt'] = 0 ;
+              }
             }
+            $MAA = $MAA + $dailyreport['InoviceAmt']; 
           }
-          $MAA = $MAA + $dailyreport['InoviceAmt']; 
-        }
-        $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
-        foreach ($dailyreports as $dailyreport) {
-          if ($dailyreport['SaleType']=='R2') {
-            $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
-          }
+          $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$user['cname'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
+          foreach ($dailyreports as $dailyreport) {
+            if ($dailyreport['SaleType']=='R2') {
+              $dailyreport['Amount'] = 0 - $dailyreport['Amount'];
+            }
             $MAA = $MAA + $dailyreport['Amount'];
-        } 
-        //計算年累計目標由年初至當月
-        $monthbudgets = personalmonthbudget::where('zone','=',$user['cname'])->where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
-        $MBB  = 0 ;
-        foreach ($monthbudgets as $monthbudget) {
-          $MBB = $MBB +  $monthbudget['budget'];
-        } 
-
-        // MCC  A/B
-        $MCC[$i] = round(($MAA/$MBB) * 100) ;
-        //計算totel起點
-        $totaldairy = $totaldairy + $dailyreportaday;
-        $totalMA = $totalMA + $MA;
-        $totalMB = $totalMB + $MB;
-        $totalMAA = $totalMAA + $MAA ;
-        $totalMBB = $totalMBB + $MBB;
-        $chkuser = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->count();   
-        if ($chkuser==0){
-          $ach = new  monthach;
-          $ach->mondate = $monthstart;
-          $ach->ach = $MC[$i];
-          $ach->name = $user['cname'];
-          $ach->save();
-        }  
-        else
-        {
-          $ach = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->update(array('mondate' => $monthstart,'ach' => $MC[$i],'mondate' => $monthstart,'name' => $user['cname']));        
-        }  
-        $achs = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->get();
-        foreach ($achs as $ach) {
-          $allach[$user['cname']] = $ach['ach'];
+          } 
+          //計算年累計目標由年初至當月
+          $monthbudgets = personalmonthbudget::where('zone','=',$user['cname'])->where('month','>=',$yearstart)->where('month','<=',$todaydate)->get();
+          $MBB  = 0 ;
+          foreach ($monthbudgets as $monthbudget) {
+            $MBB = $MBB +  $monthbudget['budget'];
+          } 
+          // MCC  A/B
+          $MCC[$i] = round(($MAA/$MBB) * 100) ;
+          //計算totel起點
+          $totaldairy = $totaldairy + $dailyreportaday;
+          $totalMA = $totalMA + $MA;
+          $totalMB = $totalMB + $MB;
+          $totalMAA = $totalMAA + $MAA ;
+          $totalMBB = $totalMBB + $MBB;
+          $chkuser = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->count();   
+          if ($chkuser==0){
+            $ach = new  monthach;
+            $ach->mondate = $monthstart;
+            $ach->ach = $MC[$i];
+            $ach->name = $user['cname'];
+            $ach->save();
+          }  
+          else
+          {
+            $ach = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->update(array('mondate' => $monthstart,'ach' => $MC[$i],'mondate' => $monthstart,'name' => $user['cname']));        
+          }  
+          $achs = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->get();
+          foreach ($achs as $ach) {
+            $allach[$user['cname']] = $ach['ach'];
+          }
+          //計算totel終點
+          $form .= '<tr ><td class="text-center"><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$user['cname'].'</a></td>';
+          $form .= '<td class="text-center">'.number_format($MA).'</td>';
+          $form .= '<td class="text-center">'.number_format($MB).'</td><td class="text-center">'.$MC[$i].' %</td>';
+          $form .= '<td class="text-center">'.number_format($MAA).'</td>'; 
+          $form .= '<td class="text-center">'.number_format($MBB).'</td><td class="text-center">'.$MCC[$i].' %</td>';  
+          $form .= '</tr>';
+          $style = $style + 1 ;
+          $i = $i+1;
         }
-        //計算totel終點
-        $form .= '<tr ><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$user['cname'].'</a></td>';
-        $form .= '<td class="text-right">'.number_format($MA).'</td>';
-        $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].' %</td>';
-        $form .= '<td class="text-right">'.number_format($MAA).'</td>'; 
-        $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC[$i].' %</td>';  
-        $form .= '</tr>';
-        $style = $style + 1 ;
-        $i = $i+1;
       }
       //所有人員的TOTAL起點
       $totalMC = round(($totalMA/$totalMB) * 100);
       $totalMCC = round(($totalMAA/$totalMBB) * 100);
-      $form .= '<tr><td class="subcolor">sub-TTL</td>';
-      $form .= '<td class="text-right subcolor">'.number_format($totalMA).'</td>';
-      $form .= '<td class="text-right subcolor">'.number_format($totalMB).'</td><td class="text-right subcolor">'.$totalMC.' %</td>';
-      $form .= '<td class="text-right subcolor">'.number_format($totalMAA).'</td>'; 
-      $form .= '<td class="text-right subcolor">'.number_format($totalMBB).'</td><td class="text-right subcolor">'.$totalMCC.' %</td>';  
+      $form .= '<tr><td class="text-center subcolor"><i>Sub-TTL</i></td>';
+      $form .= '<td class="text-center subcolor">'.number_format($totalMA).'</td>';
+      $form .= '<td class="text-center subcolor">'.number_format($totalMB).'</td><td class="text-center subcolor">'.$totalMC.' %</td>';
+      $form .= '<td class="text-center subcolor">'.number_format($totalMAA).'</td>'; 
+      $form .= '<td class="text-center subcolor">'.number_format($totalMBB).'</td><td class="text-center subcolor">'.$totalMCC.' %</td>';  
       $form .= '</tr>';
       //所有人員的TOTAL終點
       //物流計算起點藥品組須算業績的廠商以及醫院組要算業績的廠商
@@ -1834,6 +1817,9 @@ class MainController extends Controller {
         } 
         foreach ($dailyreports as $dailyreport) 
         {
+          if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+              $dailyreport['InoviceAmt'] = 0 ;
+          }
           $MA = $MA + $dailyreport['InoviceAmt'];  
         }
         //計算當日業績醫院組金容平廷只會出現在裕利表單所以這邊給中文
@@ -1858,6 +1844,9 @@ class MainController extends Controller {
         } 
         foreach ($dailyreports as $dailyreport) 
         {
+          if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+            $dailyreport['InoviceAmt'] = 0 ;
+          }
           $MAA = $MAA + $dailyreport['InoviceAmt']; 
         }
         $dailyreports = mobicmappingdata::where('ItemNo','=','A0076')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0210')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->orwhere('ItemNo','=','A0211')->where('salename','=',$out['customercode'])->where('Date','>=',$yearstart)->where('Date','<=',$todaydate)->get();
@@ -1902,11 +1891,11 @@ class MainController extends Controller {
           }
           //計算醫院組totel終點
           //醫院組金容平廷起點
-          $form .= '<tr ><td>'.$out['customercode'].'</td>';
-          $form .= '<td class="text-right">'.number_format($MA).'</td>';
-          $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].' %</td>';
-          $form .= '<td class="text-right">'.number_format($MAA).'</td>';
-          $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC[$i].' %</td>';  
+          $form .= '<tr ><td width="200px" class="text-center">'.$out['customercode'].'</td>';
+          $form .= '<td class="text-center">'.number_format($MA).'</td>';
+          $form .= '<td class="text-center">'.number_format($MB).'</td><td class="text-center">'.$MC[$i].' %</td>';
+          $form .= '<td class="text-center">'.number_format($MAA).'</td>';
+          $form .= '<td class="text-center">'.number_format($MBB).'</td><td class="text-center">'.$MCC[$i].' %</td>';  
           $form .= '</tr>';
           //醫院組金容平廷終點
           $i = $i + 1;
@@ -1925,11 +1914,11 @@ class MainController extends Controller {
         $totalMCC = round(($totalMAA/$totalMBB) * 100);
         //計算totel終點
         //藥品組物流起點
-        $form .= '<tr ><td><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$out['customercode'].'</a></td>';
-        $form .= '<td class="text-right">'.number_format($MA).'</td>';
-        $form .= '<td class="text-right">'.number_format($MB).'</td><td class="text-right">'.$MC[$i].' %</td>';
-        $form .= '<td class="text-right">'.number_format($MAA).'</td>';
-        $form .= '<td class="text-right">'.number_format($MBB).'</td><td class="text-right">'.$MCC[$i].' %</td>';  
+        $form .= '<tr ><td width="200px" class="text-center"><a href="http://127.0.0.1/eip/public/personalmedicinediary/'.$user['cname'].'/'.$todaydate.'">'.$out['customercode'].'</a></td>';
+        $form .= '<td class="text-center">'.number_format($MA).'</td>';
+        $form .= '<td class="text-center">'.number_format($MB).'</td><td class="text-center">'.$MC[$i].' %</td>';
+        $form .= '<td class="text-center">'.number_format($MAA).'</td>';
+        $form .= '<td class="text-center">'.number_format($MBB).'</td><td class="text-center">'.$MCC[$i].' %</td>';  
         //藥品組物流終點
       }  
       else
@@ -1938,11 +1927,11 @@ class MainController extends Controller {
         $totalMC = round(($totalMA/$totalMB) * 100);
         $totalMCC = round(($totalMAA/$totalMBB) * 100);
       }
-      $form .= '<tr ><td class="endcolor">TOTAL</td>';
-      $form .= '<td class="text-right endcolor">'.number_format($totalMA).'</td>';
-      $form .= '<td class="text-right endcolor">'.number_format($totalMB).'</td><td class="text-right endcolor">'.$totalMC.' %</td>';
-      $form .= '<td class="text-right endcolor">'.number_format($totalMAA).'</td>';
-      $form .= '<td class="text-right endcolor">'.number_format($totalMBB).'</td><td class="text-right endcolor">'.$totalMCC.' %</td>';  
+      $form .= '<tr ><td class="text-center endcolor">TOTAL</td>';
+      $form .= '<td class="text-center endcolor">'.number_format($totalMA).'</td>';
+      $form .= '<td class="text-center endcolor">'.number_format($totalMB).'</td><td class="text-center endcolor">'.$totalMC.' %</td>';
+      $form .= '<td class="text-center endcolor">'.number_format($totalMAA).'</td>';
+      $form .= '<td class="text-center endcolor">'.number_format($totalMBB).'</td><td class="text-center endcolor">'.$totalMCC.' %</td>';  
       $form .= '</tr>';     
       $allnames = json_encode($allname);
       return view($uris,[ 'form'=>$form,
@@ -1950,7 +1939,8 @@ class MainController extends Controller {
                                     'todaydate'=>$todaydate,
                                     'chardate'=>$chardate, 
                                     'today'=>$todaydate,
-                                    'allname'=>$allnames
+                                    'allname'=>$allnames,
+                                    'season'=>$season,
                                   ]);
     }
 
@@ -1958,58 +1948,51 @@ class MainController extends Controller {
 
     public function personalmedicinediary($user,$todaydate)
     {
-        $total = 0; 
-        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
-        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-        $charuser =  $user ; 
-        $chardate =  str_replace('-','',$todaydate);
-        $iteminfo = array();
-        $outcounts = array();
-        $outs = big::all();//提取所有要排除的廠商
-        foreach ($outs as $out) 
+      include(app_path().'/Http/Controllers/ReferenceController.php');
+      $charuser =  $user ; 
+      $iteminfo = array();
+      $outcounts = array();
+      $outs = big::all();//提取所有要排除的廠商
+      foreach ($outs as $out) 
+      {
+        array_push($outcounts, $out['customercode']);
+      }
+      $medicines = importantp::all();
+      foreach ($medicines as $medicinep) 
+      {
+        $iteminfo[] = $medicinep['itemno'];
+        $medicine[$medicinep['importantproduct']] = 0;
+        $MA[$medicinep['importantproduct']] = 0;
+        $MAA[$medicinep['importantproduct']] = 0; 
+        $MB[$medicinep['importantproduct']] = 0; 
+        $MBB[$medicinep['importantproduct']] = 0; 
+        $MC[$medicinep['importantproduct']] = 0; 
+        $MCC[$medicinep['importantproduct']] = 0; 
+      }
+      $medicine['Others'] = 0;
+      $MA['Others'] = 0;
+      $MAA['Others'] = 0; 
+      $MB['Others'] = 0; 
+      $MBB['Others'] = 0; 
+      $MC['Others'] = 0; 
+      $MCC['Others'] = 0; 
+      if ($user<>'物流') {
+        $search = 'SalesRepresentativeName';
+        $target[] = $user;
+        $j = 0;
+      }
+      else
+      {
+        $income = [];
+        $search = 'BORACustomerNo';
+        $incomebigs = big::where('income','=','Y')->get();
+        foreach ($incomebigs as $incomebig) 
         {
-          array_push($outcounts, $out['customercode']);
+          $income[] = $incomebig['customercode'];
         }
-        $medicines = importantp::all();
-        foreach ($medicines as $medicinep) 
-        {
-          $iteminfo[] = $medicinep['itemno'];
-          $medicine[$medicinep['importantproduct']] = 0;
-          $MA[$medicinep['importantproduct']] = 0;
-          $MAA[$medicinep['importantproduct']] = 0; 
-          $MB[$medicinep['importantproduct']] = 0; 
-          $MBB[$medicinep['importantproduct']] = 0; 
-          $MC[$medicinep['importantproduct']] = 0; 
-          $MCC[$medicinep['importantproduct']] = 0; 
-        }
-        $medicine['Others'] = 0;
-        $MA['Others'] = 0;
-        $MAA['Others'] = 0; 
-        $MB['Others'] = 0; 
-        $MBB['Others'] = 0; 
-        $MC['Others'] = 0; 
-        $MCC['Others'] = 0; 
-        if ($user<>'物流') {
-          $search = 'SalesRepresentativeName';
-          $target[] = $user;
-          $j = 0;
-        }
-        else
-        {
-          $income = [];
-          $search = 'BORACustomerNo';
-          $incomebigs = big::where('income','=','Y')->get();
-          foreach ($incomebigs as $incomebig) 
-          {
-            $income[] = $incomebig['customercode'];
-          }
-          $target = $income;
-          $j = count($income) - 1;
-        }  
+        $target = $income;
+        $j = count($income) - 1;
+      }  
         $checkmedicinenumber = count($iteminfo);
         //每日銷售
         for ($i=0; $i <= $j ; $i++) { 
@@ -2214,15 +2197,16 @@ class MainController extends Controller {
         $medicines = importantp::select('importantproduct')->distinct()->get();
         foreach ($medicines as $value) 
         { 
-          $form  .= '<tr><td>'.$value['importantproduct'].'</td><td class="text-right">'.number_format($MA[$value['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$value['importantproduct']]).'</td><td class="text-right">'.$MC[$value['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$value['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$value['importantproduct']]).'</td><td class="text-right">'.$MCC[$value['importantproduct']].'%</td></tr>' ;      
+          $form  .= '<tr><td width="300px">'.$value['importantproduct'].'</td><td class="text-center">'.number_format($MA[$value['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$value['importantproduct']]).'</td><td class="text-center">'.$MC[$value['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$value['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$value['importantproduct']]).'</td><td class="text-center">'.$MCC[$value['importantproduct']].'%</td></tr>' ;      
         }  
-        $form  .= '<tr><td>Others</td><td class="text-right">'.number_format($MA['Others']).'</td><td class="text-right">'.number_format($MB['Others']).'</td><td class="text-right">'.$MC['Others'].'%</td><td class="text-right">'.number_format($MAA['Others']).'</td><td class="text-right">'.number_format($MBB['Others']).'</td><td class="text-right">'.$MCC['Others'].'%</td></tr>' ;      
-        $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalma).'</td><td class="text-right endcolor">'.number_format($totalmb).'</td><td class="text-right endcolor">'.$totalmc.'%</td><td class="text-right endcolor">'.number_format($totalmaa).'</td><td class="text-right endcolor">'.number_format($totalmbb).'</td><td class="text-right endcolor">'.$totalmcc.'%</td></tr>' ;              
+        $form  .= '<tr><td>Others</td><td class="text-center">'.number_format($MA['Others']).'</td><td class="text-center">'.number_format($MB['Others']).'</td><td class="text-center">'.$MC['Others'].'%</td><td class="text-center">'.number_format($MAA['Others']).'</td><td class="text-center">'.number_format($MBB['Others']).'</td><td class="text-center">'.$MCC['Others'].'%</td></tr>' ;      
+        $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-center endcolor">'.number_format($totalma).'</td><td class="text-center endcolor">'.number_format($totalmb).'</td><td class="text-center endcolor">'.$totalmc.'%</td><td class="text-center endcolor">'.number_format($totalmaa).'</td><td class="text-center endcolor">'.number_format($totalmbb).'</td><td class="text-center endcolor">'.$totalmcc.'%</td></tr>' ;              
         return view('personalmedicinediary',['form'=>$form,
                                              'MC'=>$MC,
                                              'user'=>$user,
                                              'chardate'=>$chardate,
                                              'today'=>$todaydate,
+                                             'season'=>$season,
                                             ]);
     }
 
@@ -2361,30 +2345,9 @@ class MainController extends Controller {
 
   public function borauni($todaydate)
   {
-    $uri = Request::path();
-    $uris = strstr($uri,'/',true);
-    $form = null;
-    $style = 0 ;
-    $i = 0;
-    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-    $chardate =  str_replace('-','',$todaydate); 
-    $MC = array();
-    $MCC = array();
-    $outcounts = array();
+    include(app_path().'/Http/Controllers/ReferenceController.php');
     $alltargets = array();
     $alltargetnames = array();
-    $allach = array();
-    $shippingd = 0;//物流每日業績
-    $totaldairy = 0;
-    $totalMA = 0;
-    $totalMB = 0;
-    $totalMAA = 0;
-    $totalMBB = 0;
     $targetps = importantboraunip::all();
     foreach ($targetps as $targetp) {
       $alltargets[] = $targetp['itemno'];
@@ -2508,42 +2471,22 @@ class MainController extends Controller {
     { 
       $itemnames = importantboraunip::where('importantproduct','=',$final['importantproduct'])->first();
       $itemname = $itemnames->importantproductchname;
-      $form  .= '<tr><td>'.$itemname.'</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
+      $form  .= '<tr><td width="200px" class="text-center">'.$itemname.'</td><td class="text-center">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-center">'.$MC[$final['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-center">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
     }
-    $form  .= '<tr><td>Others</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>' ;  
-    $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalma).'</td><td class="text-right endcolor">'.number_format($totalmb).'</td><td class="text-right endcolor">'.$totalmc.'%</td><td class="text-right endcolor">'.number_format($totalmaa).'</td><td class="text-right endcolor">'.number_format($totalmbb).'</td><td class="text-right endcolor">'.$totalmcc.'%</td></tr>' ; 
+    $form  .= '<tr><td class="text-center">Others</td><td class="text-center">'.number_format($MA['others']).'</td><td class="text-center">'.number_format($MB['others']).'</td><td class="text-center">'.$MC['others'].'%</td><td class="text-center">'.number_format($MAA['others']).'</td><td class="text-center">'.number_format($MBB['others']).'</td><td class="text-center">'.$MCC['others'].'%</td></tr>' ;  
+    $form  .= '<tr><td class="text-center endcolor">TOTAL</td><td class="text-center endcolor">'.number_format($totalma).'</td><td class="text-center endcolor">'.number_format($totalmb).'</td><td class="text-center endcolor">'.$totalmc.'%</td><td class="text-center endcolor">'.number_format($totalmaa).'</td><td class="text-center endcolor">'.number_format($totalmbb).'</td><td class="text-center endcolor">'.$totalmcc.'%</td></tr>' ; 
     return view('borauni',['form'=>$form,
                            'todaydate'=>$todaydate,
-                           'MC'=>$MC
+                           'MC'=>$MC,
+                           'season'=>$season
                           ]);
   }
 
   public function uniuni($todaydate)
   {
-    $uri = Request::path();
-    $uris = strstr($uri,'/',true);
-    $form = null;
-    $style = 0 ;
-    $i = 0;
-    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-    $chardate =  str_replace('-','',$todaydate); 
-    $MC = array();
-    $MCC = array();
-    $outcounts = array();
+    include(app_path().'/Http/Controllers/ReferenceController.php');
     $alltargets = array();
     $alltargetnames = array();
-    $allach = array();
-    $shippingd = 0;//物流每日業績
-    $totaldairy = 0;
-    $totalMA = 0;
-    $totalMB = 0;
-    $totalMAA = 0;
-    $totalMBB = 0;
     $targetps = importantuniunip::all();
     foreach ($targetps as $targetp) {
       $alltargets[] = $targetp['itemno'];
@@ -2659,9 +2602,22 @@ class MainController extends Controller {
     foreach ($alltargets as $alltarget) {
       $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
       $itemname = $itemnames->importantproduct;
-      $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      //$MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      if ($MBB[$itemname]==0) {
+        $MCC[$itemname]=0;
+      }
+      else
+      {
+        $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      }
     }
-    $MCC['others'] = round(($MAA['others'] / $MBB['others']) * 100);
+    if ($MBB['others']==0) {
+      $MCC['others']=0;
+    }
+    else
+    {
+      $MCC['others'] = round(($MAA['others'] / $MBB['others']) * 100);
+    } 
     $totalma   = array_sum($MA); 
     $totalmb   = array_sum($MB);
     $totalmc   = round(($totalma/$totalmb)* 100);
@@ -2674,13 +2630,14 @@ class MainController extends Controller {
     { 
       $itemnames = importantuniunip::where('importantproduct','=',$final['importantproduct'])->first();
       $itemname = $itemnames->importantproductchname;
-      $form  .= '<tr><td>'.$itemname.'</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
+      $form  .= '<tr><td width="205px" class="text-center">'.$itemname.'</td><td class="text-center">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-center">'.$MC[$final['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-center">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
     }
-    $form  .= '<tr><td>Others</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>' ;  
-    $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalma).'</td><td class="text-right endcolor">'.number_format($totalmb).'</td><td class="text-right endcolor">'.$totalmc.'%</td><td class="text-right endcolor">'.number_format($totalmaa).'</td><td class="text-right endcolor">'.number_format($totalmbb).'</td><td class="text-right endcolor">'.$totalmcc.'%</td></tr>' ; 
+    $form  .= '<tr><td class="text-center">Others</td><td class="text-center">'.number_format($MA['others']).'</td><td class="text-center">'.number_format($MB['others']).'</td><td class="text-center">'.$MC['others'].'%</td><td class="text-center">'.number_format($MAA['others']).'</td><td class="text-center">'.number_format($MBB['others']).'</td><td class="text-center">'.$MCC['others'].'%</td></tr>' ;  
+    $form  .= '<tr><td class="text-center endcolor">TOTAL</td><td class="text-center endcolor">'.number_format($totalma).'</td><td class="text-center endcolor">'.number_format($totalmb).'</td><td class="text-center endcolor">'.$totalmc.'%</td><td class="text-center endcolor">'.number_format($totalmaa).'</td><td class="text-center endcolor">'.number_format($totalmbb).'</td><td class="text-center endcolor">'.$totalmcc.'%</td></tr>' ; 
     return view('uniuni',['form'=>$form,
                            'todaydate'=>$todaydate,
-                           'MC'=>$MC
+                           'MC'=>$MC,
+                           'season'=>$season
                           ]);
   }
   public function acbudget()
@@ -2758,17 +2715,10 @@ class MainController extends Controller {
                             'j'=>$j
                           ]);
   }
-
   public function agents($todaydate)
   {
+        include(app_path().'/Http/Controllers/ReferenceController.php');
         $total = 0; 
-        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
-        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-        $chardate =  str_replace('-','',$todaydate);
         $iteminfo = array();
         $outs = bigsangent::all();//提取所有要的廠商
         foreach ($outs as $out) 
@@ -2873,7 +2823,7 @@ class MainController extends Controller {
           }
           $MC[$itemname] = round((array_sum($MAtarget[$medicine['itemno']]) / $MB[$itemname]) * 100 );
           $MCC[$itemname] = round((array_sum($MAAtarget[$medicine['itemno']]) / $MBB[$itemname]) * 100 );
-          $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.array_sum($MAtarget[$medicine['itemno']]) .'</td><td class="text-right">'.$MB[$itemname] .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.array_sum($MAAtarget[$medicine['itemno']]).'</td><td class="text-right">'.$MBB[$itemname].'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';   
+          $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;<i>Sub-TTL</i></td><td class="text-right">'.array_sum($MAtarget[$medicine['itemno']]) .'</td><td class="text-right">'.$MB[$itemname] .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.array_sum($MAAtarget[$medicine['itemno']]).'</td><td class="text-right">'.$MBB[$itemname].'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';   
           $totalma = $totalma + array_sum($MAtarget[$medicine['itemno']]);
           $totalmaa = $totalmaa + array_sum($MAAtarget[$medicine['itemno']]);
         }  
@@ -2886,34 +2836,14 @@ class MainController extends Controller {
                                 'MC'=>$MC,
                                 'todaydate'=>$todaydate,
                                 'chardate'=>$chardate,
+                                'season'=>$season,
                               ]);
   }
-
   public function allborauni($todaydate)
   {
-    $uri = Request::path();
-    $uris = strstr($uri,'/',true);
-    $style = 0;
-    $i = 0;
-    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-    $chardate =  str_replace('-','',$todaydate); 
-    $MC = array();
-    $MCC = array();
-    $outcounts = array();
+    include(app_path().'/Http/Controllers/ReferenceController.php');
     $alltargets = array();
     $alltargetnames = array();
-    $allach = array();
-    $shippingd = 0;//物流每日業績
-    $totaldairy = 0;
-    $totalMA = 0;
-    $totalMB = 0;
-    $totalMAA = 0;
-    $totalMBB = 0;
     $FMC =  array();
     $targetps = importantboraunip::all();
     foreach ($targetps as $targetp) {
@@ -3039,37 +2969,17 @@ class MainController extends Controller {
     { 
       $itemnames = importantboraunip::where('importantproduct','=',$final['importantproduct'])->first();
       $itemname = $itemnames->importantproductchname;
-      $formtemp[$final['importantproduct']]  = '<tr><td>'.$itemname.'-保瑞</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
+      $formtemp[$final['importantproduct']]  = '<tr><td width="205px" class="text-center">'.$itemname.'-保瑞</td><td class="text-center">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-center">'.$MC[$final['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-center">'.$MCC[$final['importantproduct']].'%</td></tr>' ;  
     }
-    $formtemp['others']  = '<tr><td>Others-保瑞</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>' ;  
+    $formtemp['others']  = '<tr><td class="text-center">Others-保瑞</td><td class="text-center">'.number_format($MA['others']).'</td><td class="text-center">'.number_format($MB['others']).'</td><td class="text-center">'.$MC['others'].'%</td><td class="text-center">'.number_format($MAA['others']).'</td><td class="text-center">'.number_format($MBB['others']).'</td><td class="text-center">'.$MCC['others'].'%</td></tr>' ;  
     foreach ($MC as $key => $value) {
       $FMC[] = $value ; 
     }
     /////////////////////////
-    $uri = Request::path();
-    $uris = strstr($uri,'/',true);
-    $form = null;
-    $style = 0 ;
-    $i = 0;
-    $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-    $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-    $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初   
-    $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-    $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-    $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-    $chardate =  str_replace('-','',$todaydate); 
-    $MC = array();
-    $MCC = array();
-    $outcounts = array();
+    include(app_path().'/Http/Controllers/ReferenceController.php');
     $alltargets = array();
     $alltargetnames = array();
-    $allach = array();
-    $shippingd = 0;//物流每日業績
-    $totaldairy = 0;
-    $totalMA = 0;
-    $totalMB = 0;
-    $totalMAA = 0;
-    $totalMBB = 0;
+
     $MA = array(); 
     $MAA = array() ;
     $MB = array(); 
@@ -3191,7 +3101,14 @@ class MainController extends Controller {
     foreach ($alltargets as $alltarget) {
       $itemnames = importantuniunip::where('itemno','=',$alltarget)->first();
       $itemname = $itemnames->importantproduct;
-      $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      //$MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      if ($MBB[$itemname]==0) {
+        $MCC[$itemname]=0;
+      }
+      else
+      {
+        $MCC[$itemname] = round(($MAA[$itemname] / $MBB[$itemname]) * 100);
+      }
     }
     $MCC['others'] = round(($MAA['others'] / $MBB['others']) * 100);
     $totalma   = array_sum($MA); 
@@ -3207,7 +3124,7 @@ class MainController extends Controller {
       $itemnames = importantuniunip::where('importantproduct','=',$final['importantproduct'])->first();
       $itemname = $itemnames->importantproductchname;
       if (array_key_exists($final['importantproduct'], $formtemp)) {
-        $form  .= $formtemp[$final['importantproduct']].'<tr><td>'.$itemname.'-聯邦</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;
+        $form  .= $formtemp[$final['importantproduct']].'<tr><td class="text-center">'.$itemname.'-聯邦</td><td class="text-center">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-center">'.$MC[$final['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-center">'.$MCC[$final['importantproduct']].'%</td></tr>' ;
       }
       else
       { 
@@ -3215,42 +3132,31 @@ class MainController extends Controller {
           $form  .= $formtemp['Bpn'];
           $checkarray = 0 ;
         } 
-        $form  .= '<tr><td>'.$itemname.'-聯邦</td><td class="text-right">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-right">'.$MC[$final['importantproduct']].'%</td><td class="text-right">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-right">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-right">'.$MCC[$final['importantproduct']].'%</td></tr>' ;          
+        $form  .= '<tr><td class="text-center">'.$itemname.'-聯邦</td><td class="text-center">'.number_format($MA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MB[$final['importantproduct']]).'</td><td class="text-center">'.$MC[$final['importantproduct']].'%</td><td class="text-center">'.number_format($MAA[$final['importantproduct']]).'</td><td class="text-center">'.number_format($MBB[$final['importantproduct']]).'</td><td class="text-center">'.$MCC[$final['importantproduct']].'%</td></tr>' ;          
       }  
     }   
     $form .= $formtemp['others'];
-    $form .= '<tr><td>Others-聯邦</td><td class="text-right">'.number_format($MA['others']).'</td><td class="text-right">'.number_format($MB['others']).'</td><td class="text-right">'.$MC['others'].'%</td><td class="text-right">'.number_format($MAA['others']).'</td><td class="text-right">'.number_format($MBB['others']).'</td><td class="text-right">'.$MCC['others'].'%</td></tr>'; 
+    $form .= '<tr><td class="text-center">Others-聯邦</td><td class="text-center">'.number_format($MA['others']).'</td><td class="text-center">'.number_format($MB['others']).'</td><td class="text-center">'.$MC['others'].'%</td><td class="text-center">'.number_format($MAA['others']).'</td><td class="text-center">'.number_format($MBB['others']).'</td><td class="text-center">'.$MCC['others'].'%</td></tr>'; 
     $totalma = $totalborama + $totalma ;
     $totalmb = $totalboramb + $totalmb;
     $totalmc = round(($totalma/$totalmb)* 100);
     $totalmaa = $totalboramaa + $totalmaa;
     $totalmbb = $totalborambb + $totalmbb;
     $totalmcc = round(($totalmaa/$totalmbb)* 100);
-    $form  .= '<tr><td class="endcolor">TOTAL</td><td class="text-right endcolor">'.number_format($totalma).'</td><td class="text-right endcolor">'.number_format($totalmb).'</td><td class="text-right endcolor">'.$totalmc.'%</td><td class="text-right endcolor">'.number_format($totalmaa).'</td><td class="text-right endcolor">'.number_format($totalmbb).'</td><td class="text-right endcolor">'.$totalmcc.'%</td></tr>' ; 
+    $form  .= '<tr><td class="text-center endcolor">TOTAL</td><td class="text-center endcolor">'.number_format($totalma).'</td><td class="text-center endcolor">'.number_format($totalmb).'</td><td class="text-center endcolor">'.$totalmc.'%</td><td class="text-center endcolor">'.number_format($totalmaa).'</td><td class="text-center endcolor">'.number_format($totalmbb).'</td><td class="text-center endcolor">'.$totalmcc.'%</td></tr>' ; 
     foreach ($MC as $key => $value) {
       $FMC[] = $value ; 
     }
     //////////////////////////////////////////////////////////////////////////////
     return view('allborauni',['form'=>$form,
                            'todaydate'=>$todaydate,
-                           'FMC'=>$FMC
+                           'FMC'=>$FMC,
+                           'season'=>$season
                           ]);
   }
   public function imborauni($todaydate)
   {
-        $total = 0; 
-        $totalMA = 0;
-        $totalMB = 0;
-        $totalMAA = 0;
-        $totalMBB = 0;
-        $form = null;
-        $lastyear = substr($todaydate, 0,5) - 1 ;//去年年分
-        $yearstart = substr($todaydate, 0,5).'01-01';//依照選擇的日期轉換每月年年初 
-        $monthstart = substr($todaydate, 0,8).'01';//依照選擇的日期轉換每月月初  
-        $lastyearstart = $lastyear.'-01-01';//依照選擇的日期轉換去年每年年初 
-        $lastyearmonthstart = $lastyear.substr($todaydate, 4,4).'01';//依照選擇的日期轉換去年每月月初   
-        $lastyearday = $lastyear.substr($todaydate, 4);//依照選擇的日期轉換去年今日
-        $chardate =  str_replace('-','',$todaydate);
+        include(app_path().'/Http/Controllers/ReferenceController.php');
         $iteminfo = array();
         $outs = bigsangent::all();//提取所有要的廠商
         foreach ($outs as $out) 
@@ -3347,7 +3253,7 @@ class MainController extends Controller {
             }
             $MC[$itemname] = round((array_sum($MAtarget[$medicine['itemno']]) / $MB[$itemname]) * 100 );
             $MCC[$itemname] = round((array_sum($MAAtarget[$medicine['itemno']]) / $MBB[$itemname]) * 100 );
-            $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format(array_sum($MAtarget[$medicine['itemno']])) .'</td><td class="text-right">'.number_format($MB[$itemname]) .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.number_format(array_sum($MAAtarget[$medicine['itemno']])).'</td><td class="text-right">'.number_format($MBB[$itemname]).'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';
+            $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;<i>Sub-TTL</i></td><td class="text-right">'.number_format(array_sum($MAtarget[$medicine['itemno']])) .'</td><td class="text-right">'.number_format($MB[$itemname]) .'</td><td class="text-right">'.$MC[$itemname].'%</td><td class="text-right">'.number_format(array_sum($MAAtarget[$medicine['itemno']])).'</td><td class="text-right">'.number_format($MBB[$itemname]).'</td><td class="text-right">'.$MCC[$itemname].'%</td></tr>';
             $totalMA = array_sum($MAtarget[$medicine['itemno']]);
             $totalMB = $MB[$itemname];
             $totalMAA = $totalMAA + array_sum($MAAtarget[$medicine['itemno']]);
@@ -3418,7 +3324,7 @@ class MainController extends Controller {
         }  
         $MMC = round(($MMA/$MMB) * 100) ;
         $MMCC = round(($MMAA/$MMBB) * 100) ;
-        $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MMB) .'</td><td class="text-right">'.$MMC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MMBB) .'</td><td class="text-right">'.$MMCC.'%</td></tr>';
+        $form  .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;<i>Sub-TTL</i></td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MMB) .'</td><td class="text-right">'.$MMC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MMBB) .'</td><td class="text-right">'.$MMCC.'%</td></tr>';
         $totalMA = $totalMA +  $MMA;
         $totalMB = $totalMB + $MMB;
         $totalMAA = $totalMAA +  $MMAA;
@@ -3486,13 +3392,14 @@ class MainController extends Controller {
         foreach ($monthbudgets  as $monthbudget) {
           $MB = $monthbudget['budget'];
         }
+        $MBB = 0;
         $monthbudgets = boramonthbudget::where('month','>=',$yearstart)->where('month','<=',$todaydate)->where('BORAItemNo','=','68PTV001123')->get();
         foreach ($monthbudgets  as $monthbudget) {
           $MBB = $MBB + $monthbudget['budget'];
         }
         $MC = round(($MMA/$MB)* 100);
         $MCC = round(($MMAA/$MBB)* 100);
-        $form .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;sub-TTL</td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MB) .'</td><td class="text-right">'.$MC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MBB) .'</td><td class="text-right">'.$MCC.'%</td></tr>';   
+        $form .= '<tr><td class="text-left">&nbsp;&nbsp;&nbsp;<i>Sub-TTL</i></td><td class="text-right">'.number_format($MMA) .'</td><td class="text-right">'.number_format($MB) .'</td><td class="text-right">'.$MC.'%</td><td class="text-right">'.number_format($MMAA).'</td><td class="text-right">'.number_format($MBB) .'</td><td class="text-right">'.$MCC.'%</td></tr>';   
         $char3 = $MC;
         //這一大段只是為了跑出lendormin終點 
         $totalMA = $totalMA + $MMA;
@@ -3509,9 +3416,11 @@ class MainController extends Controller {
                                 'char1'=>$char1,
                                 'char2'=>$char2,
                                 'char3'=>$char3,
+                                'season'=>$season,
                               ]);
   }
-  public function neww ()
+
+  public function neww()
   {
     return view('new');
   }

@@ -12,6 +12,12 @@
   <script type="text/javascript" src="../bootstrap331/dist/js/bootstrap.min.js"></script>
   <link rel="stylesheet"  href="../bootstrap331/dist/css/bootstrap-datetimepicker.css"> 
   <script src="../bootstrap331/dist/js/highcharts.js"></script>
+  <script src="../bootstrap331/dist/js/jquery.sticky.js"></script>
+  <script>
+    $(window).load(function(){
+      $("#chart").sticky({ topSpacing: 0 });
+    });
+  </script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#chart").css("display","none");
@@ -85,7 +91,9 @@
   .subcolor{
     background-color:#E0E0E0;
   }
-}
+  #chart{
+    z-index: 999;
+  }
   </style>
 </head>
 <body>
@@ -121,7 +129,7 @@
               MTD
             </th>
             <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
+              {!!$season!!}
             </th>
           </tr>
           <tr>

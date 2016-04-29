@@ -57,7 +57,9 @@ Route::get('accountreminder' , 'AutosendController@accountreminder');
 //自動寄報表手動
 Route::get('nonesendboradiary/{todaydate}', 'AutosendController@nonesendboradiary');
 Route::get('nonesendunidiary/{todaydate}' , 'AutosendController@nonesendunidiary');
-
+//匯出報表
+Route::get('eisaireport', 'ExportExcelController@eisaireport');
+Route::get('eisaicus', 'ExportExcelController@eisaicus');
 //匯入excel
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
@@ -74,6 +76,7 @@ Route::get('tv', 'TvController@tv');
 
 //單據
 Route::get('app/it', 'ServiceController@it');
+Route::get('app/epaper', 'ServiceController@epaper');
 Route::get('oprocess', 'ServiceController@oprocess');
 Route::post('itreceive', 'ServiceajaxController@itreceive');
 Route::get('{ordernumber}/it', 'ServiceController@ordernumber');

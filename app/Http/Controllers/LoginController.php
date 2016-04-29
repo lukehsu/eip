@@ -125,7 +125,6 @@ class LoginController extends Controller {
         ldap_close($ldapconn);
         if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
         {
-
           //return redirect()->intended('dashboard');
           return  response()->json(array('good'));
         }
@@ -189,7 +188,7 @@ class LoginController extends Controller {
         $description = mb_substr($description,0,8,"utf-8")."......";
         $items = $itticket->items;
         $items = mb_substr($items,0,6,"utf-8")."......";
-        $itservice .= '<div class="row" style="height:30px"><div class="col-md-1"><label id="chkgroup'.$i.'" class="checkbox"><input name="itbox" type="checkbox" value="1" id="checkbox'.$i.'" data-toggle="checkbox"></label></div><a href="http://127.0.0.1/eip/public/'.$ordernumber.'/it"><div class="col-md-2 pa">'.$date.'</div><div class="col-md-2 pa">'.$dep.'</div><div id="name'.$i.'" class="col-md-2 pa">'.$name.'</div><div class="col-md-2 pa">'.$items.'</div><div class="col-md-3 pa">'.$description.'<input id="ordernumber'.$i.'" type="hidden" value="'.$ordernumber.'"></div></a></div>' ;                     
+        $itservice .= '<div class="row" style="height:30px"><div class="col-xs-1"><label id="chkgroup'.$i.'" class="checkbox"><input name="itbox" type="checkbox" value="1" id="checkbox'.$i.'" data-toggle="checkbox"></label></div><a href="http://127.0.0.1/eip/public/'.$ordernumber.'/it"><div class="col-xs-2 pa">'.$date.'</div><div class="col-xs-2 pa">'.$dep.'</div><div id="name'.$i.'" class="col-xs-2 pa">'.$name.'</div><div class="col-xs-2 pa">'.$items.'</div><div class="col-xs-3 pa">'.$description.'<input id="ordernumber'.$i.'" type="hidden" value="'.$ordernumber.'"></div></a></div>' ;                     
         $i = $i + 1 ;
       } 
 

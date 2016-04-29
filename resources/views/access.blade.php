@@ -14,7 +14,6 @@
   @include('includes.navbar')
   <div class="row">
     <div class="col-md-3">
-    
           <div class="todo">
             <ul>
               <li class="todo-done">

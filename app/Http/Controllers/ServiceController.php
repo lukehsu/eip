@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\user;
 use App\itticket;
 use App\Http\Requests;
+use App\itservicerank;
 use Hash,Input,Request,Response,Auth,Redirect,Log,Mail;
 use Closure;
 
@@ -50,22 +51,18 @@ class ServiceController extends Controller {
       		$name = $user->cname;
       		$enumber =  $user->name;
 		}
-		//$ordercount = itticket::where('date','=',$today)->count();
-	    /*
-	    $ordernumber = itticket::where('date','=',$today)->get()->max('ordernumber');
-		if ($ordernumber=='') 
-		{
-			$ordernumber = $today.'001';
-			$ordernumber = str_replace('-','',$ordernumber);
-		}
-		else
-		{
-			$ordernumber = str_replace('-','',$ordernumber);
-			$ordernumber = substr($ordernumber,2,12);
-			$ordernumber = $ordernumber + 1;
-		}
-		*/
 		$ordernumber = '';
+		$checkarray = [];
+      	$check1 = itticket::where('enumber','=',Auth::user()->name)->where('date','>=','2016-04-07')->where('process','=','close')->get();
+      	foreach ($check1 as $check) {
+      		$checkarray[] = $check['ordernumber'];
+      	}
+      	foreach ($checkarray as $value) {
+      		$check2 = itservicerank::where('enumber','=',Auth::user()->name)->where('ordernumber','=',$value)->count();
+      		if ($check2==0) {
+				return redirect('http://127.0.0.1/eip/public/'.$value.'/star');
+      		}
+      	}
 		return view('it',['ordernumber'=>$ordernumber,
 						  'dep'=>$dep,
 						  'today'=>$today,
@@ -123,12 +120,44 @@ class ServiceController extends Controller {
 						  'none'=>$none,
 						]);
 	}
-
-    public function oprocess()
+    public function epaper()
     {
-
-    $ppApp = new \com_exception("PowerPoint.Application");
-
-		return view('oprocess');
+    	$today = date('Y-m-d');
+      	$users = User::where('name','=',Auth::user()->name)->get();
+      	$items = '請選擇';
+      	$description = '';
+      	$disable = 'disabled';
+      	$disabled = '';
+      	$style = '';
+      	$none = '';
+      	foreach ($users as $user) {
+      		$dep  = $user->dep;
+      		$name = $user->cname;
+      		$enumber =  $user->name;
+		}
+		$ordernumber = '';
+		$checkarray = [];
+      	$check1 = itticket::where('enumber','=',Auth::user()->name)->where('date','>=','2016-04-07')->where('process','=','close')->get();
+      	foreach ($check1 as $check) {
+      		$checkarray[] = $check['ordernumber'];
+      	}
+      	foreach ($checkarray as $value) {
+      		$check2 = itservicerank::where('enumber','=',Auth::user()->name)->where('ordernumber','=',$value)->count();
+      		if ($check2==0) {
+				return redirect('http://127.0.0.1/eip/public/'.$value.'/star');
+      		}
+      	}
+		return view('epaper',['ordernumber'=>$ordernumber,
+						  'dep'=>$dep,
+						  'today'=>$today,
+						  'enumber'=>$enumber,
+						  'name'=>$name,
+						  'items'=>$items,
+						  'description'=>$description,
+						  'disable'=>$disable,
+						  'disabled'=>$disabled,
+						  'style'=>$style,
+						  'none'=>$none,
+						]);
 	}
 }

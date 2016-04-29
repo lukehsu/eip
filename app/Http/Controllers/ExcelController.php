@@ -5,13 +5,11 @@ use App\dailyreport;
 use App\hareport;
 use App\boehringer;
 use App\boramonthbudget;
-use App\useracces;
-use App\salesmen;
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\boracustomer;
+use App\useracces;
 use App\everymonth;
-use App\calendar;
 //use App\mainmenudisplay;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel;
 use vendor\phpoffice\phpexcel\Classes\PHPExcel\Writer\Excel2007;
@@ -77,8 +75,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\borareport\*.*');
-        //$file = glob(dirname(__FILE__).'/borareport/*.*');
+        //$file = glob(dirname(__FILE__).'\borareport\*.*');
+        $file = glob(dirname(__FILE__).'/borareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -118,7 +116,7 @@ class ExcelController extends Controller {
         for ($row = 2;$row < $highestRow;$row++) 
         { 
             $strs=array(); 
-        //注意highestColumnIndex的列數索引從0開始 
+            //注意highestColumnIndex的列數索引從0開始 
             for ($col = 0;$col < $highestColumnIndex;$col++) 
             {  
                 $strs[$col] = $sheet->getCellByColumnAndRow($col, $row)->getValue();//宣告陣列長度
@@ -210,8 +208,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\unireport\*.*');
-        //$file = glob(dirname(__FILE__).'/unireport/*.*');
+        //$file = glob(dirname(__FILE__).'\unireport\*.*');
+        $file = glob(dirname(__FILE__).'/unireport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -284,7 +282,6 @@ class ExcelController extends Controller {
 
     public function haexcel()
     {
-
         $objPHPExcel = new \PHPExcel();
         /*
         $objPHPExcel->getProperties()->setCreator("Maarten Balliauw");
@@ -312,8 +309,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\hareport\*.*');
-        //$file = glob(dirname(__FILE__).'/hareport/*.*');
+        //$file = glob(dirname(__FILE__).'\hareport\*.*');
+        $file = glob(dirname(__FILE__).'/hareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -322,10 +319,9 @@ class ExcelController extends Controller {
             echo  "<script type='text/javascript'>setTimeout(self.close(),10000);</script>"; 
         }
         else
-        {  
+        {    
         //和安的因為資料有重複需要刪掉後再加入
         $monstart = date('Y-m-01');    
-        echo  $monstart;
         $deldata = hareport::where('INVDT', '>=', $monstart)->delete();  
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
@@ -349,7 +345,7 @@ class ExcelController extends Controller {
         { 
             $strs=array(); 
         //注意highestColumnIndex的列數索引從0開始 
-            for ($col = 0;$col <= $highestColumnIndex;$col++) 
+            for ($col = 0;$col < $highestColumnIndex;$col++) 
             {  
                 $strs[$col] = $sheet->getCellByColumnAndRow($col, $row)->getValue();//宣告陣列長度
             }  
@@ -404,8 +400,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\hareport\*.*');
-        //$file = glob(dirname(__FILE__).'/hareport/*.*');
+        //$file = glob(dirname(__FILE__).'\hareport\*.*');
+        $file = glob(dirname(__FILE__).'/hareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -417,7 +413,6 @@ class ExcelController extends Controller {
         {  
         //和安的因為資料有重複需要刪掉後再加入
         $monstart = date('Y-m-01');    
-        echo  $monstart;
         $deldata = boehringer::where('date', '>=', $monstart)->delete();  
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
@@ -484,8 +479,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\borareport\*.*');
-        //$file = glob(dirname(__FILE__).'/hareport/*.*');
+        //$file = glob(dirname(__FILE__).'\borareport\*.*');
+        $file = glob(dirname(__FILE__).'/boracus/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -495,7 +490,6 @@ class ExcelController extends Controller {
         }
         else
         {  
-        //和安的因為資料有重複需要刪掉後再加入
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
@@ -514,6 +508,7 @@ class ExcelController extends Controller {
         $headtitle=array(); 
         $test = null;
         $a = null;
+        boracustomer::truncate();
         for ($row = 2;$row <= $highestRow;$row++) 
         { 
             $strs=array(); 
@@ -580,13 +575,13 @@ class ExcelController extends Controller {
                 print_r($info); 
                 echo '<br />'; 
         } 
-        echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        //echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }
     }
 
     public function everymonth()
     {
-        ini_set('memory_limit', '256M');
+        ini_set('memory_limit', '1024M');
         $year = date('Y');
         echo $year;
         $objPHPExcel = new \PHPExcel();
@@ -595,8 +590,8 @@ class ExcelController extends Controller {
         //另一種寫法
         //print_r (scandir(dirname(__FILE__))) ;
         //自動撈檔名 下面兩行一種是linux專用一種是windows
-        $file = glob(dirname(__FILE__).'\borareport\*.*');
-        //$file = glob(dirname(__FILE__).'/hareport/*.*');
+        //$file = glob(dirname(__FILE__).'\borareport\*.*');
+        $file = glob(dirname(__FILE__).'/borareport/*.*');
         //$file = $file[0];
         //$file = str_replace(dirname(__FILE__).'\diaryexcel',"",$file);
         $check = count($file);
@@ -607,7 +602,7 @@ class ExcelController extends Controller {
         else
         {  
         //報表是累加的所以每天的資料要先刪除再加入
-        $deldata = everymonth::where('years', '>=', $year)->delete(); 
+        $deldata = everymonth::where('years', '>=', $year)->delete();
         $inputFileName = $file[0];
         echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory with a defined reader type of ',$inputFileType,'<br />'; 
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
@@ -626,7 +621,6 @@ class ExcelController extends Controller {
         $headtitle=array(); 
         $test = null;
         $a = null;
-
         //代表只要從第八行開始且最後一行不要
         for ($row = 9;$row < $highestRow;$row++) 
         { 
@@ -724,25 +718,17 @@ class ExcelController extends Controller {
             {
                 $message->to($to)->subject('今日資料已新增');
             });
-            echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
+        	echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }
     }
-
-
-
 
     public function test()
     {
 
-        $alluser = useracces::where('user','<>','')->distinct()->get(array('user'));
-        foreach ($alluser as $user) {
-                $access = new useracces ;
-                $access->user = $user['user'];
-                $access->access = 'E-mail';
-                $access->save();
-        }
 
+return view('test');
 
-        return view('test');
+        
     }
+
 }

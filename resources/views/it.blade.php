@@ -41,20 +41,11 @@
                                     <input type="hidden" name="items" id="hiddenitems" value="">
                                     <span id="items">{!!$items!!}</span>
                                         <ul  class="dropdown uiscroll"  >
-                                            <li><a href="#"><i></i>軟體</a></li>
-                                            <li><a href="#"><i></i>網路障礙</a></li>
-                                            <li><a href="#"><i></i>電子信箱</a></li>
-                                            <li><a href="#"><i></i>資訊安全</a></li>
-                                            <li><a href="#"><i></i>硬體故障</a></li>
-                                            <li><a href="#"><i></i>資訊設備</a></li>
-                                            <li><a href="#"><i></i>周邊組裝/設定</a></li>
-                                            <li><a href="#"><i></i>線路/位置變動</a></li>
-                                            <li><a href="#"><i></i>VPN設定/申請</a></li>
-                                            <li><a href="#"><i></i>NAS設定/申請</a></li>
-                                            <li><a href="#"><i></i>ERP系統權限設定</a></li>
-                                            <li><a href="#"><i></i>公用儲存空間/權限申請</a></li>
-                                            <li><a href="#"><i></i>FTP申請/設定</a></li>
-                                            <li><a href="#"><i></i>無線網路申請</a></li>
+                                            <li><a href="#"><i></i>硬體相關</a></li>
+                                            <li><a href="#"><i></i>軟體相關</a></li>
+                                            <li><a href="#"><i></i>密碼相關</a></li>
+                                            <li><a href="#"><i></i>ERP相關</a></li>
+                                            <li><a href="#"><i></i>資訊系統服務申請</a></li>
                                             <li><a href="#"><i></i>其他</a></li>
                                         </ul>
                                 </div>
@@ -161,7 +152,7 @@
                         $("#items").text('請選擇');
                         $("#description").val('');
                         $("#ordernumber").text('it'+data.ordernumber);
-                        alert('已送出 謝謝');
+                        alert('已送出，案件完成後，系統會寄出滿意度回覆表，請務必填寫，完成後方可以在建立新的資訊需求單，謝謝');
                         document.location.href="http://127.0.0.1/eip/public/dashboard";
                     },
                     error: function(xhr, type){

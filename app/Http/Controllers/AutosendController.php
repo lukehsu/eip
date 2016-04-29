@@ -1,6 +1,6 @@
 <?php 
 namespace App\Http\Controllers;
-use App\user;
+use App\User;
 use App\hareport;
 use App\boehringer;
 use App\dailyreport;//bora 每日業績
@@ -1659,9 +1659,5 @@ class AutosendController extends Controller {
           });
           echo  "<script type='text/javascript'>setTimeout(self.close(),60000);</script>"; 
         }       
-    }
-    public function autoacbudget()
-    {
-      return view('autoacbudget');   
     }
 }

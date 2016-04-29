@@ -129,7 +129,7 @@
               MTD
             </th>
             <th class="text-center" colspan="3" style="background-color:#BDC3C7;border:#FFFFFF 3px solid">
-              YTD
+              {!!$season!!}
             </th>
           </tr>
           <tr>
@@ -195,13 +195,13 @@
         if (system.win || system.mac || system.xll||system.ipad) 
         { 
           $("#datetimepicker").change(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/agents/"+ $("#datetimepicker").val());
           }); 
         } 
         else 
         { 
           $("#datetimepicker").blur(function(){
-            window.location.replace("http://127.0.0.1/eip/public/personalmedicinediary/"+ $('#username').html().trim() + '/' + $("#datetimepicker").val());
+            window.location.replace("http://127.0.0.1/eip/public/agents/"+ $("#datetimepicker").val());
           }); 
         } 
 --> 
