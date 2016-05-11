@@ -6,6 +6,7 @@ use App\calendar;
 use App\boehringer;
 use App\big;
 use App\monthach;
+use App\Http\Controllers\FController;
 use App\mobicmappingdata;
 use App\agentsmonthbudget;
 use App\bigsangent;
@@ -1669,16 +1670,20 @@ class MainController extends Controller {
       $users = User::where('dep','=','藥品事業部')->where('location','=','外勤')->orderBy('sorts', 'ASC')->get();
       foreach ($users as $user) 
       {
+
         $userdate =  substr($todaydate,0,8).'01';
         $userstates = userstate::where('cname','=',$user['cname'])->where('userdate','=',$userdate)->first();
-        if ($userstates['userstatus']==$office) {
-          //計算當日業績 
+        if ($userstates['userstatus']==$office or $user['cname']=='陳瑛旼' ) {
+          if ($user['cname']=='陳瑛旼' and $uris=='personalhp' ) {
+            $monthstart = '2016-04-01';
+            $yearstart = '2016-04-01';
+          } 
           $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','=',$todaydate)->get();
           $dailyreportaday = 0 ;
           foreach ($dailyreports as $dailyreport) 
           {  
             foreach ($outcounts as $outcount) {
-              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+              if ($outcount==$dailyreport['BORACustomerNo'] ) {
                 $dailyreport['InoviceAmt'] = 0 ;
               }
             } 
@@ -1697,7 +1702,7 @@ class MainController extends Controller {
           foreach ($dailyreports as $dailyreport) 
           {
             foreach ($outcounts as $outcount) {
-              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+              if ($outcount==$dailyreport['BORACustomerNo'] ) {
                 $dailyreport['InoviceAmt'] = 0 ;
               }
             }
@@ -1711,20 +1716,26 @@ class MainController extends Controller {
             $MA = $MA + $dailyreport['Amount'];
           }  
           //提取每月目標
+          $MB = 0;
           $monthbudgets = personalmonthbudget::where('zone','=',$user['cname'])->where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
           foreach ($monthbudgets as $monthbudget) {
             $MB = $monthbudget['budget'];
           } 
           //結至當日達成率
-          $MC[$i] = round(($MA/$MB) * 100) ;
-
+          if ($MB==0) {
+            $MC[$i] = 0;
+          }
+          else
+          {
+            $MC[$i] = round(($MA/$MB) * 100) ;            
+          }  
           //計算季累計由年初至當日
           $dailyreports = dailyreport::where('SalesRepresentativeNo','=',$user['name'])->where('InvDate','>=',$yearstart)->where('InvDate','<=',$todaydate)->get();
           $MAA = 0 ;
           foreach ($dailyreports as $dailyreport) 
           { 
             foreach ($outcounts as $outcount) {
-              if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+              if ($outcount==$dailyreport['BORACustomerNo'] ) {
                 $dailyreport['InoviceAmt'] = 0 ;
               }
             }
@@ -1744,12 +1755,26 @@ class MainController extends Controller {
             $MBB = $MBB +  $monthbudget['budget'];
           } 
           // MCC  A/B
-          $MCC[$i] = round(($MAA/$MBB) * 100) ;
+          if ($MBB==0) {
+            $MCC[$i] = 0;
+          }
+          else
+          {
+            $MCC[$i] = round(($MAA/$MBB) * 100) ;            
+          }  
+          if ($user['cname']=='陳瑛旼' and $uris=='personaldiary' and $todaydate >= '2016-04-01' ) {
+            $MA = 0;
+            $MB = 0;
+            $MAA = '883078';
+            $MBB = '858525';
+            $MC[$i] = 0 ;
+            $MCC[$i] = round(($MAA/$MBB) * 100) ;
+          }
           //計算totel起點
           $totaldairy = $totaldairy + $dailyreportaday;
           $totalMA = $totalMA + $MA;
           $totalMB = $totalMB + $MB;
-          $totalMAA = $totalMAA + $MAA ;
+          $totalMAA = $totalMAA + $MAA;
           $totalMBB = $totalMBB + $MBB;
           $chkuser = monthach::where('name','=',$user['cname'])->where('mondate','=',$monthstart)->count();   
           if ($chkuser==0){
@@ -1817,7 +1842,7 @@ class MainController extends Controller {
         } 
         foreach ($dailyreports as $dailyreport) 
         {
-          if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+          if ($outcount==$dailyreport['BORACustomerNo'] ) {
               $dailyreport['InoviceAmt'] = 0 ;
           }
           $MA = $MA + $dailyreport['InoviceAmt'];  
@@ -1844,7 +1869,7 @@ class MainController extends Controller {
         } 
         foreach ($dailyreports as $dailyreport) 
         {
-          if ($outcount==$dailyreport['BORACustomerNo'] or substr($dailyreport['BORAItemNo'],0,2)=='67') {
+          if ($outcount==$dailyreport['BORACustomerNo'] ) {
             $dailyreport['InoviceAmt'] = 0 ;
           }
           $MAA = $MAA + $dailyreport['InoviceAmt']; 
@@ -2025,7 +2050,7 @@ class MainController extends Controller {
                   }
                 }
               }
-            if (substr($dailyreport['BORAItemNo'],0,2)=='67') 
+            if (substr($dailyreport['BORAItemNo'],0,2)=='AA') 
             {
                $dailyreport['InoviceAmt'] = 0;
             }   
@@ -2071,7 +2096,7 @@ class MainController extends Controller {
                 }
               }
             } 
-            if (substr($dailyreport['BORAItemNo'],0,2)=='67') 
+            if (substr($dailyreport['BORAItemNo'],0,2)=='AA') 
             {
               $dailyreport['InoviceAmt'] = 0;
             } 
@@ -2117,7 +2142,7 @@ class MainController extends Controller {
                 }
               }
             }  
-            if (substr($dailyreport['BORAItemNo'],0,2)=='67') 
+            if (substr($dailyreport['BORAItemNo'],0,2)=='AA') 
             {
               $dailyreport['InoviceAmt'] = 0;
             } 
@@ -3419,9 +3444,27 @@ class MainController extends Controller {
                                 'season'=>$season,
                               ]);
   }
-
   public function neww()
   {
     return view('new');
+  }
+  public function go()
+  {
+
+    $shipping = array();
+    $bigs = big::all();
+    foreach ($bigs as $big) {
+      $shipping[] = $big['customercode'];
+    }
+
+    $importantarget = array();
+    $importantps = importantp::all();
+    foreach ($importantps as $importantp) {
+      $importantarget[] =  $importantp['itemno'];  
+    }
+
+    $t = FController::salesformedicine($shipping,$importantarget);
+    print_r($t);
+    return view('go');
   }
 }

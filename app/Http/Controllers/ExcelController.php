@@ -48,6 +48,7 @@ class ExcelController extends Controller {
 
     public function diaryexcel()
     {
+        ini_set('memory_limit', '1024M');
         $objPHPExcel = new \PHPExcel();
         /*
         $objPHPExcel->getProperties()->setCreator("Maarten Balliauw");
@@ -457,6 +458,7 @@ class ExcelController extends Controller {
                 $alldatabase->SalesOrder=$info['word1'];
                 $alldatabase->CustomerNo=$info['word2'];            
                 $alldatabase->ItemNo=$info['word3'];
+                $alldatabase->mappingdate=substr($info['word4'],0,4).'-'.substr($info['word4'],4,2);
                 $alldatabase->Date=$info['word4'];
                 $alldatabase->QTY=$info['word5'];
                 $alldatabase->Amount=$info['word6'];

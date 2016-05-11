@@ -362,6 +362,31 @@ class ServiceajaxController extends Controller {
             $report .= '<td class="text-center" style="background-color: #FCB941;">'.$s4.'</td>';
             $report .= '</tr>';
             //$report .='<br>';
+            $report .= '<tr>';
+            $report .= '<td >'.$reporttemp['emponame'].'</td>';
+            $report .= '<td >'.mb_substr($reporttemp['customers'],0,8,"utf-8").'</td>';
+            $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['allmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['janmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['febmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['marmoney'].'</td>';
+            $s1 = $reporttemp['janmoney']+$reporttemp['febmoney']+$reporttemp['marmoney'];
+            $report .= '<td class="text-center" style="background-color: #FCB941;">'.$s1.'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['aprmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['maymoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['junmoney'].'</td>';
+            $s2 = $reporttemp['aprmoney']+$reporttemp['maymoney']+$reporttemp['junmoney'];
+            $report .= '<td class="text-center" style="background-color: #FCB941;">'.$s2.'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['julmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['augmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['sepmoney'].'</td>';
+            $s3 = $reporttemp['julmoney']+$reporttemp['augmoney']+$reporttemp['sepmoney'];
+            $report .= '<td class="text-center" style="background-color: #FCB941;">'.$s3.'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['octmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['novmoney'].'</td>';
+            $report .= '<td class="text-center">'.$reporttemp['decmoney'].'</td>';
+            $s4 = $reporttemp['octmoney']+$reporttemp['novmoney']+$reporttemp['decmoney'];
+            $report .= '<td class="text-center" style="background-color: #FCB941;">'.$s4.'</td>';
+            $report .= '</tr>';
         }
         if (substr(date('m'),0,1)==0) {
             $j=substr(date('m'),1,1);
@@ -406,10 +431,11 @@ class ServiceajaxController extends Controller {
             }
         }
         if ($season=='2016' and $itemcode=='68MOB002') {
-            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('cusname')->orderBy('salename')->get();
+            $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('salename','cusname')->orderBy('salename')->get();
             foreach ($reports as $reporttemp) {
+                $reports = mobicmappingdata::selectraw('sum(qty) as qty')->where('ItemNo', '=','A0211')->where('SaleType', '=','R2')->where('salename','=',$reporttemp['salename'])->where('cusname','=',$reporttemp['cusname'])->get();
                 $report .= '<tr>';
-                $report .= '<td >'.$reporttemp['salename'].'-裕利</td>';
+                $report .= '<td >'.$reporttemp['salename'].'-裕利1</td>';
                 $report .= '<td >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
                 $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['qty'].'</td>';
                 for ($i=1; $i <=12 ; $i++) {

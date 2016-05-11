@@ -135,8 +135,8 @@ class ExportExcelController extends Controller {
                     $a='Z-CN    ';
                     $b='115G  ';
                 }
-                $info['word3'] = '       '.$info['word3'];
-                $info['word3'] = substr($info['word3'],-7);    
+                $info['word3'] = $info['word3'].'       ';
+                $info['word3'] = substr($info['word3'],0,7);    
                 $info['word5'] = PHPExcel_Shared_Date::ExcelToPHP($info['word5']);  
                 $info['word5'] = date( 'Ymd', $info['word5']); 
 
@@ -144,17 +144,17 @@ class ExportExcelController extends Controller {
                 $info['word6'] = '       '.$info['word6'];
                 $info['word6'] = substr($info['word6'],-9);
                 if ($info['word0']==1) {
-                    $returnprice = '    0.00';
-                    $info['word8'] = $info['word8'].'.00';
-                    $info['word8'] = '       '.$info['word8'];
+                    $returnprice = '       0';
+                    $info['word8'] = $info['word8'];
+                    $info['word8'] = '          '.$info['word8'];
                     $info['word8'] = substr($info['word8'],-8);
                     $allprice = $info['word8'];
                 }
                 else
                 {
-                    $allprice = '    0.00' ;
-                    $info['word8'] = $info['word8'].'.00';
-                    $info['word8'] = '       '.$info['word8'];
+                    $allprice = '       0' ;
+                    $info['word8'] = $info['word8'];
+                    $info['word8'] = '          '.$info['word8'];
                     $info['word8'] = substr($info['word8'],-8);
                     $returnprice = $info['word8']; 
                 }    
