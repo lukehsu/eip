@@ -8,6 +8,7 @@ use App\boramonthbudget;
 use App\unidiaryreport;//每日業績
 use App\unimonthbudget;//uni每月預算
 use App\boracustomer;
+use App\userstate;
 use App\useracces;
 use App\everymonth;
 //use App\mainmenudisplay;
@@ -145,6 +146,9 @@ class ExcelController extends Controller {
                 if ($info['word0']=='R2') {
                 	$info['word9'] = 0 - $info['word9'];
                 }
+                $groupdate = substr($info['word6'], 0,7).'/01';
+                $usergroup = userstate::where('usernum','=',$info['word14'])->where('userdate','=',$groupdate)->first();
+
                 $alldatabase = new dailyreport ;
                 $alldatabase->SalesType = $info['word0'];
                 $alldatabase->OrderNo = $info['word1'];
@@ -162,6 +166,7 @@ class ExcelController extends Controller {
                 $alldatabase->GUINo=$info['word13'];
                 $alldatabase->SalesRepresentativeNo=$info['word14'];
                 $alldatabase->SalesRepresentativeName=$info['word15'];
+                $alldatabase->SalesRepresentativegroup=$usergroup['userstatus'];
                 $alldatabase->save();
                 print_r($info); 
                 echo '<br />'; 

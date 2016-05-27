@@ -13,6 +13,7 @@ use App\bigsangent;
 use App\userstate;
 use App\importantagentsp;
 use App\importantp;
+use App\budgetgp;
 use App\importantuniunip;
 use App\importantboraunip;
 use App\dailyreport;//bora 每日業績
@@ -3451,20 +3452,115 @@ class MainController extends Controller {
   public function go()
   {
 
+    $choiceday = Input::get('datepicker');
+    $peoples = Input::get('checkvalue');
+    $quitpeoples = Input::get('checkvaluequit');
+    $monthstart = substr($choiceday, 0,8).'01';
+    $usergroup = '藥品';
+    #接收input選項 
+    (isset($quitpeoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
+    $userstatedate = date('Y-m-01');
+    $cnames = [];
+    (isset($peoples)) ? (''):($peoples = []);
+
+    #撈在職人員for view
+    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=','藥品')->get();
+    foreach ($users as $user) {
+      $cnamesforpage[$user['usernum']] = $user['cname'];
+    }
+
+    #撈離職人員for view
+    $users = userstate::where('userstatus','=','藥品')->get();
+    foreach ($users as $user) {
+      (isset($cnamesforpage[$user['usernum']])) ? (''):($cnamesquitforpage[$user['usernum']] = $user['cname']);
+    }
+
+    #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
+    foreach ($peoples as $usernum) {
+      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=','藥品')->first();
+      $cnames[$users['usernum']] = $users['cname'];
+    }
+    #撈物流
     $shipping = array();
     $bigs = big::all();
     foreach ($bigs as $big) {
       $shipping[] = $big['customercode'];
     }
-
+    #撈要產品
     $importantarget = array();
     $importantps = importantp::all();
     foreach ($importantps as $importantp) {
       $importantarget[] =  $importantp['itemno'];  
     }
+    #撈每月業績與預算
+    $everyone = FController::salesformedicine($shipping,$importantarget,$peoples,$usergroup,$choiceday,$monthstart);
+    $budgetmonth = FController::budgetmonth($cnames,$everyone);
+    #數字索引部份分別為個人當月業績預算,個人當月達成率,個人當月總total
+    $pbudget= $budgetmonth[0];
+    $pab= $budgetmonth[1];
+    $totals= $budgetmonth[2];
+    $everyonejava = json_encode($everyone);
 
-    $t = FController::salesformedicine($shipping,$importantarget);
-    print_r($t);
-    return view('go');
+    #撈季度業績與預算
+    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$peoples,$usergroup);
+    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$importantarget);
+    //$Qtotal = FController::Qtatol($Qsalesformedicine,$Qbudgetmonth);
+    //print_r($Qtotal);
+    /*foreach ($Qsalesformedicine as $season => $cnames) {
+      foreach ($cnames as $key => $med) {
+        if ($season=='Q1') {
+          $Qtotal[$season][$key] = [];
+          $salestotal = array_sum($Qsalesformedicine[$season][$key]);
+          $budgettotal = $ptotal = array_sum($Qbudgetmonth[$season][$key]);
+          $abtotal = round($salestotal/$budgettotal * 100);
+          array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
+        }
+        foreach ($med as $medkey => $value) {
+          if ($season=='Q1') 
+          {
+            if ($Qbudgetmonth[$season][$key][$medkey]==0) {
+              $Q1pab[$key][$medkey] = 0;
+            }
+            else
+            {
+              $Q1pab[$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100);
+            } 
+          } 
+        }
+      }
+    }*/
+    //$Qtotal = [];
+    foreach ($Qsalesformedicine as $season => $cnames) {
+      foreach ($cnames as $key => $med) 
+      {
+        $Qtotal[$season][$key] = [];
+        $salestotal = array_sum($Qsalesformedicine[$season][$key]);
+        $budgettotal = $ptotal = array_sum($Qbudgetmonth[$season][$key]);
+        ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
+        array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
+        foreach ($med as $medkey => $value) 
+        {   
+          $Qpab[$season][$key][$medkey] = [];
+          ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
+        } 
+      }
+    }
+    $abc = [3,6,4,8,3,6,4,8,3,6,4,8];
+    $test = json_encode($abc);
+    return view('go',['totals'=>$totals 
+                    ,'pab'=>$pab 
+                    ,'pbudget'=>$pbudget 
+                    ,'test'=>$test
+                    ,'everyone'=>$everyone
+                    ,'everyonejava'=>$everyonejava
+                    ,'cnames'=>$cnames
+                    ,'cnamesforpage'=>$cnamesforpage
+                    ,'cnamesquitforpage'=>$cnamesquitforpage
+                    ,'choiceday'=>$choiceday
+                    ,'Qbudgetmonth'=>$Qbudgetmonth
+                    ,'Qsalesformedicine'=>$Qsalesformedicine
+                    ,'Qtotal'=>$Qtotal
+                    ,'Qpab'=>$Qpab
+                    ]);
   }
 }

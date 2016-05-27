@@ -433,11 +433,15 @@ class ServiceajaxController extends Controller {
         if ($season=='2016' and $itemcode=='68MOB002') {
             $reports = mobicmappingdata::selectraw('sum(qty) as qty,salename,cusname')->where('ItemNo', '=','A0211')->where('SaleType', '=','A2')->GroupBy('salename','cusname')->orderBy('salename')->get();
             foreach ($reports as $reporttemp) {
-                $reports = mobicmappingdata::selectraw('sum(qty) as qty')->where('ItemNo', '=','A0211')->where('SaleType', '=','R2')->where('salename','=',$reporttemp['salename'])->where('cusname','=',$reporttemp['cusname'])->get();
+                $mobicr2s = mobicmappingdata::selectraw('sum(qty) as qty')->where('ItemNo', '=','A0211')->where('SaleType', '=','R2')->where('salename','=',$reporttemp['salename'])->where('cusname','=',$reporttemp['cusname'])->get();
+                foreach ($mobicr2s as $mobicr2) {
+                    $r2 = $mobicr2['qty'];
+                }
+                $totalqty = $reporttemp['qty'] - $r2;
                 $report .= '<tr>';
                 $report .= '<td >'.$reporttemp['salename'].'-裕利1</td>';
-                $report .= '<td >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
-                $report .= '<td class="text-center" style="background-color: #FCB941;">'.$reporttemp['qty'].'</td>';
+                $report .= '<td title='.$reporttemp['cusname'].' >'.mb_substr($reporttemp['cusname'],0,8,"utf-8").'</td>';
+                $report .= '<td class="text-center" style="background-color: #FCB941;">'.$totalqty.'</td>';
                 for ($i=1; $i <=12 ; $i++) {
                     $monstart = date('Y').'-'.$i.'-1';
                     $monend =   date("t",strtotime($monstart));

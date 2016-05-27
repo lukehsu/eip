@@ -216,16 +216,23 @@ class AutosendController extends Controller {
         }
 
         //百靈佳戀多眠另外再算一次
-        $dailyreportstable = boehringer::where('Date','=',$todaydate)->get();
+        $dailyreportstable = boehringer::where('Date','>=',$monthstart)->where('Date','<=',$todaydate)->get();
         foreach ($dailyreportstable as $dailyreport) {
-            $amount = $dailyreport->Amount;
-            $qty = $dailyreport->QTY;
-            if ($dailyreport['SaleType']=='R2') {
-              $amount = 0 - $amount;
-            }
-            $medicine['Lendorminann'] = $medicine['Lendorminann'] + $amount;
-            $qtys['Lendorminann'] = $qtys['Lendorminann'] + $qty ;
-        }     
+          $amount = $dailyreport->Amount;
+          $boehringerItemNo = $dailyreport->ItemNo;
+          switch ($boehringerItemNo) {
+            case 'A0195':
+              if ($dailyreport['SaleType']=='R2') {
+                $amount = 0 - $amount;
+              }
+              $MA['Lendorminann'] = $MA['Lendorminann'] + $amount;
+            break;
+
+            default:
+
+            break;
+          }  
+        }    
         //每月銷售累加 還有  and 寫法
         $dailyreportstable = dailyreport::where('InvDate','>=',$monthstart)->where('InvDate','<=',$todaydate)->get();
         $MA = array(      'Pitavol' => 0 , 
