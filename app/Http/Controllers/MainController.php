@@ -13,6 +13,7 @@ use App\bigsangent;
 use App\userstate;
 use App\importantagentsp;
 use App\importantp;
+use App\importanth;
 use App\budgetgp;
 use App\importantuniunip;
 use App\importantboraunip;
@@ -31,7 +32,7 @@ use App\medicinebudgetbypersonal;
 use App\Http\Requests;
 use App\personalmonthbudget;
 use App\Http\Controllers\ReferenceController;
-use Hash,Input,Request,Response,Auth,Redirect,Log;
+use Hash,Input,Request,Response,Auth,Redirect,Log,DB;
 class MainController extends Controller {
 
   /*
@@ -3449,7 +3450,7 @@ class MainController extends Controller {
   {
     return view('new');
   }
-  public function go()
+  public function gpgo()
   {
 
     $choiceday = Input::get('datepicker');
@@ -3457,6 +3458,7 @@ class MainController extends Controller {
     $quitpeoples = Input::get('checkvaluequit');
     $monthstart = substr($choiceday, 0,8).'01';
     $usergroup = '藥品';
+    $mon = substr($choiceday,5,2);
     #接收input選項 
     (isset($quitpeoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
     $userstatedate = date('Y-m-01');
@@ -3464,20 +3466,36 @@ class MainController extends Controller {
     (isset($peoples)) ? (''):($peoples = []);
 
     #撈在職人員for view
-    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=','藥品')->get();
+    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=',$usergroup )->get();
     foreach ($users as $user) {
       $cnamesforpage[$user['usernum']] = $user['cname'];
+      $checkboxinfo[$user['usernum']] = 'checked' ;
+      if (isset($peoples)) {
+        foreach ($peoples as $people) {
+          if ($people<>$user['usernum']) {
+            $checkboxinfo[$user['usernum']] = '';
+          }
+        }
+      }
     }
 
     #撈離職人員for view
-    $users = userstate::where('userstatus','=','藥品')->get();
+    $users = userstate::where('userstatus','=',$usergroup )->get();
     foreach ($users as $user) {
       (isset($cnamesforpage[$user['usernum']])) ? (''):($cnamesquitforpage[$user['usernum']] = $user['cname']);
+      (isset($checkboxinfo[$user['usernum']])) ? (''):($checkboxinfo[$user['usernum']] = '');
+      if (isset($peoples)) {
+        foreach ($peoples as $people) {
+          if ($people==$user['usernum']) {
+            $checkboxinfo[$user['usernum']] = 'checked';
+          }
+        }
+      }
     }
 
     #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
     foreach ($peoples as $usernum) {
-      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=','藥品')->first();
+      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=',$usergroup )->first();
       $cnames[$users['usernum']] = $users['cname'];
     }
     #撈物流
@@ -3494,63 +3512,123 @@ class MainController extends Controller {
     }
     #撈每月業績與預算
     $everyone = FController::salesformedicine($shipping,$importantarget,$peoples,$usergroup,$choiceday,$monthstart);
-    $budgetmonth = FController::budgetmonth($cnames,$everyone);
+    $budgetmonth = FController::budgetmonth($cnames,$everyone,$choiceday,$usergroup);
     #數字索引部份分別為個人當月業績預算,個人當月達成率,個人當月總total
     $pbudget= $budgetmonth[0];
     $pab= $budgetmonth[1];
     $totals= $budgetmonth[2];
     $everyonejava = json_encode($everyone);
 
-    #撈季度業績與預算
-    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$peoples,$usergroup);
-    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$importantarget);
-    //$Qtotal = FController::Qtatol($Qsalesformedicine,$Qbudgetmonth);
-    //print_r($Qtotal);
-    /*foreach ($Qsalesformedicine as $season => $cnames) {
-      foreach ($cnames as $key => $med) {
-        if ($season=='Q1') {
+    #撈季度業績,預算,年達成率
+    $Qtotal=[];
+    $Qpab=[];
+    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$choiceday,$peoples,$usergroup);
+    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$choiceday,$importantarget,$usergroup);
+    $ach = FController::ach($shipping,$importantarget,$peoples,$usergroup);
+    $achjava = json_encode($ach);
+    foreach ($Qsalesformedicine as $season => $cnames) {
+      if ($cnames<>0) {
+        foreach ($cnames as $key => $med) 
+        {
           $Qtotal[$season][$key] = [];
           $salestotal = array_sum($Qsalesformedicine[$season][$key]);
-          $budgettotal = $ptotal = array_sum($Qbudgetmonth[$season][$key]);
-          $abtotal = round($salestotal/$budgettotal * 100);
+          $budgettotal  = array_sum($Qbudgetmonth[$season][$key]);
+          ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
           array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
-        }
-        foreach ($med as $medkey => $value) {
-          if ($season=='Q1') 
-          {
-            if ($Qbudgetmonth[$season][$key][$medkey]==0) {
-              $Q1pab[$key][$medkey] = 0;
-            }
-            else
-            {
-              $Q1pab[$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100);
-            } 
+          foreach ($med as $medkey => $value) 
+          {   
+            $Qpab[$season][$key][$medkey] = [];
+            ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
           } 
         }
       }
-    }*/
-    //$Qtotal = [];
-    foreach ($Qsalesformedicine as $season => $cnames) {
-      foreach ($cnames as $key => $med) 
-      {
-        $Qtotal[$season][$key] = [];
-        $salestotal = array_sum($Qsalesformedicine[$season][$key]);
-        $budgettotal = $ptotal = array_sum($Qbudgetmonth[$season][$key]);
-        ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
-        array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
-        foreach ($med as $medkey => $value) 
-        {   
-          $Qpab[$season][$key][$medkey] = [];
-          ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
-        } 
-      }
     }
-    $abc = [3,6,4,8,3,6,4,8,3,6,4,8];
-    $test = json_encode($abc);
-    return view('go',['totals'=>$totals 
+    $finaltotalsalenobig = null;
+    $finaltotalbudgetnobig = null;
+    $finalyeartotalsalenobig = null;
+    $finalyeartotalbudgetnobig = null;
+    $finaltotalsale = null;
+    $finaltotalbudget = null;
+    $finalyeartotalsale = null;
+    $finalyeartotalbudget = null;
+    $finalabnobig= null;
+    $finalyearabnobig = null;
+    $finalab= null;
+    $finalyearab = null;
+    if ($cnames<>0) {
+      foreach ($budgetmonth[2] as $key => $value) {
+        if ($key<>'鍾碧如') {
+          foreach ($value as $key => $addvalue) {
+            if ($key==0) {
+              $finaltotalsalenobig = $finaltotalsalenobig + $addvalue;
+            }
+            if ($key==1) {
+              $finaltotalbudgetnobig  = $finaltotalbudgetnobig  + $addvalue;
+            }
+          }
+        }
+      }
+      if ($finaltotalbudgetnobig==0) {
+        $finalabnobig = 0 ;
+      }
+      else
+      {
+        $finalabnobig = round($finaltotalsalenobig/$finaltotalbudgetnobig * 100);       
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如') {
+          $finalyeartotalsalenobig = $finalyeartotalsalenobig + array_sum($values);
+        }
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如') {
+          $finalyeartotalbudgetnobig = $finalyeartotalbudgetnobig + array_sum($values);
+        }
+      }
+      if ($finalyeartotalbudgetnobig==0) {
+        $finalyearabnobig = 0;
+      }
+      else
+      {
+        $finalyearabnobig = round($finalyeartotalsalenobig/$finalyeartotalbudgetnobig * 100);
+      }  
+      foreach ($budgetmonth[2] as $key => $value) {
+        foreach ($value as $key => $addvalue) {
+          if ($key==0) {
+            $finaltotalsale = $finaltotalsale + $addvalue;
+          }
+          if ($key==1) {
+            $finaltotalbudget = $finaltotalbudget  + $addvalue;
+          }
+        }
+      }
+      if ($finaltotalbudget==0) 
+      {
+        $finalab = 0;
+      }
+      else
+      {
+        $finalab = round($finaltotalsale/$finaltotalbudget * 100);
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        $finalyeartotalsale = $finalyeartotalsale + array_sum($values);
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        $finalyeartotalbudget = $finalyeartotalbudget + array_sum($values);
+      }
+      if ($finalyeartotalbudget==0) 
+      {
+        $finalyearab = 0;
+      }
+      else
+      {
+        $finalyearab = round($finalyeartotalsale/$finalyeartotalbudget * 100);
+      } 
+    }
+
+    return view('gpgo',['totals'=>$totals 
                     ,'pab'=>$pab 
                     ,'pbudget'=>$pbudget 
-                    ,'test'=>$test
                     ,'everyone'=>$everyone
                     ,'everyonejava'=>$everyonejava
                     ,'cnames'=>$cnames
@@ -3561,6 +3639,229 @@ class MainController extends Controller {
                     ,'Qsalesformedicine'=>$Qsalesformedicine
                     ,'Qtotal'=>$Qtotal
                     ,'Qpab'=>$Qpab
+                    ,'achjava'=>$achjava
+                    ,'finaltotalsalenobig'=>$finaltotalsalenobig
+                    ,'finaltotalbudgetnobig'=>$finaltotalbudgetnobig 
+                    ,'finalabnobig'=>$finalabnobig
+                    ,'finalyeartotalsalenobig'=>$finalyeartotalsalenobig
+                    ,'finalyeartotalbudgetnobig'=>$finalyeartotalbudgetnobig
+                    ,'finalyearabnobig'=>$finalyearabnobig
+                    ,'finaltotalsale'=>$finaltotalsale
+                    ,'finaltotalbudget'=>$finaltotalbudget
+                    ,'finalab'=>$finalab
+                    ,'finalyeartotalsale'=>$finalyeartotalsale
+                    ,'finalyeartotalbudget'=>$finalyeartotalbudget
+                    ,'finalyearab'=>$finalyearab
+                    ,'checkboxinfo'=>$checkboxinfo
+                    ,'mon'=>$mon
+                    ]);
+  }
+
+
+  public function hpgo()
+  {
+
+    $choiceday = Input::get('datepicker');
+    $peoples = Input::get('checkvalue');
+    $quitpeoples = Input::get('checkvaluequit');
+    $monthstart = substr($choiceday, 0,8).'01';
+    $usergroup = '醫院';
+    $mon = substr($choiceday,5,2);
+    #接收input選項 
+    (isset($quitpeoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
+    $userstatedate = date('Y-m-01');
+    $cnames = [];
+    (isset($peoples)) ? (''):($peoples = []);
+
+    #撈在職人員for view
+    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=',$usergroup )->get();
+    foreach ($users as $user) {
+      $cnamesforpage[$user['usernum']] = $user['cname'];
+      $checkboxinfo[$user['usernum']] = 'checked' ;
+      if (isset($peoples)) {
+        foreach ($peoples as $people) {
+          if ($people<>$user['usernum']) {
+            $checkboxinfo[$user['usernum']] = '';
+          }
+        }
+      }
+    }
+
+    #撈離職人員for view
+    $users = userstate::where('userstatus','=',$usergroup)->get();
+    foreach ($users as $user) {
+      (isset($cnamesforpage[$user['usernum']])) ? (''):($cnamesquitforpage[$user['usernum']] = $user['cname']);
+      (isset($checkboxinfo[$user['usernum']])) ? (''):($checkboxinfo[$user['usernum']] = '');
+      if (isset($peoples)) {
+        foreach ($peoples as $people) {
+          if ($people==$user['usernum']) {
+            $checkboxinfo[$user['usernum']] = 'checked';
+          }
+        }
+      }
+    }
+
+    #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
+    foreach ($peoples as $usernum) {
+      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=',$usergroup )->first();
+      $cnames[$users['usernum']] = $users['cname'];
+    }
+    #撈物流(醫院組沒物流所以隨便定義where)
+    $shipping = array();
+    $bigs = big::where('customercode','=','nobig');
+    foreach ($bigs as $big) {
+      $shipping[] = $big['customercode'];
+    }
+    #撈要產品
+    $importantarget = array();
+    $importantps = importanth::all();
+    foreach ($importantps as $importantp) {
+      $importantarget[] =  $importantp['itemno'];  
+    }
+    #撈每月業績與預算
+    $everyone = FController::salesformedicine($shipping,$importantarget,$peoples,$usergroup,$choiceday,$monthstart);
+    $budgetmonth = FController::budgetmonth($cnames,$everyone,$choiceday,$usergroup);
+    #數字索引部份分別為個人當月業績預算,個人當月達成率,個人當月總total
+    $pbudget= $budgetmonth[0];
+    $pab= $budgetmonth[1];
+    $totals= $budgetmonth[2];
+    $everyonejava = json_encode($everyone);
+
+    #撈季度業績,預算,年達成率
+    $Qtotal=[];
+    $Qpab=[];
+    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$choiceday,$peoples,$usergroup);
+    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$choiceday,$importantarget,$usergroup);
+    $ach = FController::ach($shipping,$importantarget,$peoples,$usergroup);
+    $achjava = json_encode($ach);
+    foreach ($Qsalesformedicine as $season => $cnames) {
+      if ($cnames<>0) {
+        foreach ($cnames as $key => $med) 
+        {
+          $Qtotal[$season][$key] = [];
+          $salestotal = array_sum($Qsalesformedicine[$season][$key]);
+          $budgettotal  = array_sum($Qbudgetmonth[$season][$key]);
+          ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
+          array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
+          foreach ($med as $medkey => $value) 
+          {   
+            $Qpab[$season][$key][$medkey] = [];
+            ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
+          } 
+        }
+      }
+    }
+    $finaltotalsalenobig = null;
+    $finaltotalbudgetnobig = null;
+    $finalyeartotalsalenobig = null;
+    $finalyeartotalbudgetnobig = null;
+    $finaltotalsale = null;
+    $finaltotalbudget = null;
+    $finalyeartotalsale = null;
+    $finalyeartotalbudget = null;
+    $finalabnobig= null;
+    $finalyearabnobig = null;
+    $finalab= null;
+    $finalyearab = null;
+    if ($cnames<>0) {
+      foreach ($budgetmonth[2] as $key => $value) {
+        if ($key<>'鍾碧如') {
+          foreach ($value as $key => $addvalue) {
+            if ($key==0) {
+              $finaltotalsalenobig = $finaltotalsalenobig + $addvalue;
+            }
+            if ($key==1) {
+              $finaltotalbudgetnobig  = $finaltotalbudgetnobig  + $addvalue;
+            }
+          }
+        }
+      }
+      if ($finaltotalbudgetnobig==0) {
+        $finalabnobig = 0 ;
+      }
+      else
+      {
+        $finalabnobig = round($finaltotalsalenobig/$finaltotalbudgetnobig * 100);       
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如') {
+          $finalyeartotalsalenobig = $finalyeartotalsalenobig + array_sum($values);
+        }
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如') {
+          $finalyeartotalbudgetnobig = $finalyeartotalbudgetnobig + array_sum($values);
+        }
+      }
+      if ($finalyeartotalbudgetnobig==0) {
+        $finalyearabnobig = 0;
+      }
+      else
+      {
+        $finalyearabnobig = round($finalyeartotalsalenobig/$finalyeartotalbudgetnobig * 100);
+      }  
+      foreach ($budgetmonth[2] as $key => $value) {
+        foreach ($value as $key => $addvalue) {
+          if ($key==0) {
+            $finaltotalsale = $finaltotalsale + $addvalue;
+          }
+          if ($key==1) {
+            $finaltotalbudget = $finaltotalbudget  + $addvalue;
+          }
+        }
+      }
+      if ($finaltotalbudget==0) 
+      {
+        $finalab = 0;
+      }
+      else
+      {
+        $finalab = round($finaltotalsale/$finaltotalbudget * 100);
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        $finalyeartotalsale = $finalyeartotalsale + array_sum($values);
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        $finalyeartotalbudget = $finalyeartotalbudget + array_sum($values);
+      }
+      if ($finalyeartotalbudget==0) 
+      {
+        $finalyearab = 0;
+      }
+      else
+      {
+        $finalyearab = round($finalyeartotalsale/$finalyeartotalbudget * 100);
+      } 
+    }
+
+    return view('hpgo',['totals'=>$totals 
+                    ,'pab'=>$pab 
+                    ,'pbudget'=>$pbudget 
+                    ,'everyone'=>$everyone
+                    ,'everyonejava'=>$everyonejava
+                    ,'cnames'=>$cnames
+                    ,'cnamesforpage'=>$cnamesforpage
+                    ,'cnamesquitforpage'=>$cnamesquitforpage
+                    ,'choiceday'=>$choiceday
+                    ,'Qbudgetmonth'=>$Qbudgetmonth
+                    ,'Qsalesformedicine'=>$Qsalesformedicine
+                    ,'Qtotal'=>$Qtotal
+                    ,'Qpab'=>$Qpab
+                    ,'achjava'=>$achjava
+                    ,'finaltotalsalenobig'=>$finaltotalsalenobig
+                    ,'finaltotalbudgetnobig'=>$finaltotalbudgetnobig 
+                    ,'finalabnobig'=>$finalabnobig
+                    ,'finalyeartotalsalenobig'=>$finalyeartotalsalenobig
+                    ,'finalyeartotalbudgetnobig'=>$finalyeartotalbudgetnobig
+                    ,'finalyearabnobig'=>$finalyearabnobig
+                    ,'finaltotalsale'=>$finaltotalsale
+                    ,'finaltotalbudget'=>$finaltotalbudget
+                    ,'finalab'=>$finalab
+                    ,'finalyeartotalsale'=>$finalyeartotalsale
+                    ,'finalyeartotalbudget'=>$finalyeartotalbudget
+                    ,'finalyearab'=>$finalyearab
+                    ,'checkboxinfo'=>$checkboxinfo
+                    ,'mon'=>$mon
                     ]);
   }
 }

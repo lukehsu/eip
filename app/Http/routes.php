@@ -26,7 +26,8 @@ Route::get('logout', 'LoginController@logout');
 Route::get('dashboard', 'LoginController@dashboard');
 
 //報表
-Route::get('go', 'MainController@go');
+Route::get('gpgo', 'MainController@gpgo');
+Route::get('hpgo', 'MainController@hpgo');
 Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');

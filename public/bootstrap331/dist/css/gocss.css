@@ -1,0 +1,65 @@
+  @media screen and (max-width: 1024px)  {
+    .original{
+      width: 960px;
+      margin: 0 auto; 
+    }
+  }
+  @media screen and (min-width: 1025px)  {
+    .original{
+      width: 1300px;
+      margin: 0 auto; 
+    }
+  }
+  @media only screen and (min-device-width : 320px) and (max-device-width : 568px) 
+  {   
+    .original{
+      width: 900px;
+      margin: 0 auto; 
+    }
+  }
+  .rowstyle{
+    margin-top: 40px;
+  }
+  .tab10{
+
+    width: 110px
+  }
+  .tab11{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+    width: 110px
+  }
+  .tab2{
+    border-color:#7F8C8D   ;
+    border-width:1px;
+    border-style:solid;
+  }
+  .grill{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+  }
+  .grillsub{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+    border:2px white solid;
+  }
+  .qcheck{
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+    border:2px #7F8C8D solid;
+  }
+  hr{
+    border:1; 
+    height:1px; 
+    background-color:#F1C40F;
+  }
+  .selectpanel{
+    margin-top: 10px;
+  }
+ .finalgrill{
+    background-color:#2C3E50;
+    color: #FFFFFF;   
+  } 
+ .sortright{
+    text-align:right;
+ } 
