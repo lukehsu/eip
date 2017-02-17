@@ -6,6 +6,7 @@ $menuitem = null;
 $today = date('Y-m-d');
 $today = strtotime($today) - 3600*24;
 $today =  date('Y-m-d',$today);
+$check = '';
 foreach ($mainitems as $mainitem) 
 {
   $menuitem .= '<ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" >' ;
@@ -15,21 +16,29 @@ foreach ($mainitems as $mainitem)
   foreach ($subitems as $subitem) 
   { 
     ////////////
-    $subitem2ss = '<ul  class="ul2 ul4">';
-    $subitem2s = mainmenudisplay::where('user','=',Auth::user()->name)->where('subitem','=',$subitem['subitem'])->orderBy('subitemid', 'ASC')->orderBy('subitem2id', 'ASC')->get();
-    foreach ($subitem2s as $subitem2) {   
-      if ($subitem2['subitem2'] <> '保瑞' and $subitem2['subitem2'] <> '聯邦' and $subitem2['subitem2'] <> '業務部每日業績表' and $subitem2['subitem2'] <> '個人業績表(藥品)' and $subitem2['subitem2'] <> '個人業績表(醫院)' and $subitem2['subitem2'] <> '保瑞聯邦' and $subitem2['subitem2'] <> '聯邦聯邦' and $subitem2['subitem2'] <> '經銷商' and $subitem2['subitem2'] <> '保瑞聯邦合計' and $subitem2['subitem2'] <> '重點產品') {
-        $subitem2ss .= '<li class="ul3" ><a  href="http://127.0.0.1/eip/public/'.$subitem2['url'].'">'.$subitem2['subitem2'].'</a></li>';
+    $subitem2ss = '<ul  class="ul2 ul4 ul2t">';
+    $subitem2s = mainmenudisplay::where('user','=',Auth::user()->name)->where('subitem','=',$subitem['subitem'])->distinct()->orderBy('subitemid', 'ASC')->orderBy('subitem2id', 'ASC')->get(array('subitem','subitem2'));
+    foreach ($subitem2s as $subitem2) {
+      $url = mainmenudisplay::where('user','=',Auth::user()->name)->where('subitem2','=',$subitem2['subitem2'])->where('subitem','=',$subitem2['subitem'])->first();
+      $subitem3ss = '<ul  class="ul5 ul4">';
+      $subitem3s = mainmenudisplay::where('user','=',Auth::user()->name)->where('subitem2','=',$subitem2['subitem2'])->orderBy('subitemid', 'ASC')->orderBy('subitem3id', 'ASC')->get();
+      foreach ($subitem3s as $subitem3) {
+        $subitem3ss .= '<li class="ul3 ul1"><a  href="http://127.0.0.1/eip/public/'.$subitem3['url'].'">'.$subitem3['subitem3'].'</a></li>';
+      }
+      $subitem3ss .= '</ul>';
+      if ($subitem3['subitem3']=='') 
+      {
+        $subitem2ss .= '<li class="ul3" ><a  href="http://127.0.0.1/eip/public/'.$url->url.'">'.$subitem2['subitem2'].'</a></li>';      
       }
       else
-      {  
-        $subitem2ss .= '<li class="ul3" ><a  href="http://127.0.0.1/eip/public/'.$subitem2['url']."/".$today.'">'.$subitem2['subitem2'].'</a></li>';  
+      {
+        $subitem2ss .= '<li class="ul3 ul1" ><a>'.$subitem2['subitem2'].'<strong class="caretright"></strong></a>'.$subitem3ss.'</li>';
       }  
     }
     $subitem2ss .= '</ul>';
     //////////
     if ($subitem2['subitem2']=='') {
-      $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$subitem2['url'].'">'.$subitem2['subitem'].'</a></li>';
+      $menuitem .=  '<li><a href="http://127.0.0.1/eip/public/'.$url->url.'">'.$subitem2['subitem'].'</a></li>';
     }
     else
     { 
@@ -77,6 +86,17 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
     color: #fff;
     background-color: #1abc9c;
   }  
+  .ul5{
+    display: none;
+    position: absolute;
+    top:0;
+    left: 97%;
+    border-radius: 4px;
+    background: #34495e;
+    margin-left:9px; 
+    width: 140px;
+    font-size: 14px;
+  }
   #ul1 li > ul:hover{
     color: #fff;
   }  
@@ -102,6 +122,11 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
      $("#ul1 li").click(function() {
         $('.ul2').css('display','none');
         $(this).children('.ul2').css('display','block');
+      }); 
+     $(".ul2t li").click(function() {
+        $(this).parent(".ul2t").css('display','block');
+        $('.ul5').css('display','none');
+        $(this).children('.ul5').css('display','block');
       });   
   });
 </script>

@@ -332,7 +332,7 @@ class MainController extends Controller {
                 }      
                 break;
                 case '68PTV001':
-                if ($BORACustomerNo<>'10824' ) {
+                if ($BORACustomerNo<>'10824' and $BORACustomerNo<>'11032' ) {
                     $MA['Pitavol'] = $MA['Pitavol'] + $MonthTotal;
                 }      
                     break;
@@ -2552,7 +2552,14 @@ class MainController extends Controller {
       }
       if ($check == 0) 
       { 
-        $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        if ($product['Ordernuber']=='銷貨：BB201608120003' and $product['BORACustomerName']=='威勝' ) {
+          $product['InoviceAmt'] = 0;
+          $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        }
+        else
+        {
+          $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        }  
       }
     }
     $unimonthbudgets = unimonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
@@ -2669,77 +2676,22 @@ class MainController extends Controller {
   }
   public function acbudget()
   {
-    $thisyear = date("Y");
-    $thismonth = date("m");
-    $thismonday = date("t");
-    $weekday = date("D");
-    $monthstart = $thisyear.'-'.$thismonth.'-01';
-    $monthend = $thisyear.'-'.$thismonth.'-'.$thismonday;
-    $lastyeart = date("Y-m-d", strtotime('-1 month'));
-    $lastyear = date("Y", strtotime($lastyeart));
-    $lastmonth = date("m", strtotime($lastyeart));
-    $lastmonday = date("t", strtotime($lastyeart));
-    $lastmonthstart = $lastyear.'-'.$lastmonth.'-01';
-    $lastmonthend = $lastyear.'-'.$lastmonth.'-'.$lastmonday; 
-    $qty = 0;
-    $i = 1;
-    $j = 1;
-    $weekarrs = [];
-    $lastweekarrs = [];
-    $thisqtyinfo = [];
-    $lastqtyinfo = [];
-    $countweeks = calendar::where('monthdate','>=',$lastmonthstart)->where('monthdate','<=',$lastmonthend)->orderBy('monthdate','asc')->get();
-    foreach ($countweeks as $countweek ) {
-      $lastqtys = dailyreport::where('InvDate','=',$countweek['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->get(); 
-      foreach ($lastqtys as $lastqty) {
-        if ($lastqty['SalesType']=='R2') {
-          $lastqty['OrderQty'] = 0 - $lastqty['OrderQty'];
-        }
-        $qty = $qty + $lastqty['OrderQty'];
-      }
-      if ($countweek['weekday']<>'星期日' and count($lastweekarrs)==0 and count($lastqtyinfo)==0 ) {
-        array_push($lastweekarrs, '1');
-        array_push($lastqtyinfo, $qty);
-        $qty = 0;
-      }
-      if ($countweek['weekday']=='星期日') {
-        $i = $i + 1 ;
-        array_push($lastweekarrs, $i);
-        array_push($lastqtyinfo, $qty);
-        $qty = 0;
-      }
+    $itemnotemp = [];
+    $dateend = Input::get('meddate');
+    $companyaccess = Input::get('companyaccess');
+    $provideraccess = Input::get('provideraccess');
+    $searchcodes = DB::table('importantalls')->where('importantproduct','=',Input::get('med'))->where('owner','=',Auth::user()->cname)->distinct()->select('itemno')->get();
+    foreach ($searchcodes as $value) {
+      $itemnotemp[] = $value->itemno;
     }
-    $lastsum = array_sum($lastqtyinfo);
-    $qty = 0;
-    $countweeks = calendar::where('monthdate','>=',$monthstart)->where('monthdate','<=',$monthend)->orderBy('monthdate','asc')->get();
-    foreach ($countweeks as $countweek ) {
-      $thisqtys = dailyreport::where('InvDate','=',$countweek['monthdate'])->where('SalesRepresentativeName','=','江隆昌')->where('BORAItemNo','=','68LMP002')->where('BORACustomerNo','=','10191')->get(); 
-      foreach ($thisqtys as $thisqty) {
-        if ($thisqty['SalesType']=='R2') {
-          $thisqty['OrderQty'] = 0 - $thisqty['OrderQty'];
-        }
-        $qty = $qty + $thisqty['OrderQty'];
-      }
-      if ($countweek['weekday']<>'星期日' and count($weekarrs) == 0 and count($thisqtyinfo) == 0 ) {
-        array_push($weekarrs, '1');
-        array_push($thisqtyinfo, $qty);
-        $qty = 0;
-      }
-      if ($countweek['weekday']=='星期日') {
-        $j = $j + 1 ;
-        array_push($weekarrs, $j);
-        array_push($thisqtyinfo, $qty);
-        $qty = 0;
-      }
+    $monthsarray = FController::pervalue($dateend,$itemnotemp,$provideraccess,$companyaccess);
+    $itemcnname = [];
+    foreach ($itemnotemp as $value) {
+      $itemcnnames = DB::table('allreport')->where('Itemno',$value)->first();
+      $itemcnname[$value] = $itemcnnames->Itemchname; 
     }
-    return view('acbudget',['thismonth'=>$thismonth,
-                            'lastmonth'=>$lastmonth,
-                            'lastweekarrs'=>$lastweekarrs,
-                            'weekarrs'=>$weekarrs,
-                            'lastqtyinfos'=>$lastqtyinfo,
-                            'thisqtyinfos'=>$thisqtyinfo,
-                            'i'=>$i,
-                            'j'=>$j
+    return view('acbudget',['monthsarray'=>$monthsarray
+                          , 'itemcnname'=>$itemcnname
                           ]);
   }
   public function agents($todaydate)
@@ -3051,7 +3003,14 @@ class MainController extends Controller {
       }
       if ($check == 0) 
       { 
-        $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        if ($product['Ordernuber']=='銷貨：BB201608120003' and $product['BORACustomerName']=='威勝' ) {
+          $product['InoviceAmt'] = 0;
+          $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        }
+        else
+        {
+          $MA['others'] = $MA['others'] + $product['InoviceAmt'];
+        }  
       }
     }
     $unimonthbudgets = unimonthbudget::where('month','>=',$monthstart)->where('month','<=',$todaydate)->get();
@@ -3452,51 +3411,156 @@ class MainController extends Controller {
   }
   public function gpgo()
   {
-
     $choiceday = Input::get('datepicker');
+    $choicedaymed = Input::get('datepickermed');
+    $checkprovider = Input::get('checkprovider');
     $peoples = Input::get('checkvalue');
-    $quitpeoples = Input::get('checkvaluequit');
+    $medvalue = Input::get('checkmedvalue');
     $monthstart = substr($choiceday, 0,8).'01';
-    $usergroup = '藥品';
+    $radioadmin = Input::get('radio');
+    $radiopeople = Input::get('radiopeople');
+    $monthstartmed = substr($choicedaymed, 0,8).'01';
+    $usergroup = Auth::user()->office;
     $mon = substr($choiceday,5,2);
+    $monmed = substr($choicedaymed,5,2);
     #接收input選項 
-    (isset($quitpeoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
+    (isset($peoples)) ? (''):($peoples = []);
+    (isset($medvalue)) ? (''):($medvalue = []);
+    (isset($checkprovider)) ? (''):($checkprovider = []);
+    $peoplesjava = json_encode($peoples);
+    $medvaluejava = json_encode($medvalue);
+    $radioadminjava = json_encode($radioadmin);
+    $checkproviderjava = json_encode($checkprovider);
     $userstatedate = date('Y-m-01');
     $cnames = [];
-    (isset($peoples)) ? (''):($peoples = []);
-
-    #撈在職人員for view
-    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=',$usergroup )->get();
-    foreach ($users as $user) {
-      $cnamesforpage[$user['usernum']] = $user['cname'];
-      $checkboxinfo[$user['usernum']] = 'checked' ;
-      if (isset($peoples)) {
-        foreach ($peoples as $people) {
-          if ($people<>$user['usernum']) {
-            $checkboxinfo[$user['usernum']] = '';
-          }
+    $shippingbig = '物流';
+    if ($radiopeople=='GPpeople') {
+      $usergroup = '藥品';
+      $db = 'importantps';
+    }
+    else if ($radiopeople=='HPpeople') {
+      $usergroup = '醫院';
+      $db = 'importanths';
+    }
+    elseif ($radiopeople=='Healpeople') {
+      $usergroup = '保健';
+      $db = 'importantheals';
+    }
+    else
+    {
+      $db = 'notables';
+    } 
+    $c = '';
+    $ccheck = null;
+    if ($radiopeople=='GPpeople') {
+      $ccheck = 'ok';
+    }
+    $ccheckm = null;
+    if ($radioadmin=='GP') {
+      $ccheckm = 'ok';
+    }
+    #身份辨識for區別主管跟非主管
+    /*if (Auth::user()->level=='') {
+      $cnamesforpage = [];
+      $checkboxinfo = [];
+      $cnamesquitforpage = [];
+      $cnamesforpage[Auth::user()->name]=Auth::user()->cname;
+      $checkboxinfo[Auth::user()->name] = 'checked' ;
+      if (Input::get('checkvalue')<>''and $peoples[0] <> Auth::user()->name) {
+        return redirect('gpgo') ;
+      }
+    }*/
+    #捞產品，產品預算，產品達成率產品程式開始
+    #$productsselect填充程式起點
+    $team = FController::team();
+    $radioadmin = json_encode($radioadmin);
+    #撈所有產品
+    $allitems = FController::allitems($radioadmin);
+    #也是撈所有產品跟上一句差別在於這邊給最高權限者使用
+    $allitemsforadmin = null;
+    #因為$checkprovider已被下面程式利用故在宣告一個$provider
+    $provider = $checkprovider;
+    $allaccess = FController::provideraccess($provider);
+    $companyaccess = $allaccess[0];
+    $provideraccess = $allaccess[1];
+    $providerbuaccess = $allaccess[2];
+    $provideraccess = array_unique($provideraccess);
+    $checkboxinfomed = [];
+    $medaccess = FController::radiomedaccess();
+    $productssell   = FController::productssell($medvalue,$choicedaymed,$monthstartmed,$usergroup,$allitems,$provideraccess,$companyaccess);
+    $producbudget   = FController::productsbudget($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$providerbuaccess,$companyaccess);
+    $productab = [];
+    foreach ($productssell  as $key => $value) {
+      if ($producbudget[$key]==0) {
+        $productab[$key] = 0;
+      }
+      else
+      {
+        $productab[$key] = round(($value/$producbudget[$key])*100);
+      }  
+    }
+    $productssellC   = FController::productssellC($medvalue,$choicedaymed,$monthstartmed,$usergroup,$allitems,$provideraccess,$companyaccess);
+    $productssellQ   = FController::productssellQ($medvalue,$choicedaymed,$monthstartmed,$usergroup,$allitems,$provideraccess,$companyaccess);
+    $productsbudgetQ = FController::productsbudgetQ($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$providerbuaccess,$companyaccess);
+    $productsbudgetC = FController::productsbudgetC($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$providerbuaccess,$companyaccess);
+    $productQab = [];
+    $productCab = [];
+    foreach ($productssellQ  as $keys => $values) {
+      foreach ($values as $key => $value) {
+        if ($productsbudgetQ[$keys][$key]==0) {
+          $productQab[$keys][$key] = 0;
         }
+        else
+        {
+          $productQab[$keys][$key] = round($value/$productsbudgetQ[$keys][$key]*100);
+        }  
+      } 
+    }
+    foreach ($productssellC as $keys => $values) {
+      foreach ($values as $key => $value) {
+        if ($productsbudgetC[$keys][$key]==0) {
+          $productCab[$keys][$key] = 0;
+        }
+        else
+        {
+          $productCab[$keys][$key] = round($value/$productsbudgetC[$keys][$key]*100);
+        }  
+      } 
+    }
+    $allproductssell = 0;
+    foreach ($productssell as $key => $value) {
+      $allproductssell = $allproductssell +  $value;
+    }
+    $allproducbudget = 0;
+    foreach ($producbudget as $key => $value) {
+      $allproducbudget = $allproducbudget + $value;
+    }
+    ($allproducbudget<>0)?($allproductab = round(($allproductssell/$allproducbudget)*100)):($allproductab=0);
+    $ytdallproductssell = 0;
+    if (isset($productssellQ['Q5'])) {
+      foreach ($productssellQ['Q5'] as $key => $value) {
+        $ytdallproductssell = $ytdallproductssell + $value;
       }
     }
-
-    #撈離職人員for view
-    $users = userstate::where('userstatus','=',$usergroup )->get();
-    foreach ($users as $user) {
-      (isset($cnamesforpage[$user['usernum']])) ? (''):($cnamesquitforpage[$user['usernum']] = $user['cname']);
-      (isset($checkboxinfo[$user['usernum']])) ? (''):($checkboxinfo[$user['usernum']] = '');
-      if (isset($peoples)) {
-        foreach ($peoples as $people) {
-          if ($people==$user['usernum']) {
-            $checkboxinfo[$user['usernum']] = 'checked';
-          }
-        }
+    $ytdallproducbudget = 0;
+    if (isset($productsbudgetQ['Q5'])) {
+      foreach ($productsbudgetQ['Q5'] as $key => $value) {
+        $ytdallproducbudget = $ytdallproducbudget + $value;
       }
     }
+    ($ytdallproducbudget<>0)?($ytdallproductab = round(($ytdallproductssell/$ytdallproducbudget)*100)):($ytdallproductab = 0);
+    $yearach = FController::yearach($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$allitems,$provideraccess,$providerbuaccess,$companyaccess,$choicedaymed);
+    $yearachjava = json_encode($yearach);
+    #捞產品，產品預算，產品達成率產品程式結束
 
-    #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
+    #填充$cnames = [] 人員程式重這邊開始並以人員為迴圈的開始
+    $teamp = FController::teampeople();
+    $radiopeoplejava = json_encode($radiopeople);
+    $firstradio = current($teamp);
+    $firstradio = json_encode($firstradio);
     foreach ($peoples as $usernum) {
-      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=',$usergroup )->first();
-      $cnames[$users['usernum']] = $users['cname'];
+      $users = DB::table('alluserstates')->where('usernum','=',$usernum)->first();
+      $cnames[$users->usernum] = $users->cname;
     }
     #撈物流
     $shipping = array();
@@ -3504,9 +3568,392 @@ class MainController extends Controller {
     foreach ($bigs as $big) {
       $shipping[] = $big['customercode'];
     }
-    #撈要產品
+    #撈產品
     $importantarget = array();
-    $importantps = importantp::all();
+    if (isset($db)) {
+      $importantps = DB::table($db)->get();
+      foreach ($importantps as $importantp) {
+        $importantarget[] =  $importantp->itemno;  
+      }
+    }
+    #撈每月業績與預算
+    $everyone = FController::salesformedicine($shipping,$importantarget,$peoples,$usergroup,$choiceday,$monthstart,$db);
+    $budgetmonth = FController::budgetmonth($cnames,$everyone,$choiceday,$usergroup);
+    #數字索引部份分別為個人當月業績預算,個人當月達成率,個人當月總total
+    $pbudget= $budgetmonth[0];
+    $pab= $budgetmonth[1];
+    $totals= $budgetmonth[2];
+    $everyonejava = json_encode($everyone);
+
+    #撈季度業績,預算,年達成率
+    $Qtotal=[];
+    $Qpab=[];
+    $Ctotal=[];
+    $Cpab=[];
+    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$choiceday,$peoples,$usergroup,$db);
+    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$choiceday,$importantarget,$usergroup);
+    $Csalesformedicine = FController::Csalesformedicine($shipping,$importantarget,$choiceday,$peoples,$usergroup,$db);
+    $Cbudgetmonth = FController::Cbudgetmonth($cnames,$choiceday,$importantarget,$usergroup);
+    $ach = FController::ach($shipping,$importantarget,$peoples,$usergroup,$choiceday);
+    $achjava = json_encode($ach);
+    foreach ($Qsalesformedicine as $season => $cnames) {
+      if ($cnames<>0) {
+        foreach ($cnames as $key => $med) 
+        {
+          $Qtotal[$season][$key] = [];
+          $salestotal = array_sum($Qsalesformedicine[$season][$key]);
+          $budgettotal  = array_sum($Qbudgetmonth[$season][$key]);
+          ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
+          array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
+          foreach ($med as $medkey => $value) 
+          {   
+            $Qpab[$season][$key][$medkey] = [];
+            ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
+          } 
+        }
+      }
+    }
+    foreach ($Csalesformedicine as $c => $cnames) {
+      if ($cnames<>0) {
+        foreach ($cnames as $key => $med) 
+        {
+          $Ctotal[$c][$key] = [];
+          $salestotal = array_sum($Csalesformedicine[$c][$key]);
+          $budgettotal  = array_sum($Cbudgetmonth[$c][$key]);
+          ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
+          array_push($Ctotal[$c][$key],$salestotal ,$budgettotal,$abtotal);
+          foreach ($med as $medkey => $value) 
+          {   
+            $Cpab[$c][$key][$medkey] = [];
+            ($Cbudgetmonth[$c][$key][$medkey]==0) ? ($Cpab[$c][$key][$medkey] = 0) : ($Cpab[$c][$key][$medkey] = round($value/$Cbudgetmonth[$c][$key][$medkey] * 100));
+          } 
+        }
+      }
+    }
+    $finaltotalsalenobig = null;
+    $finaltotalbudgetnobig = null;
+    $finalyeartotalsalenobig = null;
+    $finalyeartotalbudgetnobig = null;
+    $finaltotalsale = null;
+    $finaltotalbudget = null;
+    $finalyeartotalsale = null;
+    $finalyeartotalbudget = null;
+    $finalabnobig= null;
+    $finalyearabnobig = null;
+    $finalab= null;
+    $finalyearab = null;
+    if ($cnames<>0) {
+      foreach ($budgetmonth[2] as $key => $value) {
+        if ($key<>'鍾碧如' and $key<>'金容' and $key<>'平廷' ) {
+          foreach ($value as $key => $addvalue) {
+            if ($key==0) {
+              $finaltotalsalenobig = $finaltotalsalenobig + $addvalue;
+            }
+            if ($key==1) {
+              $finaltotalbudgetnobig  = $finaltotalbudgetnobig  + $addvalue;
+            }
+          }
+        }
+      }
+      if ($finaltotalbudgetnobig==0) {
+        $finalabnobig = 0 ;
+      }
+      else
+      {
+        $finalabnobig = round($finaltotalsalenobig/$finaltotalbudgetnobig * 100);       
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如' and $key<>'金容' and $key<>'平廷') {
+          $finalyeartotalsalenobig = $finalyeartotalsalenobig + array_sum($values);
+        }
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        if ($key<>'鍾碧如' and $key<>'金容' and $key<>'平廷' ) {
+          $finalyeartotalbudgetnobig = $finalyeartotalbudgetnobig + array_sum($values);
+        }
+      }
+      if ($finalyeartotalbudgetnobig==0) {
+        $finalyearabnobig = 0;
+      }
+      else
+      {
+        $finalyearabnobig = round($finalyeartotalsalenobig/$finalyeartotalbudgetnobig * 100);
+      }  
+      foreach ($budgetmonth[2] as $key => $value) {
+        foreach ($value as $key => $addvalue) {
+          if ($key==0) {
+            $finaltotalsale = $finaltotalsale + $addvalue;
+          }
+          if ($key==1) {
+            $finaltotalbudget = $finaltotalbudget  + $addvalue;
+          }
+        }
+      }
+      if ($finaltotalbudget==0) 
+      {
+        $finalab = 0;
+      }
+      else
+      {
+        $finalab = round($finaltotalsale/$finaltotalbudget * 100);
+      }  
+      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
+        $finalyeartotalsale = $finalyeartotalsale + array_sum($values);
+      }
+      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
+        $finalyeartotalbudget = $finalyeartotalbudget + array_sum($values);
+      }
+      if ($finalyeartotalbudget==0) 
+      {
+        $finalyearab = 0;
+      }
+      else
+      {
+        $finalyearab = round($finalyeartotalsale/$finalyeartotalbudget * 100);
+      } 
+    }
+
+    return view('gpgo',['totals'=>$totals 
+                    ,'pab'=>$pab 
+                    ,'pbudget'=>$pbudget 
+                    ,'everyone'=>$everyone
+                    ,'everyonejava'=>$everyonejava
+                    ,'cnames'=>$cnames
+                    ,'choiceday'=>$choiceday
+                    ,'Qbudgetmonth'=>$Qbudgetmonth
+                    ,'Qsalesformedicine'=>$Qsalesformedicine
+                    ,'Qtotal'=>$Qtotal
+                    ,'Qpab'=>$Qpab
+                    ,'achjava'=>$achjava
+                    ,'finaltotalsalenobig'=>$finaltotalsalenobig
+                    ,'finaltotalbudgetnobig'=>$finaltotalbudgetnobig 
+                    ,'finalabnobig'=>$finalabnobig
+                    ,'finalyeartotalsalenobig'=>$finalyeartotalsalenobig
+                    ,'finalyeartotalbudgetnobig'=>$finalyeartotalbudgetnobig
+                    ,'finalyearabnobig'=>$finalyearabnobig
+                    ,'finaltotalsale'=>$finaltotalsale
+                    ,'finaltotalbudget'=>$finaltotalbudget
+                    ,'finalab'=>$finalab
+                    ,'finalyeartotalsale'=>$finalyeartotalsale
+                    ,'finalyeartotalbudget'=>$finalyeartotalbudget
+                    ,'finalyearab'=>$finalyearab
+                    ,'mon'=>$mon
+                    ,'fromsubmit'=>'gpgo'
+                    ,'productssell'=>$productssell
+                    ,'producbudget'=>$producbudget
+                    ,'productab'=>$productab
+                    ,'productssellQ'=>$productssellQ
+                    ,'productsbudgetQ'=>$productsbudgetQ 
+                    ,'productQab'=>$productQab
+                    ,'yearachjava'=>$yearachjava
+                    ,'choicedaymed'=>$choicedaymed
+                    ,'monmed'=>$monmed
+                    ,'allproductssell'=>$allproductssell
+                    ,'allproducbudget'=>$allproducbudget
+                    ,'allproductab'=>$allproductab
+                    ,'ytdallproductssell'=>$ytdallproductssell
+                    ,'ytdallproducbudget'=>$ytdallproducbudget
+                    ,'ytdallproductab'=>$ytdallproductab
+                    ,'checkboxinfomed'=>$checkboxinfomed
+                    ,'shippingbig'=>$shippingbig
+                    ,'team'=>$team
+                    ,'radioadmin'=>$radioadmin
+                    ,'teamp'=>$teamp
+                    ,'firstradio'=>$firstradio
+                    ,'radiopeoplejava'=>$radiopeoplejava
+                    ,'peoplesjava'=>$peoplesjava
+                    ,'medvaluejava'=>$medvaluejava
+                    ,'radioadminjava'=>$radioadminjava
+                    ,'checkproviderjava'=>$checkproviderjava
+                    ,'companyaccess'=>$companyaccess 
+                    ,'provideraccess'=>$provideraccess
+                    ,'radiopeople'=>$radiopeople
+                    ,'Csalesformedicine'=>$Csalesformedicine
+                    ,'Cbudgetmonth'=>$Cbudgetmonth
+                    ,'Cpab'=>$Cpab
+                    ,'Ctotal'=>$Ctotal
+                    ,'ccheck'=>$ccheck 
+                    ,'productssellC'=>$productssellC
+                    ,'productsbudgetC'=>$productsbudgetC
+                    ,'productCab'=>$productCab
+                    ,'ccheckm'=>$ccheckm
+                    ]);
+  }
+  public function hpgo()
+  {
+
+    $choiceday = Input::get('datepicker');
+    $choicedaymed = Input::get('datepickermed');
+    $checkprovider = Input::get('checkprovider');
+    $peoples = Input::get('checkvalue');
+    $quitpeoples = Input::get('checkvaluequit');
+    $medvalue = Input::get('checkmedvalue');
+    $monthstart = substr($choiceday, 0,8).'01';
+    $forothers = Input::get('forothers');
+    $radioadmin = Input::get('radio');
+    $monthstartmed = substr($choicedaymed, 0,8).'01';
+    $productsclass = FController::productsclass();
+    $usergroup = '醫院';
+    $mon = substr($choiceday,5,2);
+    $monmed = substr($choicedaymed,5,2);
+    #接收input選項 
+    (isset($quitpeoples) and isset($peoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
+    (isset($quitpeoples) and empty($peoples)) ? ($peoples = $quitpeoples):('');
+    (isset($peoples)) ? (''):($peoples = []);
+    (isset($medvalue)) ? (''):($medvalue = []);
+    (isset($checkprovider)) ? (''):($checkprovider = []);
+    $userstatedate = date('Y-m-01');
+    $cnames = [];
+    $whos = 'HP';
+    $shippingbig = '經銷商';
+    #撈在職人員for view
+    $users = DB::table('userstateshps')->where('exist','=','在職')->where('userstatus','=',$usergroup)->orderBy('sortstand','asc')->get();
+    foreach ($users as $user) {
+      $cnamesforpage[$user->usernum] = $user->cname;
+      $checkboxinfo[$user->usernum] = 'checked' ;
+      if (count($peoples)>0) {
+        $checkboxinfo[$user->usernum] = '';
+        if (in_array($user->usernum, $peoples)) 
+        {
+          $checkboxinfo[$user->usernum] = 'checked';
+        }
+      }
+    }
+
+    #撈離職人員for view
+    $users = DB::table('userstateshps')->where('exist','<>','在職')->where('userstatus','=',$usergroup)->orderBy('sortstand','asc')->get();
+    foreach ($users as $user) {
+      (isset($cnamesforpage[$user->usernum])) ? (''):($cnamesquitforpage[$user->usernum] = $user->cname);
+      (isset($checkboxinfo[$user->usernum])) ? (''):($checkboxinfo[$user->usernum] = '');
+      if (count($peoples)>0) {
+        foreach ($peoples as $people) {
+          if ($people==$user->usernum) {
+            $checkboxinfo[$user->usernum] = 'checked';
+          }
+        }
+      }
+    }
+    #身份辨識
+    if (Auth::user()->level=='') {
+      $cnamesforpage = [];
+      $checkboxinfo = [];
+      $cnamesquitforpage = [];
+      $cnamesforpage[Auth::user()->name]=Auth::user()->cname;
+      $checkboxinfo[Auth::user()->name] = 'checked' ;
+      if (Input::get('checkvalue')<>''and $peoples[0] <> Auth::user()->name) {
+        return redirect('hpgo') ;
+      }
+    }
+    #捞產品，產品預算，產品達成率產品程式開始
+    #$productsselect填充程式起點
+    $team = FController::team();
+    $productsselect = FController::products();
+    $providerinfo = FController::providerinfo();
+    $radioadmin = json_encode($radioadmin);
+    #撈所有產品
+    $allitems = FController::allitems();
+    #也是撈所有產品跟上一句差別在於這邊給最高權限者使用
+    (isset($forothers)) ? ($allitemsforadmin = FController::allitemsforadmin($forothers)):('');
+    (isset($allitemsforadmin)) ? ($allitems = $allitemsforadmin):('');
+    $allitems = FController::allitems();
+    #因為$checkprovider已被下面程式利用故在宣告一個$provider
+    $provider = $checkprovider;
+    $allaccess = FController::provideraccess($provider);
+    $companyaccess = $allaccess[0];
+    $provideraccess = $allaccess[1];
+    $provideraccess = array_unique($provideraccess);
+    $checkboxinfomed = [];
+    foreach ($productsselect as  $value) {
+      $checkboxinfomed[$value] = 'checked';
+    }
+    if (count($medvalue)>0) {
+      foreach ($productsselect as  $value) {
+        $checkboxinfomed[$value] = '';
+        if (in_array($value, $medvalue)) 
+        {
+          $checkboxinfomed[$value] = 'checked';
+        }
+      }
+    }
+    $checkboxinfoprovider=[];
+    foreach ($providerinfo as $key => $value) {
+      $checkboxinfoprovider[$key] = '';
+    }    
+    if (count($checkprovider)>0) {
+      foreach ($providerinfo  as $key => $value) {
+        $checkboxinfoprovider[$key] = '';
+        if (in_array($key , $checkprovider)) 
+        {
+          $checkboxinfoprovider[$key] = 'checked';
+        }
+      }
+    }
+    $medaccess = FController::radiomedaccess();
+    $productssell   = FController::productssell($medvalue,$choicedaymed,$monthstartmed,$usergroup,$allitems,$provideraccess,$companyaccess);
+    $producbudget   = FController::productsbudget($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$provideraccess,$companyaccess);
+    $productab = [];
+    foreach ($productssell  as $key => $value) {
+      if ($producbudget[$key]==0) {
+        $productab[$key] = 0;
+      }
+      else
+      {
+        $productab[$key] = round(($value/$producbudget[$key])*100);
+      }  
+    }
+    $productssellQ   = FController::productssellQ($medvalue,$choicedaymed,$monthstartmed,$usergroup,$allitems,$provideraccess,$companyaccess);
+    $productsbudgetQ = FController::productsbudgetQ($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$provideraccess,$companyaccess);
+    $productQab = [];
+    foreach ($productssellQ  as $keys => $values) {
+      foreach ($values as $key => $value) {
+        if ($productsbudgetQ[$keys][$key]==0) {
+          $productQab[$keys][$key] = 0;
+        }
+        else
+        {
+          $productQab[$keys][$key] = round($value/$productsbudgetQ[$keys][$key]*100);
+        }  
+      } 
+    }
+    $allproductssell = 0;
+    foreach ($productssell as $key => $value) {
+      $allproductssell = $allproductssell +  $value;
+    }
+    $allproducbudget = 0;
+    foreach ($producbudget as $key => $value) {
+      $allproducbudget = $allproducbudget + $value;
+    }
+    ($allproducbudget<>0)?($allproductab = round(($allproductssell/$allproducbudget)*100)):($allproductab=0);
+    $ytdallproductssell = 0;
+    if (isset($productssellQ['Q5'])) {
+      foreach ($productssellQ['Q5'] as $key => $value) {
+        $ytdallproductssell = $ytdallproductssell + $value;
+      }
+    }
+    $ytdallproducbudget = 0;
+    if (isset($productsbudgetQ['Q5'])) {
+      foreach ($productsbudgetQ['Q5'] as $key => $value) {
+        $ytdallproducbudget = $ytdallproducbudget + $value;
+      }
+    }
+    ($ytdallproducbudget<>0)?($ytdallproductab = round(($ytdallproductssell/$ytdallproducbudget)*100)):($ytdallproductab = 0);
+    $yearach = FController::yearach($medvalue,$choicedaymed,$monthstartmed,$usergroup,$medaccess,$allitems,$provideraccess,$companyaccess);
+    $yearachjava = json_encode($yearach);
+    #捞產品，產品預算，產品達成率產品程式結束
+    #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
+    foreach ($peoples as $usernum) {
+      $users = DB::table('userstateshps')->where('usernum','=',$usernum)->first();
+      $cnames[$users->usernum] = $users->cname;
+    }
+    #撈物流(醫院組沒物流所以隨便定義where)
+    $shipping = array();
+    $bigs = big::where('customercode','=','nobig');
+    foreach ($bigs as $big) {
+      $shipping[] = $big['customercode'];
+    }
+    #撈產品
+    $importantarget = array();
+    $importantps = importanth::all();
     foreach ($importantps as $importantp) {
       $importantarget[] =  $importantp['itemno'];  
     }
@@ -3557,7 +4004,7 @@ class MainController extends Controller {
     $finalyearab = null;
     if ($cnames<>0) {
       foreach ($budgetmonth[2] as $key => $value) {
-        if ($key<>'鍾碧如') {
+        if ($key<>'金容' and $key<>'平廷' ) {
           foreach ($value as $key => $addvalue) {
             if ($key==0) {
               $finaltotalsalenobig = $finaltotalsalenobig + $addvalue;
@@ -3576,12 +4023,12 @@ class MainController extends Controller {
         $finalabnobig = round($finaltotalsalenobig/$finaltotalbudgetnobig * 100);       
       }  
       foreach ($Qsalesformedicine['Q5'] as $key => $values) {
-        if ($key<>'鍾碧如') {
+        if ($key<>'金容' and $key<>'平廷' ) {
           $finalyeartotalsalenobig = $finalyeartotalsalenobig + array_sum($values);
         }
       }
       foreach ($Qbudgetmonth['Q5'] as $key => $values) {
-        if ($key<>'鍾碧如') {
+        if ($key<>'金容' and $key<>'平廷' ) {
           $finalyeartotalbudgetnobig = $finalyeartotalbudgetnobig + array_sum($values);
         }
       }
@@ -3654,214 +4101,320 @@ class MainController extends Controller {
                     ,'finalyearab'=>$finalyearab
                     ,'checkboxinfo'=>$checkboxinfo
                     ,'mon'=>$mon
+                    ,'fromsubmit'=>'hpgo'
+                    ,'productsselect'=>$productsselect 
+                    ,'productssell'=>$productssell
+                    ,'producbudget'=>$producbudget
+                    ,'productab'=>$productab
+                    ,'productssellQ'=>$productssellQ
+                    ,'productsbudgetQ'=>$productsbudgetQ 
+                    ,'productQab'=>$productQab
+                    ,'yearachjava'=>$yearachjava
+                    ,'choicedaymed'=>$choicedaymed
+                    ,'monmed'=>$monmed
+                    ,'allproductssell'=>$allproductssell
+                    ,'allproducbudget'=>$allproducbudget
+                    ,'allproductab'=>$allproductab
+                    ,'ytdallproductssell'=>$ytdallproductssell
+                    ,'ytdallproducbudget'=>$ytdallproducbudget
+                    ,'ytdallproductab'=>$ytdallproductab
+                    ,'checkboxinfomed'=>$checkboxinfomed
+                    ,'whos'=>$whos
+                    ,'shippingbig'=>$shippingbig
+                    ,'providerinfo'=>$providerinfo
+                    ,'checkboxinfoprovider'=>$checkboxinfoprovider
+                    ,'productsclass'=>$productsclass
+                    ,'team'=>$team
+                    ,'radioadmin'=>$radioadmin
                     ]);
   }
-
-
-  public function hpgo()
+  public function vendorfun()
   {
-
-    $choiceday = Input::get('datepicker');
-    $peoples = Input::get('checkvalue');
-    $quitpeoples = Input::get('checkvaluequit');
-    $monthstart = substr($choiceday, 0,8).'01';
-    $usergroup = '醫院';
-    $mon = substr($choiceday,5,2);
-    #接收input選項 
-    (isset($quitpeoples)) ? ($peoples = array_merge($peoples,$quitpeoples)):('');
-    $userstatedate = date('Y-m-01');
-    $cnames = [];
-    (isset($peoples)) ? (''):($peoples = []);
-
-    #撈在職人員for view
-    $users = userstate::where('userdate','=',$userstatedate)->where('userstatus','=',$usergroup )->get();
-    foreach ($users as $user) {
-      $cnamesforpage[$user['usernum']] = $user['cname'];
-      $checkboxinfo[$user['usernum']] = 'checked' ;
-      if (isset($peoples)) {
-        foreach ($peoples as $people) {
-          if ($people<>$user['usernum']) {
-            $checkboxinfo[$user['usernum']] = '';
+    $vendors = [];
+    $day = date('Y-m-d');
+    $todaymeal = [];
+    $vendortel = [];
+    $allvendor = DB::table('bendon')->where('enable','=',1)->distinct()->select('vendor')->get();
+    foreach ($allvendor as $value) {
+      $vendors[] = $value->vendor;
+      $todaymeal[$value->vendor] = '';
+    }
+    foreach ($vendors as  $value) {
+      $allvendor = DB::table('bendon')->where('vendor','=',$value)->first();
+      $vendortel[$value] = $allvendor->tel;
+    }
+    $meals = DB::table('mealtoday')->where('day','=',$day)->get();
+    foreach ($meals as $meal) {
+      $todaymeal[$meal->vendor] = 'checked';
+    }
+    return view('vendorfun',['vendor'=>$vendors
+                           , 'todaymeal'=>$todaymeal 
+                           , 'vendortel'=>$vendortel
+                            ]);
+  }  
+  public function createvendor()
+  {
+    $categorys = [];
+    $categorysedit = [];
+    $categorysuledit = [];
+    $items = [];
+    $itemsprice = [];
+    $vendor = Input::get('vendor');
+    $vendortel = '';
+    $categoryb = 'categoryb';
+    $categoryul = 'categoryul';
+    $itemsname = 'itemsname';
+    $pricename = 'pricename';
+    $i = 0;
+    $j = ''; 
+    $meals = DB::table('bendon')->where('vendor','=',$vendor)->orderBy('category','desc')->get();
+    foreach ($meals as $meal) {
+      $categoryb = $categoryb.$i;
+      $categoryul = $categoryul.$i;
+      $itemsname = $itemsname.$i;
+      $pricename = $pricename.$i;
+      $categorysedit[$categoryb] = $meal->category;
+      $categorysuledit[$categoryb] = $categoryul;
+      $items[$itemsname]=$meal->items;
+      $itemsprice[$pricename]=$meal->price;
+      $i = $i+1;
+      $categoryb  = 'categoryb';
+      $categoryul = 'categoryul';
+      $itemsname  = 'itemsname';
+      $pricename = 'pricename';
+      $vendortel = $meal->tel;
+    }
+    for ($i=0; $i < count($categorysedit)-1 ; $i++) { 
+      $j = $j.'1';
+    }
+    $mealcategorys = DB::table('mealgategory')->orderBy('id','asc')->get();
+    foreach ($mealcategorys as $category) {
+      $categorys[] = $category->category;
+    }
+    $categorysjava = json_encode($categorys);
+    return view('createvendor',['categorys'=>$categorys
+                              , 'categorysjava'=>$categorysjava
+                              , 'vendor'=>$vendor
+                              , 'categorysedit'=>$categorysedit
+                              , 'categorysuledit'=>$categorysuledit
+                              , 'j'=>$j
+                              , 'items'=>$items
+                              , 'itemsprice'=>$itemsprice
+                              , 'vendortel'=>$vendortel
+                              ]);
+  }  
+  public function orderlu()
+  {
+    $category = [];
+    $allitems = [];
+    $today = date('Y-m-d');
+    $todaymeal = '';
+    $itemscollectionprice = [];
+    $meals = DB::table('mealtoday')->where('day','=',$today)->get();
+    foreach ($meals as $meal) {
+      $todaymeal = $meal->vendor;
+    }
+    $mealcategorys = DB::table('mealgategory')->orderBy('id','asc')->get();
+    foreach ($mealcategorys as $categorys) {
+      $category[] = $categorys->category;
+    }
+    if (!empty($todaymeal)) {
+      foreach ($category as  $value) {
+        $counts = DB::table('bendon')->where('vendor','=',$todaymeal)->where('category','=',$value)->count();
+        if ($counts>0) {
+          $items = DB::table('bendon')->where('vendor','=',$todaymeal)->where('category','=',$value)->get();
+          foreach ($items as $item) {
+            $itemscollection[] = $item->items;
+            $itemscollectionprice[$item->items] = $item->price;
           }
+          $allitems[$value] = $itemscollection;
+          $itemscollection = [];
         }
-      }
-    }
-
-    #撈離職人員for view
-    $users = userstate::where('userstatus','=',$usergroup)->get();
-    foreach ($users as $user) {
-      (isset($cnamesforpage[$user['usernum']])) ? (''):($cnamesquitforpage[$user['usernum']] = $user['cname']);
-      (isset($checkboxinfo[$user['usernum']])) ? (''):($checkboxinfo[$user['usernum']] = '');
-      if (isset($peoples)) {
-        foreach ($peoples as $people) {
-          if ($people==$user['usernum']) {
-            $checkboxinfo[$user['usernum']] = 'checked';
-          }
-        }
-      }
-    }
-
-    #填充$cnames = [] 所有程式重這邊開始並以人員為迴圈的開始
-    foreach ($peoples as $usernum) {
-      $users = userstate::where('usernum','=',$usernum)->where('userstatus','=',$usergroup )->first();
-      $cnames[$users['usernum']] = $users['cname'];
-    }
-    #撈物流(醫院組沒物流所以隨便定義where)
-    $shipping = array();
-    $bigs = big::where('customercode','=','nobig');
-    foreach ($bigs as $big) {
-      $shipping[] = $big['customercode'];
-    }
-    #撈要產品
-    $importantarget = array();
-    $importantps = importanth::all();
-    foreach ($importantps as $importantp) {
-      $importantarget[] =  $importantp['itemno'];  
-    }
-    #撈每月業績與預算
-    $everyone = FController::salesformedicine($shipping,$importantarget,$peoples,$usergroup,$choiceday,$monthstart);
-    $budgetmonth = FController::budgetmonth($cnames,$everyone,$choiceday,$usergroup);
-    #數字索引部份分別為個人當月業績預算,個人當月達成率,個人當月總total
-    $pbudget= $budgetmonth[0];
-    $pab= $budgetmonth[1];
-    $totals= $budgetmonth[2];
-    $everyonejava = json_encode($everyone);
-
-    #撈季度業績,預算,年達成率
-    $Qtotal=[];
-    $Qpab=[];
-    $Qsalesformedicine = FController::Qsalesformedicine($shipping,$importantarget,$choiceday,$peoples,$usergroup);
-    $Qbudgetmonth = FController::Qbudgetmonth($cnames,$choiceday,$importantarget,$usergroup);
-    $ach = FController::ach($shipping,$importantarget,$peoples,$usergroup);
-    $achjava = json_encode($ach);
-    foreach ($Qsalesformedicine as $season => $cnames) {
-      if ($cnames<>0) {
-        foreach ($cnames as $key => $med) 
-        {
-          $Qtotal[$season][$key] = [];
-          $salestotal = array_sum($Qsalesformedicine[$season][$key]);
-          $budgettotal  = array_sum($Qbudgetmonth[$season][$key]);
-          ($budgettotal==0)?($abtotal=0):($abtotal = round($salestotal/$budgettotal * 100));
-          array_push($Qtotal[$season][$key],$salestotal ,$budgettotal,$abtotal);
-          foreach ($med as $medkey => $value) 
-          {   
-            $Qpab[$season][$key][$medkey] = [];
-            ($Qbudgetmonth[$season][$key][$medkey]==0) ? ($Qpab[$season][$key][$medkey] = 0) : ($Qpab[$season][$key][$medkey] = round($value/$Qbudgetmonth[$season][$key][$medkey] * 100));
-          } 
-        }
-      }
-    }
-    $finaltotalsalenobig = null;
-    $finaltotalbudgetnobig = null;
-    $finalyeartotalsalenobig = null;
-    $finalyeartotalbudgetnobig = null;
-    $finaltotalsale = null;
-    $finaltotalbudget = null;
-    $finalyeartotalsale = null;
-    $finalyeartotalbudget = null;
-    $finalabnobig= null;
-    $finalyearabnobig = null;
-    $finalab= null;
-    $finalyearab = null;
-    if ($cnames<>0) {
-      foreach ($budgetmonth[2] as $key => $value) {
-        if ($key<>'鍾碧如') {
-          foreach ($value as $key => $addvalue) {
-            if ($key==0) {
-              $finaltotalsalenobig = $finaltotalsalenobig + $addvalue;
-            }
-            if ($key==1) {
-              $finaltotalbudgetnobig  = $finaltotalbudgetnobig  + $addvalue;
-            }
-          }
-        }
-      }
-      if ($finaltotalbudgetnobig==0) {
-        $finalabnobig = 0 ;
-      }
-      else
-      {
-        $finalabnobig = round($finaltotalsalenobig/$finaltotalbudgetnobig * 100);       
-      }  
-      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
-        if ($key<>'鍾碧如') {
-          $finalyeartotalsalenobig = $finalyeartotalsalenobig + array_sum($values);
-        }
-      }
-      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
-        if ($key<>'鍾碧如') {
-          $finalyeartotalbudgetnobig = $finalyeartotalbudgetnobig + array_sum($values);
-        }
-      }
-      if ($finalyeartotalbudgetnobig==0) {
-        $finalyearabnobig = 0;
-      }
-      else
-      {
-        $finalyearabnobig = round($finalyeartotalsalenobig/$finalyeartotalbudgetnobig * 100);
-      }  
-      foreach ($budgetmonth[2] as $key => $value) {
-        foreach ($value as $key => $addvalue) {
-          if ($key==0) {
-            $finaltotalsale = $finaltotalsale + $addvalue;
-          }
-          if ($key==1) {
-            $finaltotalbudget = $finaltotalbudget  + $addvalue;
-          }
-        }
-      }
-      if ($finaltotalbudget==0) 
-      {
-        $finalab = 0;
-      }
-      else
-      {
-        $finalab = round($finaltotalsale/$finaltotalbudget * 100);
-      }  
-      foreach ($Qsalesformedicine['Q5'] as $key => $values) {
-        $finalyeartotalsale = $finalyeartotalsale + array_sum($values);
-      }
-      foreach ($Qbudgetmonth['Q5'] as $key => $values) {
-        $finalyeartotalbudget = $finalyeartotalbudget + array_sum($values);
-      }
-      if ($finalyeartotalbudget==0) 
-      {
-        $finalyearab = 0;
-      }
-      else
-      {
-        $finalyearab = round($finalyeartotalsale/$finalyeartotalbudget * 100);
       } 
     }
-
-    return view('hpgo',['totals'=>$totals 
-                    ,'pab'=>$pab 
-                    ,'pbudget'=>$pbudget 
-                    ,'everyone'=>$everyone
-                    ,'everyonejava'=>$everyonejava
-                    ,'cnames'=>$cnames
-                    ,'cnamesforpage'=>$cnamesforpage
-                    ,'cnamesquitforpage'=>$cnamesquitforpage
-                    ,'choiceday'=>$choiceday
-                    ,'Qbudgetmonth'=>$Qbudgetmonth
-                    ,'Qsalesformedicine'=>$Qsalesformedicine
-                    ,'Qtotal'=>$Qtotal
-                    ,'Qpab'=>$Qpab
-                    ,'achjava'=>$achjava
-                    ,'finaltotalsalenobig'=>$finaltotalsalenobig
-                    ,'finaltotalbudgetnobig'=>$finaltotalbudgetnobig 
-                    ,'finalabnobig'=>$finalabnobig
-                    ,'finalyeartotalsalenobig'=>$finalyeartotalsalenobig
-                    ,'finalyeartotalbudgetnobig'=>$finalyeartotalbudgetnobig
-                    ,'finalyearabnobig'=>$finalyearabnobig
-                    ,'finaltotalsale'=>$finaltotalsale
-                    ,'finaltotalbudget'=>$finaltotalbudget
-                    ,'finalab'=>$finalab
-                    ,'finalyeartotalsale'=>$finalyeartotalsale
-                    ,'finalyeartotalbudget'=>$finalyeartotalbudget
-                    ,'finalyearab'=>$finalyearab
-                    ,'checkboxinfo'=>$checkboxinfo
-                    ,'mon'=>$mon
-                    ]);
-  }
+    foreach ($allitems as $key => $value) {
+      if (empty($value)) {
+        unset($allitems[$key]);
+      }
+    }   
+    return view('orderlu',['allitems'=>$allitems
+                         , 'itemscollectionprice'=>$itemscollectionprice
+                         , 'today'=>$today
+                         , 'todaymeal'=>$todaymeal
+                          ]);
+  }  
+  public function orderfun()
+  {
+    $inputday = input::get('datepicker');
+    $day = date('Y-m-d');
+    $checkinfo = [];
+    $item = [];
+    $qty = [];
+    if ($inputday=='') {
+      $day = date('Y-m-d');
+    }
+    else
+    {
+      $day = $inputday;
+    }  
+    $order = [];
+    $orderdetail = [];
+    $orderinfo = DB::table('meal')->selectraw('sum(price) as price,name')->where('day','=',$day)->GroupBy('name')->get();
+    foreach ($orderinfo as $value) {
+      $order[$value->name] = $value->price;
+      $orderitems = DB::table('meal')->where('day','=',$day)->where('name','=',$value->name)->get();
+      foreach ($orderitems as  $val) {
+        if (isset($orderdetail[$value->name][$val->items])) {
+          $orderdetail[$value->name][$val->items] = $orderdetail[$value->name][$val->items] + $val->price;
+        }
+        else
+        {
+          $orderdetail[$value->name][$val->items] = $val->price;
+        }  
+      }
+    }
+    $boxinfo = DB::table('meal')->where('day','=',$day)->get();
+    foreach ($boxinfo as $value) {
+      if ($value->pay == '0') {
+        $checkinfo[$value->name] = '';
+      }
+      else
+      {
+        $checkinfo[$value->name] = 'checked';
+      }  
+    }
+    $meals = DB::table('meal')->selectraw('sum(price) as price,items')->where('day','=',$day)->GroupBy('items')->get();
+    foreach ($meals as $value) {
+      $item[$value->items]=$value->price;
+      $meals = DB::table('meal')->where('items','=',$value->items)->where('day','=',$day)->count();
+      $qty[$value->items]=$meals;
+    }
+    $totalsum = array_sum($item);
+    return view('orderfun',['order'=>$order
+                          , 'day'=>$day
+                          , 'checkinfo'=>$checkinfo
+                          , 'item'=>$item
+                          , 'qty'=>$qty 
+                          , 'totalsum'=>$totalsum 
+                          , 'orderdetail'=>$orderdetail
+                          ]);
+  }  
+  public function orderdetail()
+  {
+    $item = [];
+    $qty = [];
+    $meals = DB::table('meal')->selectraw('sum(price) as price,items')->where('day','=','2016-11-22')->GroupBy('items')->get();
+    foreach ($meals as $value) {
+      $item[$value->items]=$value->price;
+      $meals = DB::table('meal')->where('items','=',$value->items)->where('day','=','2016-11-22')->count();
+      $qty[$value->items]=$meals;
+    }
+    return view('orderdetail');
+  }  
+  public function stationery()
+  {
+    $today = date('Y-m-d');
+    $name = Auth::user()->cname;
+    $dep = Auth::user()->dep;
+    return view('stationery',['today'=>$today
+                              ,'name'=>$name
+                              ,'dep'=>$dep
+      ]);
+  }  
+  public function stationerycheck()
+  {
+    $items = '';
+    $man = [];
+    $sorttemp = [];
+    $i = 0 ;
+    $allstationery = DB::table('stationerytable')->where('done','=','0')->orderBy('requestday','desc')->get();
+    foreach ($allstationery as $value) {
+      $stationery = DB::table('stationerytable')->where('name','=',$value->name)->where('requestday','=',$value->requestday)->where('done','=','0')->orderBy('requestday','desc')->get();
+      foreach ($stationery as $val) {
+        $items .= '<p>'.$val->item.' 規格: '.$val->standard.' 數量: '.$val->qty.' 品牌 '.$val->spdetail.'</p>'; 
+      }
+    $man[$value->requestday][$value->name] = $items;  
+    $sorttemp[$value->requestday][$value->name] = $i;
+    $items = '';
+    $i = $i + 1;
+    }
+    return view('stationerycheck',['man'=>$man
+                                  ,'sorttemp'=>$sorttemp
+                                  ]);
+  }  
+  public function systemcheck()
+  {
+    $allinfo = [];
+    $allinfotemp = [];
+    $datepicker1 = Input::get('datepicker1');
+    $datepicker2 = Input::get('datepicker2');
+    if (empty($datepicker1) and empty($datepicker2)) {
+      $datepicker1 = date('Y-m-d');
+      $datepicker2 = date('Y-m-d');
+    }
+    $cases = DB::table('systemerror')->where('accidentdate','>=',$datepicker1)->where('accidentdate','<=',$datepicker2)->get();
+    foreach ($cases as $cases) {
+      $allinfotemp[]  =  $cases->accidentdate;
+      $allinfotemp[]  =  $cases->describe;
+      $allinfotemp[]  =  $cases->how;
+      $allinfotemp[]  =  $cases->howdo;
+      $allinfo[$cases->id]  =  $allinfotemp;
+      $allinfotemp = [];
+    }
+    return view('systemcheck',['allinfo'=>$allinfo]);
+  }  
+  public function systemcreate()
+  {
+    $name = Auth::user()->cname;
+    $id = Input::get('id');
+    if (isset($id)) {
+      $cases = DB::table('systemerror')->where('id','=',$id)->get();
+      foreach ($cases as $case) {
+        $accidentdate = $case->accidentdate;
+        $closedate = $case->closedate;
+        $name = $case->closeman;
+        $describe = $case->describe;
+        $how = $case->how;
+        $howdo = $case->howdo;
+        $others = $case->others;
+      }
+      return view('systemcreate',['accidentdate'=>$accidentdate
+                                  ,'closedate'=>$closedate
+                                  ,'name'=>$name
+                                  ,'describe'=>$describe
+                                  ,'how'=>$how
+                                  ,'howdo'=>$howdo
+                                  ,'others'=>$others
+                                  ,'exist'=>'1'
+                                  ,'id'=>$id
+                                  ]);
+    }
+    else
+    {
+      return view('systemcreate',['name'=>$name
+                                ,'exist'=>'0'
+        ]);
+    }  
+  }  
+  public function acdetail()
+  {
+    $name = Input::get('persondetailname');
+    $date = Input::get('persondetaildate');
+    $persondetailgroup = Input::get('persondetailgroup');
+    $infos = FController::persondetail($name,$date,$persondetailgroup);
+    $info = $infos[0];
+    $infosum = $infos[1];
+    $infototalsum = $infos[2];
+    return view('acdetail',['info'=>$info
+                          , 'infosum'=>$infosum
+                          , 'infototalsum'=>$infototalsum
+                          , 'name'=>$name
+    ]);
+  }  
+  public function heathycheck()
+  {
+    $today = date('Y-m-d');
+    return view('heathycheck',['today'=>$today
+    ]);
+  }  
 }

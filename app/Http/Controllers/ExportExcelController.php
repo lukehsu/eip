@@ -89,22 +89,24 @@ class ExportExcelController extends Controller {
                 'word2'=>"$strs[2]", 
                 'word3'=>"$strs[3]",  
                 'word4'=>"$strs[4]",
-                'word5'=>"$strs[5]",               
-                'word6'=>"$strs[6]",
-                'word7'=>"$strs[7]", 
-                'word8'=>"$strs[8]", 
-                'word9'=>"$strs[9]",
-                'word10'=>"$strs[10]", 
-                'word11'=>"$strs[11]", 
-                'word12'=>"$strs[12]", 
-                'word13'=>"$strs[13]", 
-                'word14'=>"$strs[14]", 
+                'word5'=>"$strs[17]",               
+                'word6'=>"$strs[18]",
+                'word7'=>"$strs[19]", 
+                'word8'=>"$strs[20]", 
+                'word9'=>"$strs[21]",
+                'word10'=>"$strs[22]", 
+                'word11'=>"$strs[23]", 
+                'word12'=>"$strs[24]", 
+                'word13'=>"$strs[25]", 
+                'word14'=>"$strs[26]", 
                 );
-            if ($info['word9']=='68EIS001' or $info['word9']=='68EIS002' ) {
-                if ($info['word1'] <> '0' and $info['word1'] == $sheet2->getCellByColumnAndRow(1, $row+1)->getValue() and $info['word9'] == $sheet2->getCellByColumnAndRow(9, $row+1)->getValue()) 
+                $infotempsales = $info['word0'];    
+                $infotemp = $info['word1'];
+            if ($info['word9']=='68EIS001' or $info['word9']=='68EIS002' or $info['word9']=='68EIS004'or $info['word9']=='68EIS005'or $info['word9']=='68EIS006' ) {
+                if ($info['word1'] <> '0' and $info['word1'] == $sheet2->getCellByColumnAndRow(1, $row+1)->getValue() and $info['word9'] == $sheet2->getCellByColumnAndRow(21, $row+1)->getValue()) 
                 {
                 //echo 'a'.$info['word1'].'b' .$sheet2->getCellByColumnAndRow(1, $row+1)->getValue().'<br>';
-                    $info['word7'] = $sheet2->getCellByColumnAndRow(7, $row+1)->getValue().'.00';
+                    $info['word7'] = $sheet2->getCellByColumnAndRow(19, $row+1)->getValue().'.00';
                     $info['word7'] = '       '.$info['word7'];
                     $info['word7'] = substr($info['word7'],-9);
                     $uniprice = round($info['word8']/($info['word6']+$info['word7']),2);
@@ -113,6 +115,16 @@ class ExportExcelController extends Controller {
                     $uniprice  = '      '.$uniprice;
                     $uniprice  = substr($uniprice,-9);
                     $addrow = 1;
+                    if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='TA') {
+                        $info['word7'] = 0 -  $sheet2->getCellByColumnAndRow(19, $row+1)->getValue().'.00';
+                        $info['word7'] = '       '.$info['word7'];
+                        $info['word7'] = substr($info['word7'],-9);
+                    }
+                    if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='DS') {
+                        $info['word7'] = '0.00';
+                        $info['word7'] = '       '.$info['word7'];
+                        $info['word7'] = substr($info['word7'],-9);
+                    }
                 }
                 else
                 {
@@ -123,8 +135,20 @@ class ExportExcelController extends Controller {
                     $uniprice = number_format($uniprice,2);
                     $uniprice  = '      '.$uniprice;
                     $uniprice  = substr($uniprice,-9);
-                }    
-                $info['word1'] = substr($info['word1'],2,8);
+                    if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='TA') {
+                        $info['word7'] = 0 - $info['word7'];
+                        $info['word7'] = $info['word7'].'.00';
+                        $info['word7'] = '       '.$info['word7'];
+                        $info['word7'] = substr($info['word7'],-9);
+                    }
+                    if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='DS') {
+                        $info['word7'] = 0 ;
+                        $info['word7'] = $info['word7'].'.00';
+                        $info['word7'] = '       '.$info['word7'];
+                        $info['word7'] = substr($info['word7'],-9);
+                    }
+                }
+                //$info['word1'] = substr($info['word1'],2,8);
                 ($info['word0']=='A2') ? ($info['word0']=1):($info['word0']=2);
                 if ($info['word9']=='68EIS001')  {
                     $a='ALE     ';
@@ -143,6 +167,18 @@ class ExportExcelController extends Controller {
                 $info['word6'] = $info['word6'].'.00';
                 $info['word6'] = '       '.$info['word6'];
                 $info['word6'] = substr($info['word6'],-9);
+                (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='TA') ? ($info['word6'] = 0 - $info['word6']):('');
+                if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='TA') {
+                    $info['word6'] = $info['word6'].'.00';
+                    $info['word6'] = '       '.$info['word6'];
+                    $info['word6'] = substr($info['word6'],-9);
+                }
+                (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='DS' ) ? ($info['word6'] = 0 ):('');
+                if (trim($infotempsales) =='R2' and substr($infotemp,0,2) =='DS') {
+                    $info['word6'] = $info['word6'].'.00';
+                    $info['word6'] = '       '.$info['word6'];
+                    $info['word6'] = substr($info['word6'],-9);
+                }
                 if ($info['word0']==1) {
                     $returnprice = '       0';
                     $info['word8'] = $info['word8'];
@@ -153,7 +189,7 @@ class ExportExcelController extends Controller {
                 else
                 {
                     $allprice = '       0' ;
-                    $info['word8'] = $info['word8'];
+                    $info['word8'] = 0-$info['word8'];
                     $info['word8'] = '          '.$info['word8'];
                     $info['word8'] = substr($info['word8'],-8);
                     $returnprice = $info['word8']; 
@@ -207,6 +243,7 @@ class ExportExcelController extends Controller {
                 return '請更新客戶資料';
             }
         }        
+
         for ($row = 2 ; $row < $highestRow ; $row++) 
         { 
             //注意Col索引從0開始
@@ -221,22 +258,23 @@ class ExportExcelController extends Controller {
                 'word2'=>"$strs[2]", 
                 'word3'=>"$strs[3]",  
                 'word4'=>"$strs[4]",
-                'word5'=>"$strs[5]",               
-                'word6'=>"$strs[6]",
-                'word7'=>"$strs[7]", 
-                'word8'=>"$strs[8]", 
-                'word9'=>"$strs[9]",
-                'word10'=>"$strs[10]", 
-                'word11'=>"$strs[11]", 
-                'word12'=>"$strs[12]", 
-                'word13'=>"$strs[13]", 
-                'word14'=>"$strs[14]", 
+                'word5'=>"$strs[17]",               
+                'word6'=>"$strs[18]",
+                'word7'=>"$strs[19]", 
+                'word8'=>"$strs[20]", 
+                'word9'=>"$strs[21]",
+                'word10'=>"$strs[22]", 
+                'word11'=>"$strs[23]", 
+                'word12'=>"$strs[24]", 
+                'word13'=>"$strs[25]", 
+                'word14'=>"$strs[26]", 
                 );
+  
             if ($info['word9']=='68EIS001' or $info['word9']=='68EIS002' ) {
                 $cusinfos = boracustomer::where('BORACustomerNo','=',$info['word3'])->get();
                 foreach ($cusinfos as $cusinfo) {
                     if ($chkloop==$info['word3']) {
-                        
+
                     }
                     else
                     {    
@@ -287,6 +325,7 @@ class ExportExcelController extends Controller {
                         $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0,$rowf,$cusinfo['BORACustomerNo'].$cusinfo['shortname'].$cusinfo['name'].$storeown.$cusinfo['contact'].$cusinfo['phone25'].$cusinfo['fax'].$cusinfo['address']);
                         $chkloop =  $info['word3'];
                         $rowf = $rowf + 1; 
+
                     }
                 }                  
             }

@@ -18,6 +18,7 @@
 //登入
 Route::get('login', 'MainController@login');
 Route::post('login', 'LoginController@login');
+Route::get('loginau', 'AutosendController@loginau');
 
 //登出
 Route::get('logout', 'LoginController@logout');
@@ -26,8 +27,12 @@ Route::get('logout', 'LoginController@logout');
 Route::get('dashboard', 'LoginController@dashboard');
 
 //報表
+//各組業績查詢用
 Route::get('gpgo', 'MainController@gpgo');
+Route::get('acdetail', 'MainController@acdetail');
+Route::get('sendgo', 'AutosendController@sendgo');
 Route::get('hpgo', 'MainController@hpgo');
+Route::get('unigo', 'MainController@gpgo');
 Route::get('boradiary/{todaydate}', 'MainController@boradiary');
 Route::get('unidiary/{todaydate}' , 'MainController@unidiary');
 Route::get('accountdiary/{todaydate}' , 'MainController@accountdiary');
@@ -51,14 +56,22 @@ Route::get('agents/{todaydate}' , 'MainController@agents');
 Route::get('allborauni/{todaydate}' , 'MainController@allborauni');
 Route::get('imborauni/{todaydate}' , 'MainController@imborauni');
 Route::get('neww' , 'MainController@neww');
+Route::get('logincount' , 'AutosendController@logincount');
+Route::get('heathycheck' , 'MainController@heathycheck');
+Route::post('heathycheckajax' , 'FajaxController@heathycheckajax');
 //報表自動寄送
 Route::get('sendboradiary', 'AutosendController@sendboradiary');
 Route::get('sendunidiary' , 'AutosendController@sendunidiary');
 Route::get('sendreport' , 'AutosendController@sendreport');
 Route::get('accountreminder' , 'AutosendController@accountreminder');
+Route::get('sendlogincount' , 'AutosendController@sendlogincount');
+Route::get('sendmeal' , 'AutosendController@sendmeal');
 //自動寄報表手動
 Route::get('nonesendboradiary/{todaydate}', 'AutosendController@nonesendboradiary');
 Route::get('nonesendunidiary/{todaydate}' , 'AutosendController@nonesendunidiary');
+Route::get('sendha' , 'AutosendController@sendha');
+Route::get('createha' , 'AutosendController@createha');
+Route::get('sendinfosafe' , 'AutosendController@sendinfosafe');
 //匯出報表
 Route::get('eisaireport', 'ExportExcelController@eisaireport');
 Route::get('eisaicus', 'ExportExcelController@eisaicus');
@@ -66,16 +79,35 @@ Route::get('eisaicus', 'ExportExcelController@eisaicus');
 Route::get('diaryexcel', 'ExcelController@diaryexcel');
 Route::get('uniexcel', 'ExcelController@uniexcel');
 Route::get('haexcel', 'ExcelController@haexcel');
+Route::get('healcome', 'ExcelController@healcome');
 Route::get('boehringer', 'ExcelController@boehringer');
 Route::get('boracm', 'ExcelController@boracm');
 Route::get('everymonth' , 'ExcelController@everymonth');
 //服務頁面
 Route::get('webmail', 'MainController@webmail');
+Route::get('stationery', 'MainController@stationery');
 //頁面轉出excel
 Route::post('transferajax' , 'ServiceajaxController@transferajax');
 //TV
 Route::get('tv', 'TvController@tv');
-
+//行政總務
+Route::get('createvendor', 'MainController@createvendor');
+Route::get('orderlu', 'MainController@orderlu');
+Route::get('vendorfun', 'MainController@vendorfun');
+Route::get('orderfun', 'MainController@orderfun');
+Route::get('orderdetail', 'MainController@orderdetail');
+Route::get('stationerycheck', 'MainController@stationerycheck');
+Route::post('orderluajax', 'FajaxController@orderluajax');
+Route::post('vendorfunajax', 'FajaxController@vendorfunajax');
+Route::post('vendorfundelajax', 'FajaxController@vendorfundelajax');
+Route::post('orderfunajax', 'FajaxController@orderfunajax');
+Route::post('stationeryajax', 'FajaxController@stationeryajax');
+Route::post('stationerycheckajax', 'FajaxController@stationerycheckajax');
+//資訊部
+Route::get('systemcheck', 'MainController@systemcheck');
+Route::get('systemcreate', 'MainController@systemcreate');
+Route::post('systemcreateajax', 'FajaxController@systemcreateajax');
+Route::post('systemupdateajax', 'FajaxController@systemupdateajax');
 //單據
 Route::get('app/it', 'ServiceController@it');
 Route::get('app/epaper', 'ServiceController@epaper');
@@ -92,7 +124,9 @@ Route::get('{ordernumber}/star', 'MainController@star');
 Route::post('borareportdate', 'DatechangController@borareportdate');
 Route::post('unireportdate', 'DatechangController@unireportdate');
 Route::post('accountreportdate', 'DatechangController@accountreportdate');
-
+Route::post('chooseman', 'FajaxController@chooseman');
+Route::post('createvendorajax', 'FajaxController@createvendorajax');
+Route::post('chooseproduct', 'FajaxController@chooseproduct');
 //轉址
 Route::get('monitor', function()
 {

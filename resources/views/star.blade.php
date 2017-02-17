@@ -52,7 +52,7 @@
 </div>
 <script type="text/javascript">
   $('.starbox').starbox({
-    average: 0.8,
+    average: 1.0,
     changeable: true,
     autoUpdateAverage: true,
     ghosting: true,

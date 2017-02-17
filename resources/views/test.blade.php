@@ -19,26 +19,9 @@ margin: 0 auto;}
 </head>
 <body>
 <div class="container-fluid">
-  <div cldivss="row">
-    <div class="col-xs-3">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-    <div class="col-xs-4">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-    <div class="col-xs-5">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-8">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-    <div class="col-xs-4">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-6">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-    <div class="col-xs-6">一輛載有江蘇旅遊團陸客遊覽車今天下午行經國道1號苗栗路段
-    </div>
-  </div>
+  <form action="test">
+    
+  </form>
 </div>
 </body>
 </html>

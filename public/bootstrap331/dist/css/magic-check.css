@@ -16,10 +16,12 @@
 .magic-radio + label,
 .magic-checkbox + label {
   position: relative;
-  display: block;
+  /**display: block 原本的**/
   padding-left: 30px;
   cursor: pointer;
-  vertical-align: middle; }
+  vertical-align: middle; 
+  /**width: 150px原本沒有**/
+  width: 150px }
   .magic-radio + label:hover:before,
   .magic-checkbox + label:hover:before {
     animation-duration: 0.4s;
@@ -67,10 +69,11 @@
   display: block; }
 
 .magic-radio + label:before {
-  border-radius: 50%; }
+  border-radius: 50%; 
+  top: 7px}
 
 .magic-radio + label:after {
-  top: 6px;
+  top: 13px;
   left: 6px;
   width: 8px;
   height: 8px;

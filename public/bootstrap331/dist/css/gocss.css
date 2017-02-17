@@ -1,12 +1,6 @@
-  @media screen and (max-width: 1024px)  {
+  @media screen and (min-width: 1024px)  {
     .original{
-      width: 960px;
-      margin: 0 auto; 
-    }
-  }
-  @media screen and (min-width: 1025px)  {
-    .original{
-      width: 1300px;
+      width: 1260px;
       margin: 0 auto; 
     }
   }
@@ -20,19 +14,36 @@
   .rowstyle{
     margin-top: 40px;
   }
-  .tab10{
-
-    width: 110px
-  }
-  .tab11{
-    background-color:#7F8C8D;
-    color: #FFFFFF;
-    width: 110px
+  .tab1{
+    cursor: pointer;
+    width: 110px;
   }
   .tab2{
-    border-color:#7F8C8D   ;
+    background-color:#7F8C8D;
+    color: #FFFFFF;
+    width: 110px;
+    cursor: pointer;
+  }
+  .tab3{
+    cursor: pointer;
+    width: 110px;
+  }
+  .tab11{
+    border-color:#E67E22;
     border-width:1px;
     border-style:solid;
+    display: none;
+  }
+  .tab21{
+    border-color:#7F8C8D;
+    border-width:1px;
+    border-style:solid;
+  }
+  .tab31{
+    border-color:#2980B9;
+    border-width:1px;
+    border-style:solid;
+    display: none;
   }
   .grill{
     background-color:#7F8C8D;
@@ -60,6 +71,45 @@
     background-color:#2C3E50;
     color: #FFFFFF;   
   } 
- .sortright{
+  .sortright{
     text-align:right;
- } 
+  } 
+  .Q1{
+      display: none;
+    }
+  .Q2{
+      display: none;
+    }
+  .Q3{
+      display: none;
+    }
+  .Q4{
+      display: none;
+    }
+  .qselect{
+    cursor: pointer;
+  }
+  .underspace{
+    margin-bottom: 50px;
+  }
+  .C1{
+      display: none;
+  }
+  .C2{
+      display: none;
+  }
+  .C3{
+      display: none;
+  }
+  .C4{
+      display: none;
+  }
+  .C5{
+      display: none;
+  }
+  .C6{
+      display: none;
+  }
+  .call{
+      display: none;
+  }

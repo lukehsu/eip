@@ -1,0 +1,16 @@
+  @media screen and (min-width: 1024px)  {
+    .original{
+      width: 1260px;
+      margin: 0 auto; 
+    }
+  }
+  @media only screen and (min-device-width : 320px) and (max-device-width : 568px) 
+  {   
+    .original{
+      width: 960px;
+      margin: 0 auto; 
+    }
+  }
+  .clickfun{ 
+    cursor: pointer; 
+  }

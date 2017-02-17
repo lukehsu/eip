@@ -87,6 +87,10 @@
                 name: "優達平200",
                 y:  {!!$MC['Yuda200']!!},
             },            {
+                name: "優福",
+                y:  {!!$MC['ufo']!!},
+            }, 
+                         {
                 name: "Others",
                 y:  {!!$MC['others']!!},
             }]

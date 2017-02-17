@@ -11,6 +11,7 @@ use App\useracces;
 use Hash;
 use Closure;
 use App\Http\Controllers\FlowController;
+use DB;
 class LoginController extends Controller {
 
     public function login()
@@ -89,18 +90,29 @@ class LoginController extends Controller {
                 $user->password = Hash::Make(Input::get('password'));
                 $user->save();
                 
-                $access = new useracces ;
-                $access->user = Input::get('name');
-                $access->access = '資訊需求單';
-                $access->save();
-                $access = new useracces ;
-                $access->user = Input::get('name');
-                $access->access = 'E-mail';
-                $access->save();
-
+                $newaccess = DB::table('newaccess')->get();
+                foreach ($newaccess as $addaccess) {
+                  $countaccess = DB::table('useraccess')->where('user','=',$userdata['name'])->where('access','=',$addaccess->access)->count();
+                  if ($countaccess==0) {
+                    $access = new useracces ;
+                    $access->user = Input::get('name');
+                    $access->access = $addaccess->access;
+                    $access->save();
+                  }
+                }
               }
               else
               {
+                $newaccess = DB::table('newaccess')->get();
+                foreach ($newaccess as $addaccess) {
+                  $countaccess = DB::table('useraccess')->where('user','=',$userdata['name'])->where('access','=',$addaccess->access)->count();
+                  if ($countaccess==0) {
+                    $access = new useracces ;
+                    $access->user = Input::get('name');
+                    $access->access = $addaccess->access;
+                    $access->save();
+                  }
+                }
                 $user = User::where('name','=',Input::get('name'))->first(); 
                 $user->password = Hash::Make(Input::get('password'));
                 $user->save();
@@ -125,7 +137,8 @@ class LoginController extends Controller {
         ldap_close($ldapconn);
         if(Auth::attempt(['name'=>$userdata['name'],'password'=>$userdata['password'] ]))
         {
-          //return redirect()->intended('dashboard');
+          //return redirect()->intended('dashboard');     
+          DB::table('loginhistory')->insert(['salename' => $data[0]['name'][0], 'saleno' => $userdata['name'] , 'loginyear' => date("Y") , 'logindate' => date("m-d") , 'logintime' => date("H:i"), 'office' => $data[0]['department'][0]]);       
           return  response()->json(array('good'));
         }
         else
@@ -138,13 +151,15 @@ class LoginController extends Controller {
     public function dashboard()
     {
       $userinfos = User::where('name','=',Auth::user()->name)->get();      
-      foreach ($userinfos as $userinfo) {
+      foreach ($userinfos as $userinfo) 
+      {
         $cname = $userinfo->cname;
         $dep = $userinfo->dep;  
         $level = $userinfo->level;    
       } 
       //GM 專用判斷
-      if (Auth::user()->name == 'b0001') {
+      if (Auth::user()->name == 'b0001') 
+      {
         $level = 'GM';
         $itservice = null;
         $ittickets = itticket::where('process','=',$level)->orwhere('process','=','manager')->where('dep','=',$dep)->get();
@@ -188,7 +203,7 @@ class LoginController extends Controller {
         $description = mb_substr($description,0,8,"utf-8")."......";
         $items = $itticket->items;
         $items = mb_substr($items,0,6,"utf-8")."......";
-        $itservice .= '<div class="row" style="height:30px"><div class="col-xs-1"><label id="chkgroup'.$i.'" class="checkbox"><input name="itbox" type="checkbox" value="1" id="checkbox'.$i.'" data-toggle="checkbox"></label></div><a href="http://127.0.0.1/eip/public/'.$ordernumber.'/it"><div class="col-xs-2 pa">'.$date.'</div><div class="col-xs-2 pa">'.$dep.'</div><div id="name'.$i.'" class="col-xs-2 pa">'.$name.'</div><div class="col-xs-2 pa">'.$items.'</div><div class="col-xs-3 pa">'.$description.'<input id="ordernumber'.$i.'" type="hidden" value="'.$ordernumber.'"></div></a></div>' ;                     
+        $itservice .= '<div class="row" style="height:30px"><div class="col-xs-1"><label id="chkgroup'.$i.'" class="checkbox"><input name="itbox" type="checkbox" value="1" id="checkbox'.$i.'" data-toggle="checkbox"></label></div><a href="http://192.168.1.35/eip/public/'.$ordernumber.'/it"><div class="col-xs-2 pa">'.$date.'</div><div class="col-xs-2 pa">'.$dep.'</div><div id="name'.$i.'" class="col-xs-2 pa">'.$name.'</div><div class="col-xs-2 pa">'.$items.'</div><div class="col-xs-3 pa">'.$description.'<input id="ordernumber'.$i.'" type="hidden" value="'.$ordernumber.'"></div></a></div>' ;                     
         $i = $i + 1 ;
       } 
 
